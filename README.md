@@ -128,11 +128,6 @@ At trainint time, one random document is selected as a label and the rest of bag
 
     ./starspace train -trainFile input.txt -model docspace -trainMode 1 -isLabelFeatured true
 
-# Algorithm
-
-See the paper (TBD).
-OR ADD A FEW SETENCES AS WELL AS PAPER LINK
-
 # Full Documentation
     
     The following arguments are mandatory for train: 
