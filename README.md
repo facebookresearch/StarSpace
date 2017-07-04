@@ -78,7 +78,7 @@ The use cases of the 2nd train mode will be explained in Example use cases.
 **Model:** the relation goes from bags of words to bags of tags, by learning an embedding of both. 
 For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> #yum” will be translated into the following graph. (Nodes in the graph are entities which embeddings will be learned, and edges in the graph are relationships between the entities).
 
-![word-tag](https://github.com/facebookresearch/Starspace/examples/tagspace.png)
+![word-tag](https://github.com/facebookresearch/Starspace/blob/master/examples/tagspace.png)
 
 **Input file format**:
 
@@ -95,7 +95,7 @@ For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> 
 
 **Model：** Users are represented as the bag of pages that they fan. Pages are embedded directly.
 
-![user-page](https://github.com/facebookresearch/Starspace/examples/user-page.png)
+![user-page](https://github.com/facebookresearch/Starspace/blob/master/examples/user-page.png)
 
 Each user is represented by bag-of-pages fanned by the user.
 
@@ -117,7 +117,7 @@ At training time, one random page is selected as a label and the rest of bag of 
 **Model:** Each document is represented by bag of words in the document. Each user is represeted as the document s/he clicked in history. 
 At trainint time, one random document is selected as a label and the rest of bag of documents are selected as input. 
 
-![user-doc](https://github.com/facebookresearch/Starspace/examples/user-doc.png)
+![user-doc](https://github.com/facebookresearch/Starspace/blob/master/examples/user-doc.png)
 
 
 **Input file format:**
