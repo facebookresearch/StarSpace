@@ -14,6 +14,7 @@ class Args {
     std::string validationFile;
     std::string testFile;
     std::string model;
+    std::string fileFormat;
     std::string label;
     std::string basedoc;
     std::string loss;
@@ -38,7 +39,6 @@ class Args {
     bool debug;
     bool adagrad;
     bool isTrain;
-    bool isLabelFeatured;
 
     void parseArgs(int, char**);
     void printHelp();
