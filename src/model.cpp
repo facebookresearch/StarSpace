@@ -44,7 +44,7 @@ void EmbedModel::initModelWeights() {
       new SparseLinear<Real>({num_lhs, args_->dim},args_->initRandSd)
     );
 
-  if (args_->isLabelFeatured) {
+  if (args_->fileFormat == "labelDoc") {
     RHSEmbeddings_ = LHSEmbeddings_;
   } else {
     RHSEmbeddings_ =
@@ -678,21 +678,21 @@ void EmbedModel::saveTsv(ostream& out, const char sep) const {
     }
   };
   dumpOne(LHSEmbeddings_, false);
-  if (!args_->isLabelFeatured) {
+  if (args_->fileFormat == "fastText") {
     dumpOne(RHSEmbeddings_, true);
   }
 }
 
 void EmbedModel::save(ostream& out) const {
   LHSEmbeddings_->write(out);
-  if (!args_->isLabelFeatured) {
+  if (args_->fileFormat == "fastText") {
     RHSEmbeddings_->write(out);
   }
 }
 
 void EmbedModel::load(ifstream& in) {
   LHSEmbeddings_.reset(new SparseLinear<Real>(in));
-  if (!args_->isLabelFeatured) {
+  if (args_->fileFormat == "fastText") {
     RHSEmbeddings_.reset(new SparseLinear<Real>(in));
   }
 }

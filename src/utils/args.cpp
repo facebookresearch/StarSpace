@@ -27,9 +27,9 @@ Args::Args() {
   verbose = false;
   debug = false;
   adagrad = false;
-  isLabelFeatured = false;
   trainMode = 0;
   basedoc = "";
+  fileFormat = "fastText";
   label = "__label__";
   bucket = 2000000;
   ngrams = 1;
@@ -70,6 +70,8 @@ void Args::parseArgs(int argc, char** argv) {
       basedoc = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-model") == 0) {
       model = string(argv[i + 1]);
+    } else if (strcmp(argv[i], "-fileFormat") == 0) {
+      fileFormat = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-label") == 0) {
       label = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-loss") == 0) {
@@ -112,8 +114,6 @@ void Args::parseArgs(int argc, char** argv) {
       debug = (string(argv[i + 1]) == "true");
     } else if (strcmp(argv[i], "-adagrad") == 0) {
       adagrad = (string(argv[i + 1]) == "true");
-    } else if (strcmp(argv[i], "-isLabelFeatured") == 0) {
-      isLabelFeatured = (string(argv[i + 1]) == "true");
     }
     i += 2;
   }
@@ -145,6 +145,11 @@ void Args::parseArgs(int argc, char** argv) {
     cerr << "Unsupported similarity type. Should be either dot or cosine.\n";
     exit(EXIT_FAILURE);
   }
+  // check for file format
+  if (!(fileFormat == "fastText" || fileFormat == "labelDoc")) {
+    cerr << "Unsupported file format type. Should be either fastText or labelDoc.\n";
+    exit(EXIT_FAILURE);
+  }
 }
 
 void Args::printHelp() {
@@ -163,6 +168,7 @@ void Args::printHelp() {
        << "  -label           labels prefix [" << label << "]\n"
        << "\nThe following arguments for training are optional:\n"
        << "  -trainMode       takes value in [0, 1], see Training Mode Section. [" << trainMode << "]\n"
+       << "  -fileFormat      currently support 'fastText' and 'labelDoc', see File Format Section. [" << fileFormat << "]\n"
        << "  -lr              learning rate [" << lr << "]\n"
        << "  -dim             size of embedding vectors [" << dim << "]\n"
        << "  -epoch           number of epochs [" << epoch << "]\n"
@@ -174,7 +180,6 @@ void Args::printHelp() {
        << "                   It's only effective if hinge loss is used. [" << similarity << "]\n"
        << "  -thread          number of threads [" << thread << "]\n"
        << "  -adagrad         whether to use adagrad in training [" << adagrad << "]\n"
-       << "  -isLabelFeatured whether the label contains feature. [" << isLabelFeatured << "]\n"
        <<  "\nThe following arguments are optional:\n"
        << "  -verbose         verbosity level [" << verbose << "]\n"
        << "  -debug           whether it's in debug mode [" << debug << "]\n"
@@ -199,7 +204,7 @@ void Args::printArgs() {
        << "bucket: " << bucket << endl
        << "adagrad: " << adagrad << endl
        << "trainMode: " << trainMode << endl
-       << "isLabelFeatured: " << isLabelFeatured << endl;
+       << "fileFormat: " << fileFormat << endl;
 }
 
 void Args::save(std::ostream& out) {
@@ -212,7 +217,9 @@ void Args::save(std::ostream& out) {
   out.write((char*) &(ngrams), sizeof(int));
   out.write((char*) &(bucket), sizeof(int));
   out.write((char*) &(trainMode), sizeof(int));
-  out.write((char*) &(isLabelFeatured), sizeof(bool));
+  size_t size = fileFormat.size();
+  out.write((char*) &(size), sizeof(size_t));
+  out.write((char*) &(fileFormat[0]), size);
 }
 
 void Args::load(std::istream& in) {
@@ -225,7 +232,10 @@ void Args::load(std::istream& in) {
   in.read((char*) &(ngrams), sizeof(int));
   in.read((char*) &(bucket), sizeof(int));
   in.read((char*) &(trainMode), sizeof(int));
-  in.read((char*) &(isLabelFeatured), sizeof(bool));
+  size_t size;
+  in.read((char*) &(size), sizeof(size_t));
+  fileFormat.resize(size);
+  in.read((char*) &(fileFormat[0]), size);
 }
 
 }
