@@ -56,9 +56,9 @@ In the more general case, each label also consists of words:
 
 Embedding vectors will be learned for each word and label to group similar inputs and labels together. 
 
-In order to learn the embeddings in the more general case where each label consists words, do:
+In order to learn the embeddings in the more general case where each label consists words, one need to specify the -fileFormat flag to be 'labelDoc', as follows:
 
-    $./starspace train -trainFile data.txt -model model -isLabelFeatured true
+    $./starspace train -trainFile data.txt -model model -fileFormat labelDoc
 
 
 ## Training Mode
@@ -126,7 +126,7 @@ At trainint time, one random document is selected as a label and the rest of bag
     
 **Command:**
 
-    ./starspace train -trainFile input.txt -model docspace -trainMode 1 -isLabelFeatured true
+    ./starspace train -trainFile input.txt -model docspace -trainMode 1 -fileFormat labelDoc
 
 # Full Documentation
     
@@ -147,6 +147,7 @@ At trainint time, one random document is selected as a label and the rest of bag
 
     The following arguments for training are optional:
       -trainMode       takes value in [0, 1], see Training Mode Section. [0]
+      -fileFormat      currently support 'fastText' and 'labelDoc', see File Format Section. [fastText]
       -lr              learning rate [0.01]
       -dim             size of embedding vectors [10]
       -epoch           number of epochs [5]
@@ -158,7 +159,6 @@ At trainint time, one random document is selected as a label and the rest of bag
                        It's only effective if hinge loss is used. [cosine]
       -thread          number of threads [10]
       -adagrad         whether to use adagrad in training [0]
-      -isLabelFeatured whether the label contains feature. [0]
 
     The following arguments are optional:
       -verbose         verbosity level [0]
