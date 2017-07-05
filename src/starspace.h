@@ -17,17 +17,13 @@ class StarSpace {
     explicit StarSpace(std::shared_ptr<Args> args);
 
     void init();
-    void train();
-
     void initFromTsv();
     void initFromSavedModel();
+
+    void train();
     void evaluate();
 
     Matrix<Real> getDocVector(const std::string& line, const std::string& sep);
-    void loadBaseDocs();
-    Metrics evaluateOne(
-        const std::vector<int32_t>& lhs,
-        const std::vector<int32_t>& rhs);
 
     void saveModel();
     void saveModelTsv();
@@ -35,6 +31,14 @@ class StarSpace {
     const std::string kMagic = "STARSPACE-2017-1";
 
   private:
+    void initParser();
+    std::shared_ptr<InternDataHandler> initData();
+    void loadBaseDocs();
+
+    Metrics evaluateOne(
+        const std::vector<int32_t>& lhs,
+        const std::vector<int32_t>& rhs);
+
     std::shared_ptr<Args> args_;
     std::shared_ptr<Dictionary> dict_;
     std::shared_ptr<DataParser> parser_;

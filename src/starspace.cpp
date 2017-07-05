@@ -20,6 +20,29 @@ StarSpace::StarSpace(shared_ptr<Args> args)
   , model_(nullptr)
   {}
 
+void StarSpace::initParser() {
+  if (args_->fileFormat == "fastText") {
+    parser_ = make_shared<DataParser>(dict_, args_);
+  } else if (args_->fileFormat == "labelDoc") {
+    parser_ = make_shared<LayerDataParser>(dict_, args_);
+  } else {
+    cerr << "Unsupported file format. Currently support: fastText or labelDoc.\n";
+    exit(EXIT_FAILURE);
+  }
+}
+
+shared_ptr<InternDataHandler> StarSpace::initData() {
+  if (args_->fileFormat == "fastText") {
+    return make_shared<InternDataHandler>(args_);
+  } else if (args_->fileFormat == "labelDoc") {
+    return make_shared<LayerDataHandler>(args_);
+  } else {
+    cerr << "Unsupported file format. Currently support: fastText or labelDoc.\n";
+    exit(EXIT_FAILURE);
+  }
+  return nullptr;
+}
+
 // initialize dict and load data
 void StarSpace::init() {
   cout << "Start to initlaize starspace model.\n";
@@ -33,13 +56,8 @@ void StarSpace::init() {
   if (args_->debug) {dict_->save(cout);}
 
   // init parser and laod trian data
-  if (!args_->isLabelFeatured) {
-    parser_ = make_shared<DataParser>(dict_, args_);
-    trainData_ = make_shared<InternDataHandler>(args_);
-  } else {
-    parser_ = make_shared<LayerDataParser>(dict_, args_);
-    trainData_ = make_shared<LayerDataHandler>(args_);
-  }
+  initParser();
+  trainData_ = initData();
   trainData_->loadFromFile(args_->trainFile, parser_);
   if (args_->debug) {
     trainData_->save(cout);
@@ -50,8 +68,7 @@ void StarSpace::init() {
 
   // set validation data
   if (!args_->validationFile.empty()) {
-    validData_ = args_->isLabelFeatured ?
-      make_shared<LayerDataHandler>(args_) : make_shared<InternDataHandler>(args_);
+    validData_ = initData();
     validData_->loadFromFile(args_->validationFile, parser_);
   } else {
     validData_ = nullptr;
@@ -87,13 +104,8 @@ void StarSpace::initFromSavedModel() {
   model_->load(in);
 
   // init data parser
-  if (!args_->isLabelFeatured) {
-    parser_ = make_shared<DataParser>(dict_, args_);
-    testData_ = make_shared<InternDataHandler>(args_);
-  } else {
-    parser_ = make_shared<LayerDataParser>(dict_, args_);
-    testData_ = make_shared<LayerDataHandler>(args_);
-  }
+  initParser();
+  testData_ = initData();
 }
 
 void StarSpace::initFromTsv() {
@@ -110,13 +122,8 @@ void StarSpace::initFromTsv() {
   model_->loadTsv(args_->model + ".tsv");
 
   // init data parser
-  if (!args_->isLabelFeatured) {
-    parser_ = make_shared<DataParser>(dict_, args_);
-    testData_ = make_shared<InternDataHandler>(args_);
-  } else {
-    parser_ = make_shared<LayerDataParser>(dict_, args_);
-    testData_ = make_shared<LayerDataHandler>(args_);
-  }
+  initParser();
+  testData_ = initData();
 }
 
 void StarSpace::train() {
@@ -151,7 +158,7 @@ Matrix<Real> StarSpace::getDocVector(const string& line, const string& sep) {
 
 void StarSpace::loadBaseDocs() {
   if (args_->basedoc.empty()) {
-    if (args_->isLabelFeatured) {
+    if (args_->fileFormat == "labelDoc") {
       std::cerr << "Must provide base labels when label is featured.\n";
       exit(EXIT_FAILURE);
     }
