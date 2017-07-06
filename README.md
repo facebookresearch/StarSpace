@@ -89,7 +89,7 @@ For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> 
     $./starspace train -trainFile input.txt -model tagspace -label '#'
 
 
-## PageSpace user / page Embeddings 
+## PageSpace user / page embeddings 
 
 **Setting:** On Facebook, users can fan public pages they're interested in. We want to embed pages based on their fan data. Having page embeddings can help with page recommendations, for example. 
 
@@ -110,7 +110,7 @@ At training time, at each step for each example (user), one random page is selec
     $./starspace train -trainFile input.txt -model pagespace -label 'page' -trainMode 1
 
 
-## Document Recommendation
+## DocSpace / document recommendation
 
 **Setting:** We want to embed and recommend web documents for users based on their historical likes/click data. 
 
