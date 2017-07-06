@@ -42,13 +42,13 @@ labels 1..r is a single word:
 
     word_1 word_2 ... word_k __label__1 ... __label__r
 
-This file format is the same as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. It assumes labels are words that are prefixed by the string \_\_label\_\_, and the prefix string can be set by "-label" argument. 
+This file format is the same as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. It assumes by default that labels are words that are prefixed by the string \_\_label\_\_, and the prefix string can be set by "-label" argument. 
 
 In order to learn the embeddings, do:
 
-    $./starspace train -trainFile data.txt -model model
+    $./starspace train -trainFile data.txt -model modelSaveFile
 
-where data.txt is a training file containing utf-8 encoded text. At the end of optimization the program will save two files: model and model.tsv. model.tsv is a standard tsv format file containing the entity vectors, one per line. model is a binary file containing the parameters of the model along with the dictionary and all hyper parameters. The binary file can be used later to compute entity vectors or to run evaluation tasks.
+where data.txt is a training file containing utf-8 encoded text. At the end of optimization the program will save two files: model and modelSaveFile.tsv. modelSaveFile.tsv is a standard tsv format file containing the entity embedding vectors, one per line. modelSaveFile is a binary file containing the parameters of the model along with the dictionary and all hyper parameters. The binary file can be used later to compute entity embedding vectors or to run evaluation tasks.
 
 In the more general case, each label also consists of words:
 
@@ -56,16 +56,16 @@ In the more general case, each label also consists of words:
 
 Embedding vectors will be learned for each word and label to group similar inputs and labels together. 
 
-In order to learn the embeddings in the more general case where each label consists words, one need to specify the -fileFormat flag to be 'labelDoc', as follows:
+In order to learn the embeddings in the more general case where each label consists of words, one needs to specify the -fileFormat flag to be 'labelDoc', as follows:
 
-    $./starspace train -trainFile data.txt -model model -fileFormat labelDoc
+    $./starspace train -trainFile data.txt -model modelSaveFile -fileFormat labelDoc
 
 
 ## Training Mode
 
-StarSpace supports the following two training mode (default is the first one):
+StarSpace supports the following two training modes (the default is the first one):
 * trainMode = 0: Each example contains both input and labels
-* trainMode = 1: Each example contains a collection of labels. At training time, one label from the collection is randomly picked as label, and the rest of labels in the collection becomes input.
+* trainMode = 1: Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the label, and the rest of the labels in the collection become the input.
 
 The use cases of the 2nd train mode will be explained in Example use cases.
 
@@ -73,10 +73,10 @@ The use cases of the 2nd train mode will be explained in Example use cases.
 
 ## TagSpace word / tag embeddings
 
-**Setting:** Learning the mapping from a short text to relevant hashtags.
+**Setting:** Learning the mapping from a short text to relevant hashtags, , e.g. as in <a href="https://research.fb.com/publications/tagspace-semantic-embeddings-from-hashtags/">this paper</a>.
 
-**Model:** the relation goes from bags of words to bags of tags, by learning an embedding of both. 
-For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> #yum” will be translated into the following graph. (Nodes in the graph are entities which embeddings will be learned, and edges in the graph are relationships between the entities).
+**Model:** the mapping learnt goes from bags of words to bags of tags, by learning an embedding of both. 
+For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> #yum” will be translated into the following graph. (Nodes in the graph are entities for which embeddings will be learned, and edges in the graph are relationships between the entities).
 
 ![word-tag](https://github.com/facebookresearch/Starspace/blob/master/examples/tagspace.png)
 
@@ -97,13 +97,13 @@ For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> 
 
 ![user-page](https://github.com/facebookresearch/Starspace/blob/master/examples/user-page.png)
 
-Each user is represented by bag-of-pages fanned by the user.
+Each user is represented by the bag-of-pages fanned by the user, and each training example is a single user.
 
 **Input file format:**
 
     page_1 page_2 ... page_M
 
-At training time, one random page is selected as a label and the rest of bag of pages are selected as input. This can be achieved by setting flag -trainMode to 1. 
+At training time, at each step for each example (user), one random page is selected as a label and the rest of bag of pages are selected as input. This can be achieved by setting flag -trainMode to 1. 
 
 **Command:**
 
