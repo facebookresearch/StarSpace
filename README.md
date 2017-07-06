@@ -110,12 +110,12 @@ At training time, one random page is selected as a label and the rest of bag of 
     $./starspace train -trainFile input.txt -model pagespace -label 'page' -trainMode 1
 
 
-## Document Recommendations
+## Document Recommendation
 
-**Setting:** We want to embed and recommend web documents for users based on their historical click data. 
+**Setting:** We want to embed and recommend web documents for users based on their historical likes/click data. 
 
-**Model:** Each document is represented by bag of words in the document. Each user is represeted as the document s/he clicked in history. 
-At trainint time, one random document is selected as a label and the rest of bag of documents are selected as input. 
+**Model:** Each document is represented by a bag-of-words of the document. Each user is represented as a (bag of) the documents (s)he liked/clicked in the past. 
+At training time, one random document is selected as a label and the rest of the bag of documents are selected as input. 
 
 ![user-doc](https://github.com/facebookresearch/Starspace/blob/master/examples/user-doc.png)
 
@@ -165,4 +165,4 @@ At trainint time, one random document is selected as a label and the rest of bag
       -debug           whether it's in debug mode [0]
 
 Note:
-We use the same implementation of Ngrams for words as of in <a href="https://github.com/facebookresearch/fastText">fastText</a>.
+We use the same implementation of Ngrams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>.
