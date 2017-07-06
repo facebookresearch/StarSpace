@@ -110,7 +110,7 @@ At training time, at each step for each example (user), one random page is selec
     $./starspace train -trainFile input.txt -model pagespace -label 'page' -trainMode 1
 
 
-## DocSpace user document recommendation
+## DocSpace document recommendation
 
 **Setting:** We want to embed and recommend web documents for users based on their historical likes/click data. 
 
