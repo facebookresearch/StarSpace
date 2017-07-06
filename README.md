@@ -31,7 +31,7 @@ Optional: if one wishes to run the unit tests in src directory, <a href=https://
 In order to build StarSpace, use the following:
 
     git clone https://github.com/facebookresearch/Starspace.git
-    cd starspace/src
+    cd starspace
     make starspace
 
 # File Format
