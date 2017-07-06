@@ -114,8 +114,8 @@ At training time, at each step for each example (user), one random page is selec
 
 **Setting:** We want to embed and recommend web documents for users based on their historical likes/click data. 
 
-**Model:** Each document is represented by a bag-of-words of the document. Each user is represented as a (bag of) the documents (s)he liked/clicked in the past. 
-At training time, one random document is selected as a label and the rest of the bag of documents are selected as input. 
+**Model:** Each document is represented by a bag-of-words of the document. Each user is represented as a (bag of) the documents that they liked/clicked in the past. 
+At training time, one random document is selected as the label and the rest of the bag of documents are selected as input. 
 
 ![user-doc](https://github.com/facebookresearch/Starspace/blob/master/examples/user-doc.png)
 
