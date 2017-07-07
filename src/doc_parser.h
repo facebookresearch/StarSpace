@@ -1,6 +1,15 @@
-// Copyright 2004-, Facebook, Inc. All Rights Reserved.
+/**
+ * Copyright (c) 2016-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
 
-/* This is the parser class for the case where we have features
+
+/**
+ * This is the parser class for the case where we have features
  * to represent labels. It overrides a few key functions such as
  * parse(input, output) and check(example) in the basic Parser class.
  */

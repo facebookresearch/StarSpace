@@ -1,6 +1,16 @@
-// Copyright 2004-, Facebook, Inc. All Rights Reserved.
-// The implementation of dictionary here is very similar to the dictionary used
-// in fastText (https://github.com/facebookresearch/fastText).
+/**
+ * Copyright (c) 2016-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+/**
+ * The implementation of dictionary here is very similar to the dictionary used
+ * in fastText (https://github.com/facebookresearch/fastText).
+ */
 
 #pragma once
 
