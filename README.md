@@ -24,14 +24,14 @@ Compilation is carried out using a Makefile, so you will need to have a working 
 
 You need to install <a href=http://www.boost.org/>Boost</a> library and specify the path of boost library in makefile in order to run StarSpace.
 
-Optional: if one wishes to run the unit tests in src directory, <a href=https://github.com/google/googletest>google test</a> is required and its path needs to be specified in 'TEST_INCLUDES' in makefile.
+Optional: if one wishes to run the unit tests in src directory, <a href=https://github.com/google/googletest>google test</a> is required and its path needs to be specified in 'TEST_INCLUDES' in the makefile.
 
 # Building StarSpace
 
 In order to build StarSpace, use the following:
 
     git clone https://github.com/facebookresearch/Starspace.git
-    cd starspace/src
+    cd starspace
     make starspace
 
 # File Format
@@ -42,13 +42,13 @@ labels 1..r is a single word:
 
     word_1 word_2 ... word_k __label__1 ... __label__r
 
-This file format is the same as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. It assumes labels are words that are prefixed by the string \_\_label\_\_, and the prefix string can be set by "-label" argument. 
+This file format is the same as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. It assumes by default that labels are words that are prefixed by the string \_\_label\_\_, and the prefix string can be set by "-label" argument. 
 
 In order to learn the embeddings, do:
 
-    $./starspace train -trainFile data.txt -model model
+    $./starspace train -trainFile data.txt -model modelSaveFile
 
-where data.txt is a training file containing utf-8 encoded text. At the end of optimization the program will save two files: model and model.tsv. model.tsv is a standard tsv format file containing the entity vectors, one per line. model is a binary file containing the parameters of the model along with the dictionary and all hyper parameters. The binary file can be used later to compute entity vectors or to run evaluation tasks.
+where data.txt is a training file containing utf-8 encoded text. At the end of optimization the program will save two files: model and modelSaveFile.tsv. modelSaveFile.tsv is a standard tsv format file containing the entity embedding vectors, one per line. modelSaveFile is a binary file containing the parameters of the model along with the dictionary and all hyper parameters. The binary file can be used later to compute entity embedding vectors or to run evaluation tasks.
 
 In the more general case, each label also consists of words:
 
@@ -56,16 +56,16 @@ In the more general case, each label also consists of words:
 
 Embedding vectors will be learned for each word and label to group similar inputs and labels together. 
 
-In order to learn the embeddings in the more general case where each label consists words, do:
+In order to learn the embeddings in the more general case where each label consists of words, one needs to specify the -fileFormat flag to be 'labelDoc', as follows:
 
-    $./starspace train -trainFile data.txt -model model -isLabelFeatured true
+    $./starspace train -trainFile data.txt -model modelSaveFile -fileFormat labelDoc
 
 
 ## Training Mode
 
-StarSpace supports the following two training mode (default is the first one):
+StarSpace supports the following two training modes (the default is the first one):
 * trainMode = 0: Each example contains both input and labels
-* trainMode = 1: Each example contains a collection of labels. At training time, one label from the collection is randomly picked as label, and the rest of labels in the collection becomes input.
+* trainMode = 1: Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the label, and the rest of the labels in the collection become the input.
 
 The use cases of the 2nd train mode will be explained in Example use cases.
 
@@ -73,10 +73,10 @@ The use cases of the 2nd train mode will be explained in Example use cases.
 
 ## TagSpace word / tag embeddings
 
-**Setting:** Learning the mapping from a short text to relevant hashtags.
+**Setting:** Learning the mapping from a short text to relevant hashtags, , e.g. as in <a href="https://research.fb.com/publications/tagspace-semantic-embeddings-from-hashtags/">this paper</a>.
 
-**Model:** the relation goes from bags of words to bags of tags, by learning an embedding of both. 
-For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> #yum” will be translated into the following graph. (Nodes in the graph are entities which embeddings will be learned, and edges in the graph are relationships between the entities).
+**Model:** the mapping learnt goes from bags of words to bags of tags, by learning an embedding of both. 
+For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> #yum” will be translated into the following graph. (Nodes in the graph are entities for which embeddings will be learned, and edges in the graph are relationships between the entities).
 
 ![word-tag](https://github.com/facebookresearch/Starspace/blob/master/examples/tagspace.png)
 
@@ -89,7 +89,7 @@ For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> 
     $./starspace train -trainFile input.txt -model tagspace -label '#'
 
 
-## PageSpace user / page Embeddings 
+## PageSpace user / page embeddings 
 
 **Setting:** On Facebook, users can fan public pages they're interested in. We want to embed pages based on their fan data. Having page embeddings can help with page recommendations, for example. 
 
@@ -97,25 +97,25 @@ For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> 
 
 ![user-page](https://github.com/facebookresearch/Starspace/blob/master/examples/user-page.png)
 
-Each user is represented by bag-of-pages fanned by the user.
+Each user is represented by the bag-of-pages fanned by the user, and each training example is a single user.
 
 **Input file format:**
 
     page_1 page_2 ... page_M
 
-At training time, one random page is selected as a label and the rest of bag of pages are selected as input. This can be achieved by setting flag -trainMode to 1. 
+At training time, at each step for each example (user), one random page is selected as a label and the rest of bag of pages are selected as input. This can be achieved by setting flag -trainMode to 1. 
 
 **Command:**
 
     $./starspace train -trainFile input.txt -model pagespace -label 'page' -trainMode 1
 
 
-## Document Recommendations
+## DocSpace document recommendation
 
-**Setting:** We want to embed and recommend web documents for users based on their historical click data. 
+**Setting:** We want to embed and recommend web documents for users based on their historical likes/click data. 
 
-**Model:** Each document is represented by bag of words in the document. Each user is represeted as the document s/he clicked in history. 
-At trainint time, one random document is selected as a label and the rest of bag of documents are selected as input. 
+**Model:** Each document is represented by a bag-of-words of the document. Each user is represented as a (bag of) the documents that they liked/clicked in the past. 
+At training time, one random document is selected as the label and the rest of the bag of documents are selected as input. 
 
 ![user-doc](https://github.com/facebookresearch/Starspace/blob/master/examples/user-doc.png)
 
@@ -126,7 +126,7 @@ At trainint time, one random document is selected as a label and the rest of bag
     
 **Command:**
 
-    ./starspace train -trainFile input.txt -model docspace -trainMode 1 -isLabelFeatured true
+    ./starspace train -trainFile input.txt -model docspace -trainMode 1 -fileFormat labelDoc
 
 # Full Documentation
     
@@ -147,6 +147,7 @@ At trainint time, one random document is selected as a label and the rest of bag
 
     The following arguments for training are optional:
       -trainMode       takes value in [0, 1], see Training Mode Section. [0]
+      -fileFormat      currently support 'fastText' and 'labelDoc', see File Format Section. [fastText]
       -lr              learning rate [0.01]
       -dim             size of embedding vectors [10]
       -epoch           number of epochs [5]
@@ -158,11 +159,10 @@ At trainint time, one random document is selected as a label and the rest of bag
                        It's only effective if hinge loss is used. [cosine]
       -thread          number of threads [10]
       -adagrad         whether to use adagrad in training [0]
-      -isLabelFeatured whether the label contains feature. [0]
 
     The following arguments are optional:
       -verbose         verbosity level [0]
       -debug           whether it's in debug mode [0]
 
 Note:
-We use the same implementation of Ngrams for words as of in <a href="https://github.com/facebookresearch/fastText">fastText</a>.
+We use the same implementation of Ngrams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>.
