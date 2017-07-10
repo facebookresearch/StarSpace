@@ -91,7 +91,7 @@ For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> 
 
 ## PageSpace user / page embeddings 
 
-**Setting:** On Facebook, users can follow (fan) public pages they're interested in. We want to learn page embeddings based on users' fanning data. Having page embeddings can help with page recommendations, for example. This can be generalized to other recommendation problems: for instance, embed and recommend movies to users based on movies watched by users in the past; embed and recommend restaurants to users based on the restaurants checked-in by users in the past.
+**Setting:** On Facebook, users can fan (follow) public pages they're interested in. When a user fan a page, the user can receive all things the page posts on Facebook. We want to learn page embeddings based on users' fanning data, and use it to recommend users new pages they might be interested to fan (follow). This setting can be generalized to other recommendation problems: for instance, embed and recommend movies to users based on movies watched by users in the past; embed and recommend restaurants to users based on the restaurants checked-in by users in the past.
 
 **Model：** Users are represented as the bag of pages that they follow (fan). Pages are embedded directly. Here we do not learn a direct embedding of users, instead, each user will have an embedding which is the average embedding of pages fanned by the user. This works better in the case where the number of users is larger than the number of pages, and the number of pages fanned by each user is small on average (i.e. the edges between user and page is relatively sparse).
 
