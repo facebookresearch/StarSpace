@@ -33,7 +33,7 @@ Args::Args() {
   minCountLabel = 1;
   verbose = false;
   debug = false;
-  adagrad = false;
+  adagrad = true;
   trainMode = 0;
   basedoc = "";
   fileFormat = "fastText";
