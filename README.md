@@ -158,11 +158,10 @@ At training time, one random document is selected as the label and the rest of t
       -similarity      takes value in [cosine, dot]. Whether to use cosine or dot product as similarity function in  hinge loss.
                        It's only effective if hinge loss is used. [cosine]
       -thread          number of threads [10]
-      -adagrad         whether to use adagrad in training [0]
+      -adagrad         whether to use adagrad in training [1]
 
     The following arguments are optional:
       -verbose         verbosity level [0]
       -debug           whether it's in debug mode [0]
 
-Note:
-We use the same implementation of Ngrams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>.
+Note: We use the same implementation of word n-grams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>.
