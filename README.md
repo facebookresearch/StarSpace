@@ -164,4 +164,4 @@ At training time, one random document is selected as the label and the rest of t
       -verbose         verbosity level [0]
       -debug           whether it's in debug mode [0]
 
-Note: We use the same implementation of word n-grams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>.
+Note: We use the same implementation of word n-grams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. When "-ngrams" is set to be bigger than 1, a hashing map of size specified by the "-bucket" argument is used for n-grams; when "-ngrams" is set to 1, no hashing map is used.
