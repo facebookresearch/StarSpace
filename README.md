@@ -128,7 +128,7 @@ At training time, one random document is selected as the label and the rest of t
 
     ./starspace train -trainFile input.txt -model docspace -trainMode 1 -fileFormat labelDoc
 
-# Full Documentation
+# Full Documentation of Parameters
     
     The following arguments are mandatory for train: 
       -trainFile       training file path
