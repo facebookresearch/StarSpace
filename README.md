@@ -91,9 +91,9 @@ For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> 
 
 ## PageSpace user / page embeddings 
 
-**Setting:** On Facebook, users can fan public pages they're interested in. We want to embed pages based on their fan data. Having page embeddings can help with page recommendations, for example. 
+**Setting:** On Facebook, users can follow (fan) public pages they're interested in. We want to learn page embeddings based on users' fanning data. Having page embeddings can help with page recommendations, for example. This can be generalized to other recommendation problems: for instance, embed and recommend movies to users based on movies watched by users in the past; embed and recommend restaurants to users based on the restaurants checked-in by users in the past.
 
-**Model：** Users are represented as the bag of pages that they fan. Pages are embedded directly.
+**Model：** Users are represented as the bag of pages that they follow (fan). Pages are embedded directly. Here we do not learn a direct embedding of users, instead, each user will have an embedding which is the average embedding of pages fanned by the user. This works better in the case where the number of users is larger than the number of pages, and the number of pages fanned by each user is small on average (i.e. the edges between user and page is relatively sparse).
 
 ![user-page](https://github.com/facebookresearch/Starspace/blob/master/examples/user-page.png)
 
@@ -128,7 +128,7 @@ At training time, one random document is selected as the label and the rest of t
 
     ./starspace train -trainFile input.txt -model docspace -trainMode 1 -fileFormat labelDoc
 
-# Full Documentation
+# Full Documentation of Parameters
     
     The following arguments are mandatory for train: 
       -trainFile       training file path
@@ -158,11 +158,10 @@ At training time, one random document is selected as the label and the rest of t
       -similarity      takes value in [cosine, dot]. Whether to use cosine or dot product as similarity function in  hinge loss.
                        It's only effective if hinge loss is used. [cosine]
       -thread          number of threads [10]
-      -adagrad         whether to use adagrad in training [0]
+      -adagrad         whether to use adagrad in training [1]
 
     The following arguments are optional:
       -verbose         verbosity level [0]
       -debug           whether it's in debug mode [0]
 
-Note:
-We use the same implementation of Ngrams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>.
+Note: We use the same implementation of word n-grams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. When "-ngrams" is set to be bigger than 1, a hashing map of size specified by the "-bucket" argument is used for n-grams; when "-ngrams" is set to 1, no hashing map is used.
