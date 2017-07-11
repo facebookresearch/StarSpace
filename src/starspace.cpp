@@ -55,7 +55,6 @@ shared_ptr<InternDataHandler> StarSpace::initData() {
 void StarSpace::init() {
   cout << "Start to initlaize starspace model.\n";
   assert(args_ != nullptr);
-  args_->printArgs();
 
   // build dict
   dict_ = make_shared<Dictionary>(args_);
@@ -149,11 +148,7 @@ void StarSpace::train() {
       cout << "Validation error: " << valid_err << endl;
     }
     rate -= decrPerEpoch;
-    saveModel();
   }
-
-  // save to tsv format as well
-  saveModelTsv();
 }
 
 Matrix<Real> StarSpace::getDocVector(const string& line, const string& sep) {
