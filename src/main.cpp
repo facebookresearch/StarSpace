@@ -23,6 +23,7 @@ int main(int argc, char** argv) {
     sp.init();
     sp.train();
     sp.saveModel();
+    sp.saveModelTsv();
   } else {
     sp.initFromSavedModel();
     sp.evaluate();
