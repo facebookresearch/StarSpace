@@ -73,7 +73,7 @@ The use cases of the 2nd train mode will be explained in Example use cases.
 
 ## TagSpace word / tag embeddings
 
-**Setting:** Learning the mapping from a short text to relevant hashtags, , e.g. as in <a href="https://research.fb.com/publications/tagspace-semantic-embeddings-from-hashtags/">this paper</a>.
+**Setting:** Learning the mapping from a short text to relevant hashtags, , e.g. as in <a href="https://research.fb.com/publications/tagspace-semantic-embeddings-from-hashtags/">this paper</a>. This is a classical classification setting.
 
 **Model:** the mapping learnt goes from bags of words to bags of tags, by learning an embedding of both. 
 For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> #yum” will be translated into the following graph. (Nodes in the graph are entities for which embeddings will be learned, and edges in the graph are relationships between the entities).
@@ -91,9 +91,9 @@ For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> 
 
 ## PageSpace user / page embeddings 
 
-**Setting:** On Facebook, users can fan (follow) public pages they're interested in. When a user fan a page, the user can receive all things the page posts on Facebook. We want to learn page embeddings based on users' fanning data, and use it to recommend users new pages they might be interested to fan (follow). This setting can be generalized to other recommendation problems: for instance, embed and recommend movies to users based on movies watched by users in the past; embed and recommend restaurants to users based on the restaurants checked-in by users in the past.
+**Setting:** On Facebook, users can fan (follow) public pages they're interested in. When a user fans a page, the user can receive all things the page posts on Facebook. We want to learn page embeddings based on users' fanning data, and use it to recommend users new pages they might be interested to fan (follow). This setting can be generalized to other recommendation problems: for instance, embedding and recommend movies to users based on movies watched in the past; embed and recommend restaurants to users based on the restaurants checked-in by users in the past, etc.
 
-**Model：** Users are represented as the bag of pages that they follow (fan). Pages are embedded directly. Here we do not learn a direct embedding of users, instead, each user will have an embedding which is the average embedding of pages fanned by the user. This works better in the case where the number of users is larger than the number of pages, and the number of pages fanned by each user is small on average (i.e. the edges between user and page is relatively sparse).
+**Model：** Users are represented as the bag of pages that they follow (fan). Pages are embedded directly. Here we do not learn a direct embedding of users, instead, each user will have an embedding which is the average embedding of pages fanned by the user. This can work better in the case where the number of users is larger than the number of pages, and the number of pages fanned by each user is small on average (i.e. the edges between user and page is relatively sparse), and also generalizes to new users without retraining. However, the more traditional recommendation setting can also be used.
 
 ![user-page](https://github.com/facebookresearch/Starspace/blob/master/examples/user-page.png)
 
@@ -164,4 +164,4 @@ At training time, one random document is selected as the label and the rest of t
       -verbose         verbosity level [0]
       -debug           whether it's in debug mode [0]
 
-Note: We use the same implementation of word n-grams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. When "-ngrams" is set to be bigger than 1, a hashing map of size specified by the "-bucket" argument is used for n-grams; when "-ngrams" is set to 1, no hashing map is used.
+Note: We use the same implementation of word n-grams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. When "-ngrams" is set to be larger than 1, a hashing map of size specified by the "-bucket" argument is used for n-grams; when "-ngrams" is set to 1, no hash map is used, and the dictionary contains all words within the minCount and minCountLabel constraints.
