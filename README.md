@@ -88,6 +88,8 @@ For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> 
 
     $./starspace train -trainFile input.txt -model tagspace -label '#'
 
+### Example dataset:
+We apply the model to the problem of text classification on <a href="https://github.com/mhjabreel/CharCNN/tree/master/data/ag_news_csv">AG's News Topic Classification Dataset</a>. Here our tags are news article categories, and we use p@1 metric as the classification result. You can find <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/classification_ag_news.sh">this</a> example script which downloads the data and run StarSpace model on it under the examples directory.
 
 ## PageSpace user / page embeddings 
 
@@ -127,6 +129,7 @@ At training time, one random document is selected as the label and the rest of t
 **Command:**
 
     ./starspace train -trainFile input.txt -model docspace -trainMode 1 -fileFormat labelDoc
+    
 
 # Full Documentation of Parameters
     
