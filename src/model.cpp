@@ -98,7 +98,6 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
                        bool verbose) {
   assert(rate >= finishRate);
   assert(rate >= 0.0);
-  assert(finishRate >= 0.0);
 
   // Use a layer of indirection when accessing the corpus to allow shuffling.
   auto numSamples = data->getSize();
