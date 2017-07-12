@@ -27,10 +27,10 @@ ID=(
   0Bz8a_Dbh9QhbUDNpeUdjb0wxRms # ag_news
 )
 
-RESULTDIR=result
-DATADIR=data
+MODELDIR=/tmp/starspace/models
+DATADIR=/tmp/starspace/data
 
-mkdir -p "${RESULTDIR}"
+mkdir -p "${MODELDIR}"
 mkdir -p "${DATADIR}"
 
 echo "Downloading dataset ag_news"
@@ -49,8 +49,8 @@ make starspace
 echo "Start to train on ag_news data:"
 
 ./starspace train \
-  -trainFile '/home/ledell/fspace/data/ag_news.train' \
-  -model '/home/ledell/fspace/model/ag_news' \
+  -trainFile "${DATADIR}"/ag_news.train \
+  -model "${MODELDIR}"/ag_news \
   -initRandSd 0.01 \
   -adagrad false \
   -ngrams 1 \
@@ -68,8 +68,8 @@ echo "Start to train on ag_news data:"
 echo "Start to evaluate trained model:"
 
 ./starspace test \
-  -model '/home/ledell/fspace/model/ag_news' \
-  -testFile '/home/ledell/fspace/data/ag_news.test' \
+  -model "${MODELDIR}"/ag_news \
+  -testFile "${DATADIR}"/ag_news.test \
   -ngrams 1 \
   -dim 10 \
   -label "__label__" \
