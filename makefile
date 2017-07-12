@@ -16,6 +16,14 @@ GTEST_DIR = /usr/bin/googletest
 OBJS = normalize.o dict.o args.o proj.o parser.o data.o model.o starspace.o doc_parser.o doc_data.o utils.o 
 TESTS = matrix_test proj_test
 INCLUDES = -I$(BOOST_DIR)
+
+opt: CXXFLAGS += -O3 -funroll-loops
+opt: starspace
+
+debug: CXXFLAGS += -g -O0 -fno-inline
+debug: starspace
+
+
 TEST_INCLUDES = -I$(GTEST_DIR)/include
 
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
@@ -29,6 +37,7 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 # implementation details, the dependencies specified below are
 # conservative and not optimized.  This is fine as Google Test
 # compiles fast and for ordinary users its source rarely changes.
+
 gtest-all.o : $(GTEST_SRCS_)
 	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
             $(GTEST_DIR)/src/gtest-all.cc
