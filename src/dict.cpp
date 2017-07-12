@@ -164,7 +164,7 @@ void Dictionary::readFromFile(const std::string& file) {
   while (readWord(fin, token)) {
     normalize_text(token);
     insert(token);
-    if (ntokens_ % 1000000 == 0 && args_->verbose > 1) {
+    if ((ntokens_ % 1000000 == 0) && args_->verbose) {
       std::cerr << "\rRead " << ntokens_  / 1000000 << "M words" << std::flush;
     }
     if (size_ > 0.75 * MAX_VOCAB_SIZE) {
