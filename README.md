@@ -89,8 +89,10 @@ For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> 
     $./starspace train -trainFile input.txt -model tagspace -label '#'
 
 ### Example dataset:
-We apply the model to the problem of text classification on <a href="https://github.com/mhjabreel/CharCNN/tree/master/data/ag_news_csv">AG's News Topic Classification Dataset</a>. Here our tags are news article categories, and we use p@1 metric as the classification result. You can find <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/classification_ag_news.sh">this</a> example script which downloads the data and run StarSpace model on it under the examples directory.
+We apply the model to the problem of text classification on <a href="https://github.com/mhjabreel/CharCNN/tree/master/data/ag_news_csv">AG's News Topic Classification Dataset</a>. Here our tags are news article categories, and we use the p@1 metric to measure classification accuracy. <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/classification_ag_news.sh">This example script</a> downloads the data and run StarSpace model on it under the examples directory:
 
+    $cd examples; ./classification_ag_news.sh
+    
 ## PageSpace user / page embeddings 
 
 **Setting:** On Facebook, users can fan (follow) public pages they're interested in. When a user fans a page, the user can receive all things the page posts on Facebook. We want to learn page embeddings based on users' fanning data, and use it to recommend users new pages they might be interested to fan (follow). This setting can be generalized to other recommendation problems: for instance, embedding and recommend movies to users based on movies watched in the past; embed and recommend restaurants to users based on the restaurants checked-in by users in the past, etc.
