@@ -175,11 +175,11 @@ void Dictionary::readFromFile(const std::string& file) {
   fin.close();
 
   threshold(args_->minCount, args_->minCountLabel);
-  if (args_->verbose > 0) {
-    std::cerr << "\rRead " << ntokens_  / 1000000 << "M words" << std::endl;
-    std::cerr << "Number of words:  " << nwords_ << std::endl;
-    std::cerr << "Number of labels: " << nlabels_ << std::endl;
-  }
+  
+  std::cerr << "\rRead " << ntokens_  / 1000000 << "M words" << std::endl;
+  std::cerr << "Number of words:  " << nwords_ << std::endl;
+  std::cerr << "Number of labels: " << nlabels_ << std::endl;
+  
   if (size_ == 0) {
     std::cerr << "Empty vocabulary. Try a smaller -minCount value."
               << std::endl;
@@ -230,10 +230,9 @@ void Dictionary::loadDictFromModel(const string& modelfile) {
   }
   fin.close();
   computeCounts();
-  if (args_->verbose > 0) {
-    std::cerr << "Number of words:  " << nwords_ << std::endl;
-    std::cerr << "Number of labels: " << nlabels_ << std::endl;
-  }
+
+  std::cerr << "Number of words:  " << nwords_ << std::endl;
+  std::cerr << "Number of labels: " << nlabels_ << std::endl;
 }
 
 } // namespace
