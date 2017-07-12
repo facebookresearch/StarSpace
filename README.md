@@ -170,8 +170,8 @@ At training time, one random document is selected as the label and the rest of t
       -adagrad         whether to use adagrad in training [1]
       
     The following arguments for eval are optional:
-      -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.
-                       In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.
+      -basedoc         file path for a set of labels to compare against the true label. It is required when -fileFormat='labelDoc'.
+                       In the case -fileFormat='fastText' and -basedoc is not provided, we compare the true label with all other labels in the dictionary.
 
 
     The following arguments are optional:
