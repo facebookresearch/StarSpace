@@ -18,23 +18,23 @@
 namespace starspace {
 
 struct Metrics {
-  float p1, p10, p20, p50, rank;
+  float hit1, hit10, hit20, hit50, rank;
   int32_t count;
 
   void clear() {
-    p1 = 0;
-    p10 = 0;
-    p20 = 0;
-    p50 = 0;
+    hit1 = 0;
+    hit10 = 0;
+    hit20 = 0;
+    hit50 = 0;
     rank = 0;
     count = 0;
   };
 
   void add(const Metrics& b) {
-    p1 += b.p1;
-    p10 += b.p10;
-    p20 += b.p20;
-    p50 += b.p50;
+    hit1 += b.hit1;
+    hit10 += b.hit10;
+    hit20 += b.hit20;
+    hit50 += b.hit50;
     rank += b.rank;
     count += b.count;
   };
@@ -43,28 +43,28 @@ struct Metrics {
     if (count == 0) {
       return ;
     }
-    p1 /= count;
-    p10 /= count;
-    p20 /= count;
-    p50 /= count;
+    hit1 /= count;
+    hit10 /= count;
+    hit20 /= count;
+    hit50 /= count;
     rank /= count;
   }
 
   void print() {
     std::cout << "Evaluation Metrics : \n"
-         << "p@1: " << p1
-         << " p@10: " << p10
-         << " p@20: " << p20
-         << " p@50: " << p50
+         << "hit@1: " << hit1
+         << " hit@10: " << hit10
+         << " hit@20: " << hit20
+         << " hit@50: " << hit50
          << " mean ranks : " << rank
          << " Total examples : " << count << "\n";
   }
 
   void update(int cur_rank) {
-    if (cur_rank == 1) { p1++; }
-    if (cur_rank <= 10) { p10++; }
-    if (cur_rank <= 20) { p20++; }
-    if (cur_rank <= 50) { p50++; }
+    if (cur_rank == 1) { hit1++; }
+    if (cur_rank <= 10) { hit10++; }
+    if (cur_rank <= 20) { hit20++; }
+    if (cur_rank <= 50) { hit50++; }
     rank += cur_rank;
     count++;
   }
