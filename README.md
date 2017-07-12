@@ -88,7 +88,7 @@ For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> 
 
     $./starspace train -trainFile input.txt -model tagspace -label '#'
 
-### Example dataset:
+### Example scripts:
 We apply the model to the problem of text classification on <a href="https://github.com/mhjabreel/CharCNN/tree/master/data/ag_news_csv">AG's News Topic Classification Dataset</a>. Here our tags are news article categories, and we use the p@1 metric to measure classification accuracy. <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/classification_ag_news.sh">This example script</a> downloads the data and run StarSpace model on it under the examples directory:
 
     $cd examples; ./classification_ag_news.sh
