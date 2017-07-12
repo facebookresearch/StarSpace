@@ -22,7 +22,10 @@ StarSpace builds on modern Mac OS and Linux distributions. Since it uses C++11 f
 
 Compilation is carried out using a Makefile, so you will need to have a working **make**.
 
-You need to install <a href=http://www.boost.org/>Boost</a> library and specify the path of boost library in makefile in order to run StarSpace.
+You need to install <a href=http://www.boost.org/>Boost</a> library and specify the path of boost library in makefile in order to run StarSpace. Basically:
+    $wget https://dl.bintray.com/boostorg/release/1.63.0/source/boost_1_63_0.zip
+    $unzip boost_1_63_0.zip
+    $sudo mv boost_1_63_0 /usr/bin
 
 Optional: if one wishes to run the unit tests in src directory, <a href=https://github.com/google/googletest>google test</a> is required and its path needs to be specified in 'TEST_INCLUDES' in the makefile.
 
