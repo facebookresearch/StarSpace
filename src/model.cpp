@@ -292,8 +292,7 @@ float EmbedModel::trainOne(shared_ptr<InternDataHandler> data,
     return retval;
   };
 
-  // Randomly select a negative example closer than the positive
-  // example.
+  // Select negative examples
   Real loss = 0.0;
   std::vector<Matrix<Real>> negs;
   std::vector<std::vector<int32_t>> negLabelsBatch;
