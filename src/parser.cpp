@@ -52,8 +52,8 @@ bool DataParser::check(const ParseResults& example) {
     // require lhs and rhs
     return !example.RHSTokens.empty() && !example.LHSTokens.empty();
   } else {
-    // lhs is not required
-    return !example.RHSTokens.empty();
+    // lhs is not required, but rhs should contain at least 2 example
+    return example.RHSTokens.size() > 1;
   }
 }
 

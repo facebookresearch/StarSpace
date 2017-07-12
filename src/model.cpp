@@ -60,7 +60,7 @@ void EmbedModel::initModelWeights() {
         new SparseLinear<Real>({num_rhs, args_->dim},args_->initRandSd)
       );
 
-    if (args_->trainMode == 1) {
+    if (args_->trainMode > 0) {
       LHSEmbeddings_ = RHSEmbeddings_;
     }
   }

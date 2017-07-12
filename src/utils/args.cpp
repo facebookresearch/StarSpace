@@ -138,8 +138,8 @@ void Args::parseArgs(int argc, char** argv) {
     }
   }
   // check for trainMode
-  if (!(trainMode == 0 || trainMode == 1)) {
-    cerr << "Uknown trainMode. trainMode should either be 0 or 1.\n";
+  if ((trainMode < 0) || (trainMode > 3)) {
+    cerr << "Uknown trainMode. We currently support the follow train mode:\n";
     exit(EXIT_FAILURE);
   }
   // check for loss type
@@ -174,7 +174,7 @@ void Args::printHelp() {
        << "  -bucket          number of buckets [" << bucket << "]\n"
        << "  -label           labels prefix [" << label << "]\n"
        << "\nThe following arguments for training are optional:\n"
-       << "  -trainMode       takes value in [0, 1], see Training Mode Section. [" << trainMode << "]\n"
+       << "  -trainMode       takes value in [0, 1, 2, 3], see Training Mode Section. [" << trainMode << "]\n"
        << "  -fileFormat      currently support 'fastText' and 'labelDoc', see File Format Section. [" << fileFormat << "]\n"
        << "  -lr              learning rate [" << lr << "]\n"
        << "  -dim             size of embedding vectors [" << dim << "]\n"

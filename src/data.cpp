@@ -63,25 +63,53 @@ void InternDataHandler::convert(
     const ParseResults& example,
     ParseResults& rslt) const {
 
+  rslt.LHSTokens.clear();
   rslt.RHSTokens.clear();
-  rslt.LHSTokens.resize(example.LHSTokens.size());
-  std::copy(example.LHSTokens.begin(), example.LHSTokens.end(), rslt.LHSTokens.begin());
 
-  assert(example.RHSTokens.size() > 0);
-  auto idx = rand() % example.RHSTokens.size();
-  if (args_->trainMode == 1) {
-    // pick one random rhs as label, and the rest as input
-    for (int i = 0; i < example.RHSTokens.size(); i++) {
-      auto tok = example.RHSTokens[i];
-      if (i == idx) {
-        rslt.RHSTokens.push_back(tok);
-      } else {
-        rslt.LHSTokens.push_back(tok);
-      }
-    }
-  } else {
-    // pick one random rhs as label
+  if (args_->trainMode == 0) {
+    // lhs is the same, pick one random label as rhs
+    assert(example.LHSTokens.size() > 0);
+    assert(example.RHSTokens.size() > 0);
+    rslt.LHSTokens.insert(rslt.LHSTokens.end(),
+        example.LHSTokens.begin(), example.LHSTokens.end());
+    auto idx = rand() % example.RHSTokens.size();
     rslt.RHSTokens.push_back(example.RHSTokens[idx]);
+  } else {
+    assert(example.RHSTokens.size() > 1);
+    if (args_->trainMode == 1) {
+      // pick one random label as rhs and the rest is lhs
+      auto idx = rand() % example.RHSTokens.size();
+      for (int i = 0; i < example.RHSTokens.size(); i++) {
+        auto tok = example.RHSTokens[i];
+        if (i == idx) {
+          rslt.RHSTokens.push_back(tok);
+        } else {
+          rslt.LHSTokens.push_back(tok);
+        }
+      }
+    } else
+    if (args_->trainMode == 2) {
+      // pick one random label as lhs and the rest is rhs
+      auto idx = rand() % example.RHSTokens.size();
+      for (int i = 0; i < example.RHSTokens.size(); i++) {
+        auto tok = example.RHSTokens[i];
+        if (i == idx) {
+          rslt.LHSTokens.push_back(tok);
+        } else {
+          rslt.RHSTokens.push_back(tok);
+        }
+      }
+    } else
+    if (args_->trainMode == 3) {
+      // pick two random labels, one as lhs and the other as rhs
+      auto idx = rand() % example.RHSTokens.size();
+      int idx2;
+      do {
+        idx2 = rand() % example.RHSTokens.size();
+      } while (idx2 == idx);
+      rslt.LHSTokens.push_back(example.RHSTokens[idx]);
+      rslt.RHSTokens.push_back(example.RHSTokens[idx2]);
+    }
   }
 }
 
@@ -134,15 +162,19 @@ void InternDataHandler::getNextKExamples(int K, vector<ParseResults>& c) {
 // The result is usually used as negative samples in training
 void InternDataHandler::getRandomRHS(vector<int32_t>& results) const {
   assert(size_ > 0);
-  auto rnd = [&] {
-    static __thread unsigned int rState;
-    return rand_r(&rState);
-  };
+  auto& ex = examples_[rand() % size_];
+  int r = rand() % ex.RHSTokens.size();
 
-  auto& ex = examples_[rnd() % size_];
-  int r = rnd() % ex.RHSTokens.size();
   results.clear();
-  results.push_back(ex.RHSTokens[r]);
+  if (args_->trainMode == 2) {
+    for (int i = 0; i < ex.RHSTokens.size(); i++) {
+      if (i != r) {
+        results.push_back(ex.RHSTokens[i]);
+      }
+    }
+  } else {
+    results.push_back(ex.RHSTokens[r]);
+  }
 }
 
 void InternDataHandler::save(std::ostream& out) {
