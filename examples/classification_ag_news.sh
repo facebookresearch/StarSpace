@@ -44,7 +44,7 @@ then
 
 echo "Compiling StarSpace"
 
-make starspace
+make
 
 echo "Start to train on ag_news data:"
 
