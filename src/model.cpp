@@ -66,8 +66,8 @@ void EmbedModel::initModelWeights() {
   }
 
   if (args_->adagrad) {
-    LHSUpdates_.resize(num_lhs);
-    RHSUpdates_.resize(num_rhs);
+    LHSUpdates_.resize(LHSEmbeddings_->numRows());
+    RHSUpdates_.resize(RHSEmbeddings_->numRows());
   }
 
   if (args_->verbose) {
