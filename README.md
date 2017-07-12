@@ -32,7 +32,7 @@ In order to build StarSpace, use the following:
 
     git clone https://github.com/facebookresearch/Starspace.git
     cd Starspace
-    make starspace
+    make
 
 # File Format
 
