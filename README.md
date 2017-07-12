@@ -168,6 +168,11 @@ At training time, one random document is selected as the label and the rest of t
                        It's only effective if hinge loss is used. [cosine]
       -thread          number of threads [10]
       -adagrad         whether to use adagrad in training [1]
+      
+    The following arguments for eval are optional:
+      -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.
+                       In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.
+
 
     The following arguments are optional:
       -verbose         verbosity level [0]
