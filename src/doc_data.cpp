@@ -85,9 +85,8 @@ void LayerDataHandler::convert(
       }
     } else
     if (args_->trainMode == 2) {
-      // pick one random rhs as input
+      // pick one random rhs as lhs, the rest becomes rhs features
       auto idx = rand() % example.RHSFeatures.size();
-      // the rest becomes rhs features
       for (int i = 0; i < example.RHSFeatures.size(); i++) {
         if (i == idx) {
           insert(rslt.LHSTokens, example.RHSFeatures[i]);
