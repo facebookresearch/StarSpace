@@ -54,25 +54,57 @@ void LayerDataHandler::loadFromFile(
   size_ = examples_.size();
 }
 
+void LayerDataHandler::insert(vector<int32_t>& rslt, const vector<int32_t>& ex) const {
+  rslt.insert(rslt.end(), ex.begin(), ex.end());
+}
+
 void LayerDataHandler::convert(
     const ParseResults& example,
     ParseResults& rslt) const {
 
-  assert(example.RHSFeatures.size() > 0);
-  rslt.LHSTokens.resize(example.LHSTokens.size());
-  std::copy(example.LHSTokens.begin(), example.LHSTokens.end(), rslt.LHSTokens.begin());
+  rslt.LHSTokens.clear();
+  rslt.RHSTokens.clear();
 
-  // pick a random rhs as rhs
-  auto idx = rand() % example.RHSFeatures.size();
-  auto& res = example.RHSFeatures[idx];
-  rslt.RHSTokens.resize(res.size());
-  std::copy(res.begin(), res.end(), rslt.RHSTokens.begin());
-  if (args_->trainMode == 1) {
-    // the rest becomes lhs feature
-    for (int i = 0; i < example.RHSFeatures.size(); i++) {
-      if (i == idx) {continue; }
-      auto& res = example.RHSFeatures[i];
-      rslt.LHSTokens.insert(rslt.LHSTokens.end(), res.begin(), res.end());
+  if (args_->trainMode == 0) {
+    assert(example.LHSTokens.size() > 0);
+    assert(example.RHSFeatures.size() > 0);
+    insert(rslt.LHSTokens, example.LHSTokens);
+    auto idx = rand() % example.RHSFeatures.size();
+    insert(rslt.RHSTokens, example.RHSFeatures[idx]);
+  } else {
+    assert(example.RHSFeatures.size() > 1);
+    if (args_->trainMode == 1) {
+      // pick one random rhs as label, the rest becomes lhs features
+      auto idx = rand() % example.RHSFeatures.size();
+      for (int i = 0; i < example.RHSFeatures.size(); i++) {
+        if (i == idx) {
+          insert(rslt.RHSTokens, example.RHSFeatures[i]);
+        } else {
+          insert(rslt.LHSTokens, example.RHSFeatures[i]);
+        }
+      }
+    } else
+    if (args_->trainMode == 2) {
+      // pick one random rhs as lhs, the rest becomes rhs features
+      auto idx = rand() % example.RHSFeatures.size();
+      for (int i = 0; i < example.RHSFeatures.size(); i++) {
+        if (i == idx) {
+          insert(rslt.LHSTokens, example.RHSFeatures[i]);
+        } else {
+          insert(rslt.RHSTokens, example.RHSFeatures[i]);
+        }
+      }
+    } else
+    if (args_->trainMode == 3) {
+      // pick one random rhs as input
+      auto idx = rand() % example.RHSFeatures.size();
+      insert(rslt.LHSTokens, example.RHSFeatures[idx]);
+      // pick another random rhs as label
+      int idx2;
+      do {
+        idx2 = rand() % example.RHSFeatures.size();
+      } while (idx == idx2);
+      insert(rslt.RHSTokens, example.RHSFeatures[idx2]);
     }
   }
 }
@@ -82,9 +114,17 @@ void LayerDataHandler::getRandomRHS(vector<int32_t>& result) const {
   auto& ex = examples_[rand() % size_];
   int r = rand() % ex.RHSFeatures.size();
 
-  auto& res = ex.RHSFeatures[r];
-  result.resize(res.size());
-  std::copy(res.begin(), res.end(), result.begin());
+  result.clear();
+  if (args_->trainMode == 2) {
+    // pick one random, the rest is rhs features
+    for (int i = 0; i < ex.RHSFeatures.size(); i++) {
+      if (i != r) {
+        insert(result, ex.RHSFeatures[i]);
+      }
+    }
+  } else {
+    insert(result, ex.RHSFeatures[r]);
+  }
 }
 
 void LayerDataHandler::save(ostream& out) {

@@ -68,10 +68,14 @@ bool LayerDataParser::parse(
     }
   }
 
-  bool isValid = rslt.RHSFeatures.size() > 0;
+  bool isValid;
   if (args_->trainMode == 0) {
-    isValid = isValid && rslt.LHSTokens.size() > 0;
+    isValid = (rslt.LHSTokens.size() > 0) && (rslt.RHSFeatures.size() > 0);
+  } else {
+    // need to have at least two examples
+    isValid = rslt.RHSFeatures.size() > 1;
   }
+
   return isValid;
 }
 

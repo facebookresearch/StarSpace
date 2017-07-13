@@ -138,8 +138,12 @@ void Args::parseArgs(int argc, char** argv) {
     }
   }
   // check for trainMode
-  if (!(trainMode == 0 || trainMode == 1)) {
-    cerr << "Uknown trainMode. trainMode should either be 0 or 1.\n";
+  if ((trainMode < 0) || (trainMode > 3)) {
+    cerr << "Uknown trainMode. We currently support the follow train mode:\n";
+    cerr << "trainMode 0: at training time, one label from RHS is picked as true label; LHS is the same from input.\n";
+    cerr << "trainMode 1: at training time, one label from RHS is picked as true label; LHS is the bag of the rest RHS labels.\n";
+    cerr << "trainMode 2: at training time, one label from RHS is picked as LHS; the bag of the rest RHS labels becomes the true label.\n";
+    cerr << "trainMode 3: at training time, one label from RHS is picked as true label and another label from RHS is picked as LHS.\n";     
     exit(EXIT_FAILURE);
   }
   // check for loss type
@@ -174,7 +178,7 @@ void Args::printHelp() {
        << "  -bucket          number of buckets [" << bucket << "]\n"
        << "  -label           labels prefix [" << label << "]\n"
        << "\nThe following arguments for training are optional:\n"
-       << "  -trainMode       takes value in [0, 1], see Training Mode Section. [" << trainMode << "]\n"
+       << "  -trainMode       takes value in [0, 1, 2, 3], see Training Mode Section. [" << trainMode << "]\n"
        << "  -fileFormat      currently support 'fastText' and 'labelDoc', see File Format Section. [" << fileFormat << "]\n"
        << "  -lr              learning rate [" << lr << "]\n"
        << "  -dim             size of embedding vectors [" << dim << "]\n"

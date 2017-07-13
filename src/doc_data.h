@@ -38,6 +38,9 @@ public:
 
   void save(std::ostream& out) override;
 
+private:
+  void insert(std::vector<int32_t>& rslt, const std::vector<int32_t>& ex) const;
+
 };
 
 }
