@@ -195,8 +195,6 @@ Metrics StarSpace::evaluateOne(
   // here similarity is dot product
   result.push_back({0, model_->similarity(lhsM, rhsM)});
 
-  bool skipped = false;
-
   for (int i = 0; i < baseDocs_.size(); i++) {
     // in case base labels are not provided, basedoc is all label
     if ((args_->basedoc.empty()) && (i == rhs[0] - dict_->nwords())) {
