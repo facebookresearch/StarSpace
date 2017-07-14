@@ -33,19 +33,21 @@ void StarSpace::initParser() {
     parser_ = make_shared<DataParser>(dict_, args_);
   } else if (args_->fileFormat == "labelDoc") {
     parser_ = make_shared<LayerDataParser>(dict_, args_);
+  } else if (args_->fileFormat == "freebase") {
+    parser_ = make_shared<FreebaseDataParser>(dict_, args_);
   } else {
-    cerr << "Unsupported file format. Currently support: fastText or labelDoc.\n";
+    cerr << "Unsupported file format. Currently support: fastText, labelDoc or freebase.\n";
     exit(EXIT_FAILURE);
   }
 }
 
 shared_ptr<InternDataHandler> StarSpace::initData() {
-  if (args_->fileFormat == "fastText") {
+  if (args_->fileFormat == "fastText" || args_->fileFormat == "freebase") {
     return make_shared<InternDataHandler>(args_);
   } else if (args_->fileFormat == "labelDoc") {
     return make_shared<LayerDataHandler>(args_);
   } else {
-    cerr << "Unsupported file format. Currently support: fastText or labelDoc.\n";
+    cerr << "Unsupported file format. Currently support: fastText, labelDoc or freebase.\n";
     exit(EXIT_FAILURE);
   }
   return nullptr;
@@ -57,13 +59,14 @@ void StarSpace::init() {
   assert(args_ != nullptr);
 
   // build dict
+  initParser();
   dict_ = make_shared<Dictionary>(args_);
   auto filename = args_->trainFile;
-  dict_->readFromFile(filename);
+  dict_->readFromFile(filename, parser_);
+  parser_->resetDict(dict_);
   if (args_->debug) {dict_->save(cout);}
 
   // init parser and laod trian data
-  initParser();
   trainData_ = initData();
   trainData_->loadFromFile(args_->trainFile, parser_);
   if (args_->debug) {
@@ -166,7 +169,7 @@ void StarSpace::loadBaseDocs() {
       exit(EXIT_FAILURE);
     }
     for (int i = 0; i < dict_->nlabels(); i++) {
-      baseDocs_.push_back(model_->projectRHS({i}));
+      baseDocs_.push_back(model_->projectRHS({i + dict_->nwords()}));
     }
   } else {
     cout << "Loading base docs from file : " << args_->basedoc << endl;
@@ -192,9 +195,11 @@ Metrics StarSpace::evaluateOne(
   // here similarity is dot product
   result.push_back({0, model_->similarity(lhsM, rhsM)});
 
+  bool skipped = false;
+
   for (int i = 0; i < baseDocs_.size(); i++) {
     // in case base labels are not provided, basedoc is all label
-    if ((args_->basedoc.empty()) && (i == rhs[0])) {
+    if ((args_->basedoc.empty()) && (i == rhs[0] - dict_->nwords())) {
       continue;
     }
     result.push_back({i + 1, model_->similarity(lhsM, baseDocs_[i])});

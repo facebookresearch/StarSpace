@@ -40,8 +40,8 @@ EmbedModel::EmbedModel(
 
 void EmbedModel::initModelWeights() {
   assert(dict_ != nullptr);
-  size_t num_lhs = dict_->nwords();
-  size_t num_rhs = dict_->nlabels();
+  size_t num_lhs = dict_->nwords() + dict_->nlabels();
+  cout << "dict size : " << dict_->size() << ' ' << num_lhs << endl;
 
   if (args_->ngrams > 1) {
     num_lhs += args_->bucket;
@@ -52,18 +52,9 @@ void EmbedModel::initModelWeights() {
       new SparseLinear<Real>({num_lhs, args_->dim},args_->initRandSd)
     );
 
-  if (args_->fileFormat == "labelDoc") {
-    RHSEmbeddings_ = LHSEmbeddings_;
-  } else {
-    RHSEmbeddings_ =
-      std::shared_ptr<SparseLinear<Real>>(
-        new SparseLinear<Real>({num_rhs, args_->dim},args_->initRandSd)
-      );
-
-    if (args_->trainMode > 0) {
-      LHSEmbeddings_ = RHSEmbeddings_;
-    }
-  }
+  // currently do not support different lhs / rhs embedding matrix
+  // will add support later
+  RHSEmbeddings_ = LHSEmbeddings_;
 
   if (args_->adagrad) {
     LHSUpdates_.resize(LHSEmbeddings_->numRows());
@@ -72,10 +63,8 @@ void EmbedModel::initModelWeights() {
 
   if (args_->verbose) {
     cout << "Initialized model weights. Model size :\n"
-         << "lhs matrix : " << LHSEmbeddings_->numRows() << ' '
-         << LHSEmbeddings_->numCols() << endl
-         << "rhs matrix : " << RHSEmbeddings_->numRows() << ' '
-         << RHSEmbeddings_->numCols() << endl;
+         << "matrix : " << LHSEmbeddings_->numRows() << ' '
+         << LHSEmbeddings_->numCols() << endl;
   }
 }
 
@@ -595,12 +584,7 @@ void EmbedModel::loadTsvLine(string& line, int lineNum,
     cerr << "Failed to insert record at line " << lineNum << "\n";
     return;
   }
-  auto type = dict_->getType(pieces[0]);
-  if (type == entry_type::label) {
-    idx -= dict_->nwords();
-  }
-  auto lookup = (type == entry_type::word) ? LHSEmbeddings_ : RHSEmbeddings_;
-  auto row = lookup->row(idx);
+  auto row = LHSEmbeddings_->row(idx);
   for (int i = 0; i < cols; i++) {
     row(i) = boost::lexical_cast<Real>(pieces[i + 1].c_str());
   }
@@ -671,10 +655,10 @@ void EmbedModel::loadTsv(istream& in, const string sep) {
 
 void EmbedModel::saveTsv(ostream& out, const char sep) const {
   auto dumpOne = [&](shared_ptr<SparseLinear<Real>> emb, bool isLabel) {
-    auto size = isLabel ? dict_->nlabels() : dict_->nwords();
+    auto size =  dict_->nwords() + dict_->nlabels();
     for (size_t i = 0; i < size; i++) {
       // Skip invalid IDs.
-      string symbol = isLabel ? dict_->getLabel(i) : dict_->getSymbol(i);
+      string symbol = dict_->getSymbol(i);
       out << symbol;
       emb->forRow(i,
                  [&](Real r, size_t j) {
@@ -684,23 +668,15 @@ void EmbedModel::saveTsv(ostream& out, const char sep) const {
     }
   };
   dumpOne(LHSEmbeddings_, false);
-  if (args_->fileFormat == "fastText") {
-    dumpOne(RHSEmbeddings_, true);
-  }
 }
 
 void EmbedModel::save(ostream& out) const {
   LHSEmbeddings_->write(out);
-  if (args_->fileFormat == "fastText") {
-    RHSEmbeddings_->write(out);
-  }
 }
 
 void EmbedModel::load(ifstream& in) {
   LHSEmbeddings_.reset(new SparseLinear<Real>(in));
-  if (args_->fileFormat == "fastText") {
-    RHSEmbeddings_.reset(new SparseLinear<Real>(in));
-  }
+  RHSEmbeddings_ = LHSEmbeddings_;
 }
 
 }

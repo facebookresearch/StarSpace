@@ -34,9 +34,9 @@ public:
       std::vector<int32_t>& rslt,
       const std::string& sep=" ");
 
-  bool parse(
+  void parse(
       std::string& line,
-      ParseResults& rslt,
+      std::vector<ParseResults>& rslt,
       const std::string& sep="\t") override;
 
 };

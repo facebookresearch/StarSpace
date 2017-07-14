@@ -14,6 +14,7 @@
 #include "matrix.h"
 #include "parser.h"
 #include "doc_parser.h"
+#include "fb_parser.h"
 #include "model.h"
 #include "utils/utils.h"
 

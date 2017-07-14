@@ -48,14 +48,15 @@ bool LayerDataParser::parse(
   return feats.size() > 0;
 }
 
-bool LayerDataParser::parse(
+void LayerDataParser::parse(
     string& line,
-    ParseResults& rslt,
+    vector<ParseResults>& rslts,
     const string& sep) {
 
   vector<string> parts;
   boost::split(parts, line, boost::is_any_of("\t"));
   int start_idx = 0;
+  ParseResults rslt;
   if (args_->trainMode == 0) {
     // the first part is input features
     parse(parts[0], rslt.LHSTokens);
@@ -76,7 +77,9 @@ bool LayerDataParser::parse(
     isValid = rslt.RHSFeatures.size() > 1;
   }
 
-  return isValid;
+  if (isValid) {
+    rslts.push_back(rslt);
+  }
 }
 
 } // namespace starspace

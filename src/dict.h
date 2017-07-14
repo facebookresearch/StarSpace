@@ -24,6 +24,8 @@
 
 namespace starspace {
 
+class DataParser;
+
 enum class entry_type : int8_t {word=0, label=1};
 
 struct entry {
@@ -37,6 +39,7 @@ class Dictionary {
     static const std::string EOS;
 
     explicit Dictionary(std::shared_ptr<Args>);
+    int32_t size() const { return size_; };
     int32_t nwords() const { return nwords_; };
     int32_t nlabels() const { return nlabels_; };
     int32_t ntokens() const { return ntokens_; };
@@ -51,7 +54,7 @@ class Dictionary {
 
     void load(std::istream&);
     void save(std::ostream&) const;
-    void readFromFile(const std::string&);
+    void readFromFile(const std::string&, std::shared_ptr<DataParser>);
     bool readWord(std::istream&, std::string&) const;
 
     void threshold(int64_t, int64_t);
