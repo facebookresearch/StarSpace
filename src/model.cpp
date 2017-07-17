@@ -41,7 +41,6 @@ EmbedModel::EmbedModel(
 void EmbedModel::initModelWeights() {
   assert(dict_ != nullptr);
   size_t num_lhs = dict_->nwords() + dict_->nlabels();
-  cout << "dict size : " << dict_->size() << ' ' << num_lhs << endl;
 
   if (args_->ngrams > 1) {
     num_lhs += args_->bucket;
