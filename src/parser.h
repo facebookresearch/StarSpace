@@ -15,8 +15,6 @@
  *   takes input as a line of string (or a vector of string tokens)
  *   and return output result which is one example contains l.h.s. features
  *   and r.h.s. features.
- *   For most cases, one line of input produces one example;
- *   For the case of freebase, one line of input produces two examples.
  *
  * - parseForDict(input, tokens):
  *   takes input as a line of string, output tokens to be added for building
