@@ -57,13 +57,14 @@ void StarSpace::init() {
   assert(args_ != nullptr);
 
   // build dict
+  initParser();
   dict_ = make_shared<Dictionary>(args_);
   auto filename = args_->trainFile;
-  dict_->readFromFile(filename);
+  dict_->readFromFile(filename, parser_);
+  parser_->resetDict(dict_);
   if (args_->debug) {dict_->save(cout);}
 
   // init parser and laod trian data
-  initParser();
   trainData_ = initData();
   trainData_->loadFromFile(args_->trainFile, parser_);
   if (args_->debug) {
@@ -166,7 +167,7 @@ void StarSpace::loadBaseDocs() {
       exit(EXIT_FAILURE);
     }
     for (int i = 0; i < dict_->nlabels(); i++) {
-      baseDocs_.push_back(model_->projectRHS({i}));
+      baseDocs_.push_back(model_->projectRHS({i + dict_->nwords()}));
     }
   } else {
     cout << "Loading base docs from file : " << args_->basedoc << endl;
@@ -194,7 +195,7 @@ Metrics StarSpace::evaluateOne(
 
   for (int i = 0; i < baseDocs_.size(); i++) {
     // in case base labels are not provided, basedoc is all label
-    if ((args_->basedoc.empty()) && (i == rhs[0])) {
+    if ((args_->basedoc.empty()) && (i == rhs[0] - dict_->nwords())) {
       continue;
     }
     result.push_back({i + 1, model_->similarity(lhsM, baseDocs_[i])});

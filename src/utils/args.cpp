@@ -143,7 +143,7 @@ void Args::parseArgs(int argc, char** argv) {
     cerr << "trainMode 0: at training time, one label from RHS is picked as true label; LHS is the same from input.\n";
     cerr << "trainMode 1: at training time, one label from RHS is picked as true label; LHS is the bag of the rest RHS labels.\n";
     cerr << "trainMode 2: at training time, one label from RHS is picked as LHS; the bag of the rest RHS labels becomes the true label.\n";
-    cerr << "trainMode 3: at training time, one label from RHS is picked as true label and another label from RHS is picked as LHS.\n";     
+    cerr << "trainMode 3: at training time, one label from RHS is picked as true label and another label from RHS is picked as LHS.\n";
     exit(EXIT_FAILURE);
   }
   // check for loss type

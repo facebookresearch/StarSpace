@@ -66,12 +66,13 @@ void InternDataHandler::convert(
   rslt.LHSTokens.clear();
   rslt.RHSTokens.clear();
 
+  rslt.LHSTokens.insert(rslt.LHSTokens.end(),
+      example.LHSTokens.begin(), example.LHSTokens.end());
+
   if (args_->trainMode == 0) {
     // lhs is the same, pick one random label as rhs
     assert(example.LHSTokens.size() > 0);
     assert(example.RHSTokens.size() > 0);
-    rslt.LHSTokens.insert(rslt.LHSTokens.end(),
-        example.LHSTokens.begin(), example.LHSTokens.end());
     auto idx = rand() % example.RHSTokens.size();
     rslt.RHSTokens.push_back(example.RHSTokens[idx]);
   } else {

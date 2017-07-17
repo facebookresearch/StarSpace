@@ -43,7 +43,17 @@ bool DataParser::parse(
   chomp(s);
   vector<string> toks;
   boost::split(toks, s, boost::is_any_of(string(sep)));
+
   return parse(toks, rslts);
+}
+
+void DataParser::parseForDict(
+    string& line,
+    vector<string>& tokens,
+    const string& sep) {
+
+  chomp(line);
+  boost::split(tokens, line, boost::is_any_of(sep));
 }
 
 // check wether it is a valid example
@@ -77,7 +87,7 @@ void DataParser::addNgrams(
     for (int32_t j = i + 1; j < hashes.size() && j < i + n; j++) {
       h = h * 116049371 + hashes[j];
       int64_t id = h % args_->bucket;
-      line.push_back(dict_->nwords() + id);
+      line.push_back(dict_->nwords() + dict_->nlabels() + id);
     }
   }
 }
@@ -87,7 +97,6 @@ bool DataParser::parse(
     ParseResults& rslts) {
 
   for (auto &token: tokens) {
-    auto t = token;
     int32_t wid = dict_->getId(token);
     if (wid < 0) {
       continue;
@@ -98,7 +107,7 @@ bool DataParser::parse(
       rslts.LHSTokens.push_back(wid);
     }
     if (type == entry_type::label) {
-      rslts.RHSTokens.push_back(wid - dict_->nwords());
+      rslts.RHSTokens.push_back(wid);
     }
   }
 

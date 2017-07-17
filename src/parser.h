@@ -16,6 +16,10 @@
  *   and return output result which is one example contains l.h.s. features
  *   and r.h.s. features.
  *
+ * - parseForDict(input, tokens):
+ *   takes input as a line of string, output tokens to be added for building
+ *   the dictionary.
+ *
  * - check(example):
  *   checks whether the example is a valid example.
  *
@@ -52,6 +56,11 @@ public:
       ParseResults& rslt,
       const std::string& sep="\t ");
 
+  virtual void parseForDict(
+      std::string& s,
+      std::vector<std::string>& tokens,
+      const std::string& sep="\t ");
+
   bool parse(
       const std::vector<std::string>& tokens,
       ParseResults& rslt);
@@ -68,6 +77,8 @@ public:
       int32_t n);
 
   std::shared_ptr<Dictionary> getDict() { return dict_; };
+
+  void resetDict(std::shared_ptr<Dictionary> dict) { dict_ = dict; };
 
 protected:
   std::shared_ptr<Dictionary> dict_;
