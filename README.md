@@ -70,6 +70,8 @@ In order to learn the embeddings in the more general case where each label consi
 StarSpace supports the following two training modes (the default is the first one):
 * trainMode = 0: Each example contains both input and labels
 * trainMode = 1: Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the label, and the rest of the labels in the collection become the input.
+* trainMode = 2: Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the input, and the rest of the labels in the collection become the label.
+* trainMode = 3: Each example contains a collection of labels. At training time, two labels from the collection are randomly picked as the input and label.
 
 The use cases of the 2nd train mode will be explained in Example use cases.
 
@@ -136,6 +138,19 @@ At training time, one random document is selected as the label and the rest of t
 
     ./starspace train -trainFile input.txt -model docspace -trainMode 1 -fileFormat labelDoc
     
+    
+## Link Prediction in Knowledge Base ##
+
+**Setting:** Learning the mapping between entities and relations in <a href="http://www.freebase.com">Freebase</a>. In freebase, data comes in the format 
+
+    (head_entity, relation_type, tail_entity)
+
+Performing link perdiction can be formalized as filling in incomplete triples like 
+
+    (head_entity, relation_type, ?) or (?, relation_type, tail_entity)
+
+**Model:** We learn embeddings of all entities and relation types. For each realtion_type, we learn two embeddings: one for predicting tail_entity given head_entity, one for predicting head_entity given tail_entity.
+
 
 # Full Documentation of Parameters
     
