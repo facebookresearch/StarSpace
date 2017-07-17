@@ -35,20 +35,16 @@ DataParser::DataParser(
   args_ = args;
 }
 
-void DataParser::parse(
+bool DataParser::parse(
     std::string& s,
-    vector<ParseResults>& rslts,
+    ParseResults& rslts,
     const string& sep) {
 
   chomp(s);
   vector<string> toks;
   boost::split(toks, s, boost::is_any_of(string(sep)));
 
-  rslts.clear();
-  ParseResults example;
-  if (parse(toks, example)) {
-    rslts.push_back(example);
-  }
+  return parse(toks, rslts);
 }
 
 void DataParser::parseForDict(

@@ -33,21 +33,19 @@ void StarSpace::initParser() {
     parser_ = make_shared<DataParser>(dict_, args_);
   } else if (args_->fileFormat == "labelDoc") {
     parser_ = make_shared<LayerDataParser>(dict_, args_);
-  } else if (args_->fileFormat == "freebase") {
-    parser_ = make_shared<FreebaseDataParser>(dict_, args_);
   } else {
-    cerr << "Unsupported file format. Currently support: fastText, labelDoc or freebase.\n";
+    cerr << "Unsupported file format. Currently support: fastText or labelDoc.\n";
     exit(EXIT_FAILURE);
   }
 }
 
 shared_ptr<InternDataHandler> StarSpace::initData() {
-  if (args_->fileFormat == "fastText" || args_->fileFormat == "freebase") {
+  if (args_->fileFormat == "fastText") {
     return make_shared<InternDataHandler>(args_);
   } else if (args_->fileFormat == "labelDoc") {
     return make_shared<LayerDataHandler>(args_);
   } else {
-    cerr << "Unsupported file format. Currently support: fastText, labelDoc or freebase.\n";
+    cerr << "Unsupported file format. Currently support: fastText or labelDoc.\n";
     exit(EXIT_FAILURE);
   }
   return nullptr;

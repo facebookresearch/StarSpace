@@ -157,8 +157,8 @@ void Args::parseArgs(int argc, char** argv) {
     exit(EXIT_FAILURE);
   }
   // check for file format
+  if (!(fileFormat == "fastText" || fileFormat == "labelDoc")) {
     cerr << "Unsupported file format type. Should be either fastText or labelDoc.\n";
-  if (!(fileFormat == "fastText" || fileFormat == "labelDoc" || fileFormat == "freebase")) {
     exit(EXIT_FAILURE);
   }
 }

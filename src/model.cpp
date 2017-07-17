@@ -212,9 +212,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
     };
     for (int i = 0; !doneTraining; i++) {
       auto wIdx = i % LHSEmbeddings_->numRows();
-      auto tIdx = i % RHSEmbeddings_->numRows();
       trunc(LHSEmbeddings_->row(wIdx), args_->norm);
-      trunc(RHSEmbeddings_->row(tIdx), args_->norm);
     }
   });
   for (auto& t: threads) t.join();

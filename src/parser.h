@@ -13,7 +13,7 @@
  * It provides essential functions as follows:
  * - parse(input, output):
  *   takes input as a line of string (or a vector of string tokens)
- *   and return output result which is one or multiple examples contains l.h.s. features
+ *   and return output result which is one example contains l.h.s. features
  *   and r.h.s. features.
  *   For most cases, one line of input produces one example;
  *   For the case of freebase, one line of input produces two examples.
@@ -53,9 +53,9 @@ public:
     std::shared_ptr<Dictionary> dict,
     std::shared_ptr<Args> args);
 
-  virtual void parse(
+  virtual bool parse(
       std::string& s,
-      std::vector<ParseResults>& rslt,
+      ParseResults& rslt,
       const std::string& sep="\t ");
 
   virtual void parseForDict(

@@ -33,9 +33,8 @@ void LayerDataHandler::loadFromFile(
     fileName,
     [&](std::string& line) {
       auto& corpus = corpora[getThreadID()];
-      vector<ParseResults> examples;
-      parser->parse(line, examples);
-      for (auto& example : examples) {
+      ParseResults example;
+      if (parser->parse(line, example)) {
         corpus.push_back(example);
       }
     },
