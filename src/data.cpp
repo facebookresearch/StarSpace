@@ -110,6 +110,11 @@ void InternDataHandler::convert(
       } while (idx2 == idx);
       rslt.LHSTokens.push_back(example.RHSTokens[idx]);
       rslt.RHSTokens.push_back(example.RHSTokens[idx2]);
+    } else
+    if (args_->trainMode == 4) {
+      // the first one as lhs and the second one as rhs
+      rslt.LHSTokens.push_back(example.RHSTokens[0]);
+      rslt.RHSTokens.push_back(example.RHSTokens[1]);
     }
   }
 }
