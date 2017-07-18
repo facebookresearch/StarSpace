@@ -9,6 +9,7 @@
 
 #include "starspace.h"
 #include <iostream>
+#include <boost/algorithm/string/predicate.hpp>
 
 using namespace std;
 using namespace starspace;
@@ -25,7 +26,11 @@ int main(int argc, char** argv) {
     sp.saveModel();
     sp.saveModelTsv();
   } else {
-    sp.initFromSavedModel();
+    if (boost::algorithm::ends_with(args->model, ".tsv")) {
+      sp.initFromTsv();
+    } else {
+      sp.initFromSavedModel();
+    }
     sp.evaluate();
   }
 
