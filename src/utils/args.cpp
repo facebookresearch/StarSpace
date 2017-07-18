@@ -54,6 +54,10 @@ void Args::parseArgs(int argc, char** argv) {
     isTrain = true;
   } else if (strcmp(argv[1], "test") == 0) {
     isTrain = false;
+  } else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "-help") == 0) {
+    std::cerr << "Here is the help! Usage:" << std::endl;
+    printHelp();
+    exit(EXIT_FAILURE);
   } else {
     cerr << "Usage: the first argument should be either train or test.\n";
     printHelp();
@@ -67,7 +71,16 @@ void Args::parseArgs(int argc, char** argv) {
       exit(EXIT_FAILURE);
     }
 
-    if (strcmp(argv[i], "-trainFile") == 0) {
+    // handling "--"
+    if (strlen(argv[i]) >= 2 && argv[i][1] == '-') {
+      argv[i] = argv[i] + 1;
+    }
+
+    if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "-help") == 0) {
+      std::cerr << "Here is the help! Usage:" << std::endl;
+      printHelp();
+      exit(EXIT_FAILURE);
+    } else if (strcmp(argv[i], "-trainFile") == 0) {
       trainFile = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-validationFile") == 0) {
       validationFile = string(argv[i + 1]);
@@ -121,18 +134,22 @@ void Args::parseArgs(int argc, char** argv) {
       debug = (string(argv[i + 1]) == "true");
     } else if (strcmp(argv[i], "-adagrad") == 0) {
       adagrad = (string(argv[i + 1]) == "true");
+    } else {
+      cerr << "Unknown argument: " << argv[i] << std::endl;
+      printHelp();
+      exit(EXIT_FAILURE);
     }
     i += 2;
   }
   if (isTrain) {
     if (trainFile.empty() || model.empty()) {
-      cout << "Empty train file or output model path." << endl;
+      cerr << "Empty train file or output model path." << endl;
       printHelp();
       exit(EXIT_FAILURE);
     }
   } else {
     if (testFile.empty() || model.empty()) {
-      cout << "Empty test file or model path." << endl;
+      cerr << "Empty test file or model path." << endl;
       printHelp();
       exit(EXIT_FAILURE);
     }
