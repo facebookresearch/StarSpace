@@ -119,21 +119,27 @@ void StarSpace::initFromSavedModel() {
 void StarSpace::initFromTsv() {
   cout << "Start to load a trained embedding model in tsv format.\n";
   assert(args_ != nullptr);
+  ifstream in(args_->model);
+  if (!in.is_open()) {
+    std::cerr << "Model file cannot be opened for loading!" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  in.close();
 
   // build dict
   dict_ = make_shared<Dictionary>(args_);
-  dict_->loadDictFromModel(args_->model + ".tsv");
+  dict_->loadDictFromModel(args_->model);
   if (args_->debug) {dict_->save(cout);}
 
   // load Model
   model_ = make_shared<EmbedModel>(args_, dict_);
-  model_->loadTsv(args_->model + ".tsv");
+  model_->loadTsv(args_->model);
 
   // init data parser
   initParser();
   testData_ = initData();
 }
-
+  
 void StarSpace::train() {
   float rate = args_->lr;
   float decrPerEpoch = (rate - 1e-9) / args_->epoch;
