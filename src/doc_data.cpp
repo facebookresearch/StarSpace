@@ -27,7 +27,7 @@ void LayerDataHandler::loadFromFile(
   const string& fileName,
   shared_ptr<DataParser> parser) {
 
-  cout << "Loading layered data from file : " << fileName << endl;
+  cout << "Loading data from file : " << fileName << endl;
   vector<Corpus> corpora(args_->thread);
   foreach_line(
     fileName,
