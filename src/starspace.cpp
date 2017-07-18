@@ -139,7 +139,7 @@ void StarSpace::train() {
   float decrPerEpoch = (rate - 1e-9) / args_->epoch;
 
   for (int i = 0; i < args_->epoch; i++) {
-    cout << "Begining training epoch " << i << ": " << rate << ' ' << decrPerEpoch << endl;
+    cout << "Training epoch " << i << ": " << rate << ' ' << decrPerEpoch << endl;
     auto err = model_->train(trainData_, args_->thread, rate, rate - decrPerEpoch);
     printf("\n ---+++ %20s %4d Train error : %3.8f +++--- %c%c%c\n",
            "Epoch", i, err,
