@@ -164,7 +164,7 @@ void Dictionary::readFromFile(
 
   std::cerr << "\rRead " << ntokens_  / 1000000 << "M words" << std::endl;
   std::cerr << "Number of words in dictionary:  " << nwords_ << std::endl;
-  std::cerr << "Number of labels in dictinoary: " << nlabels_ << std::endl;
+  std::cerr << "Number of labels in dictionary: " << nlabels_ << std::endl;
   if (size_ == 0) {
     std::cerr << "Empty vocabulary. Try a smaller -minCount value."
               << std::endl;
