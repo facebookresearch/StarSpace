@@ -53,7 +53,7 @@ shared_ptr<InternDataHandler> StarSpace::initData() {
 
 // initialize dict and load data
 void StarSpace::init() {
-  cout << "Start to initlaize starspace model.\n";
+  cout << "Start to initialize starspace model.\n";
   assert(args_ != nullptr);
 
   // build dict
