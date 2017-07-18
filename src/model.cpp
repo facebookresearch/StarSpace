@@ -162,20 +162,20 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
       if ((i % kDecrStep) == (kDecrStep - 1)) {
         rate -= decrPerKSample;
       }
-      if (amMaster && ((ip - indices.begin()) % 1000) == 999) {
+      if (amMaster && ((ip - indices.begin()) % 100 == 99 || (ip + 1) == end)) {
         auto t_end = std::chrono::high_resolution_clock::now();
-        if (isatty(STDOUT_FILENO)) {
-          printf("\r%c[2K", 27); // ESC-[2K is the vt100 clear line code.
-        }
-        if (verbose) {
-          printf("Alpha: %3.8f loss %3.8f %7zd samples / %7zd in %3.6f sec",
-                 rate,
-                 losses[idx] / counts[idx],
-                 ip - indices.begin(), end - start,
-                 std::chrono::duration<double>(t_end-t_start).count());
-          fflush(stdout);
-        }
-        t_start = t_end = std::chrono::high_resolution_clock::now();
+        auto t_spent = std::chrono::duration<double>(t_end-t_start).count();
+        auto progress = (double)(ip - indices.begin()) / (end - start);
+        int eta = int(t_spent / progress * (1 - progress));
+        int etah = eta / 3600;
+        int etam = (eta - etah * 3600) / 60;
+
+        std::cerr << std::fixed;
+        std::cerr << "\rProgress: " << std::setprecision(1) << 100 * progress << "%";
+        std::cerr << "  lr: " << std::setprecision(6) << rate;
+        std::cerr << "  loss: " << std::setprecision(6) << losses[idx] / counts[idx];
+        std::cerr << "  eta: " << std::setprecision(3) << etah << "h" << etam << "m ";
+        std::cerr << std::flush;
       }
     }
   };
