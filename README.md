@@ -70,10 +70,10 @@ In order to learn the embeddings in the more general case where each label consi
 StarSpace supports the following training modes (the default is the first one):
 * trainMode = 0:
     * Each example contains both input and labels.
-    * **Use case:**  classification tasks, see tagspace example below.
+    * **Use case:**  classification tasks, see _tagspace_ example below.
 * trainMode = 1:
     * Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the label, and the rest of the labels in the collection become the input.
-    * **Use case:**  content-based or Collaborative filtering-based recommendation, see pagspace example below.
+    * **Use case:**  content-based or collaborative filtering-based recommendation, see _pagspace_ example below.
 * trainMode = 2:
     * Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the input, and the rest of the labels in the collection become the label.
     * **Use case:** learning a mapping from an object to a set of objetcs, e.g. sentence to document.
