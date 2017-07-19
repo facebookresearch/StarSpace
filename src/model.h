@@ -38,15 +38,20 @@ public:
   explicit EmbedModel(std::shared_ptr<Args> args,
                       std::shared_ptr<Dictionary> dict);
 
-  // Learning
+
   typedef std::vector<ParseResults> Corpus;
   float train(std::shared_ptr<InternDataHandler> data,
               int numThreads,
-              Real startRate, Real endRate,
+              std::chrono::time_point<std::chrono::high_resolution_clock> t_start,
+	      int epochs_done,
+              Real startRate,
+	      Real endRate,
               bool verbose = true);
 
   float test(std::shared_ptr<InternDataHandler> data, int numThreads) {
-    return this->train(data, numThreads, 0.0, 0.0, false);
+    return this->train(data, numThreads,
+		       std::chrono::high_resolution_clock::now(), 0,
+		       0.0, 0.0, false);
   }
 
   float trainOne(std::shared_ptr<InternDataHandler> data,

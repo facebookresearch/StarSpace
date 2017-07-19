@@ -55,7 +55,7 @@ echo "Start to train on ag_news data:"
   -adagrad false \
   -ngrams 1 \
   -lr 0.01 \
-  -epoch 5 \
+  -epoch 50 \
   -thread 20 \
   -dim 10 \
   -negSearchLimit 5 \
@@ -75,5 +75,5 @@ echo "Start to evaluate trained model:"
   -label "__label__" \
   -thread 10 \
   -similarity "dot" \
-  -trainmode 0 \
+  -trainMode 0 \
   -verbose true
