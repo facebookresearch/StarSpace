@@ -3,7 +3,7 @@
 # All rights reserved.
 #
 # This source code is licensed under the BSD-style license found in the
-# LICENSE file in the root directory of this source tree. An additional grant 
+# LICENSE file in the root directory of this source tree. An additional grant
 # of patent rights can be found in the PATENTS file in the same directory.
 #
 
@@ -13,7 +13,7 @@ CXXFLAGS = -pthread -std=gnu++11
 BOOST_DIR = /usr/bin/boost_1_63_0/
 GTEST_DIR = /usr/bin/googletest
 
-OBJS = normalize.o dict.o args.o proj.o parser.o data.o model.o starspace.o doc_parser.o doc_data.o utils.o 
+OBJS = normalize.o dict.o args.o proj.o parser.o data.o model.o starspace.o doc_parser.o doc_data.o utils.o
 TESTS = matrix_test proj_test
 INCLUDES = -I$(BOOST_DIR)
 
@@ -100,9 +100,9 @@ starspace.o: src/starspace.cpp src/starspace.h
 
 starspace: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/main.cpp -o starspace
-	
+
 nn: $(OBJS)
-        $(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/querynn.cpp -o nn
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/querynn.cpp -o nn
 
 test: $(TESTS)
 
