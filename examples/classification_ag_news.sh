@@ -55,7 +55,7 @@ echo "Start to train on ag_news data:"
   -adagrad false \
   -ngrams 1 \
   -lr 0.01 \
-  -epoch 50 \
+  -epoch 5 \
   -thread 20 \
   -dim 10 \
   -negSearchLimit 5 \
