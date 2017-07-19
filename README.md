@@ -68,11 +68,16 @@ In order to learn the embeddings in the more general case where each label consi
 ## Training Mode
 
 StarSpace supports the following training modes (the default is the first one):
-* trainMode = 0: Each example contains both input and labels. **Use case:**  classification tasks, see tagspace example below.
-* trainMode = 1: Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the label, and the rest of the labels in the collection become the input. **Use case:**  content-based or Collaborative filtering-based recommendation, see pagspace example below.
-* trainMode = 2: Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the input, and the rest of the labels in the collection become the label.  **Use case:** learning a mapping from an object to a set of objetcs, e.g. sentence to document.
-* trainMode = 3: Each example contains a collection of labels. At training time, two labels from the collection are randomly picked as the input and label.  **Use case:** learn pairwise similarity from collections of similar objects, e.g. sentence similiarity.
-* trainMode = 4: Each example contains two labels. At training time, the first label from the collection will be picked as input and the second label will be picked as the label. **Use case:** learning from multi-relational graphs.
+* trainMode = 0: Each example contains both input and labels.
+    * **Use case:**  classification tasks, see tagspace example below.
+* trainMode = 1: Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the label, and the rest of the labels in the collection become the input.
+    * **Use case:**  content-based or Collaborative filtering-based recommendation, see pagspace example below.
+* trainMode = 2: Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the input, and the rest of the labels in the collection become the label.
+    * **Use case:** learning a mapping from an object to a set of objetcs, e.g. sentence to document.
+* trainMode = 3: Each example contains a collection of labels. At training time, two labels from the collection are randomly picked as the input and label.
+    * **Use case:** learn pairwise similarity from collections of similar objects, e.g. sentence similiarity.
+* trainMode = 4: Each example contains two labels. At training time, the first label from the collection will be picked as input and the second label will be picked as the label.
+    * **Use case:** learning from multi-relational graphs.
 
 The use cases of the 2nd train mode will be explained in Example use cases.
 
