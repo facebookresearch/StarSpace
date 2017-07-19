@@ -104,12 +104,11 @@ void LayerDataHandler::convert(
         idx2 = rand() % example.RHSFeatures.size();
       } while (idx == idx2);
       insert(rslt.RHSTokens, example.RHSFeatures[idx2]);
-    } else {
-      if (args_->trainMode == 4) {
+    } else
+    if (args_->trainMode == 4) {
         // the first one as lhs and the second one as rhs
         insert(rslt.LHSTokens, example.RHSFeatures[0]);
         insert(rslt.RHSTokens, example.RHSFeatures[1]);
-      }
     }
   }
 }
