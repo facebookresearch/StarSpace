@@ -515,11 +515,10 @@ Real EmbedModel::cosine(const MatrixRow& a, const MatrixRow& b) {
 vector<pair<int32_t, Real>>
 EmbedModel::kNN(shared_ptr<SparseLinear<Real>> lookup,
                 Matrix<Real> point,
-                bool isLabel,
                 int numSim) {
 
     typedef pair<int32_t, Real> Cand;
-    int maxn = isLabel ? dict_->nwords() : dict_->nlabels();
+    int maxn = lookup->numRows();
     vector<Cand> mostSimilar(std::min(numSim, maxn));
     for (auto& s: mostSimilar) {
       s = { -1, -1.0 };
