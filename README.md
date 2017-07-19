@@ -84,8 +84,6 @@ StarSpace supports the following training modes (the default is the first one):
     * Each example contains two labels. At training time, the first label from the collection will be picked as input and the second label will be picked as the label.
     * **Use case:** learning from multi-relational graphs.
 
-The use cases of the 2nd train mode will be explained in Example use cases.
-
 # Example use cases
 
 ## TagSpace word / tag embeddings
