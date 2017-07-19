@@ -100,6 +100,9 @@ starspace.o: src/starspace.cpp src/starspace.h
 
 starspace: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/main.cpp -o starspace
+	
+nn: $(OBJS)
+        $(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/querynn.cpp -o nn
 
 test: $(TESTS)
 
