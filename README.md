@@ -68,10 +68,11 @@ In order to learn the embeddings in the more general case where each label consi
 ## Training Mode
 
 StarSpace supports the following two training modes (the default is the first one):
-* trainMode = 0: Each example contains both input and labels
+* trainMode = 0: Each example contains both input and labels.
 * trainMode = 1: Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the label, and the rest of the labels in the collection become the input.
 * trainMode = 2: Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the input, and the rest of the labels in the collection become the label.
 * trainMode = 3: Each example contains a collection of labels. At training time, two labels from the collection are randomly picked as the input and label.
+* trainMode = 4: Each example contains input and two labels. At training time, the first label from the collection will be picked as input and the second label will be picked as the label.
 
 The use cases of the 2nd train mode will be explained in Example use cases.
 
