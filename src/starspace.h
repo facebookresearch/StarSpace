@@ -31,6 +31,7 @@ class StarSpace {
     void evaluate();
 
     Matrix<Real> getDocVector(const std::string& line, const std::string& sep);
+    void nearestNeighbor(const std::string& line, int k);
 
     void saveModel();
     void saveModelTsv();
