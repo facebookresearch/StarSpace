@@ -165,6 +165,14 @@ Matrix<Real> StarSpace::getDocVector(const string& line, const string& sep) {
   parser_->parse(tokens, ids);
   return model_->projectRHS(ids);
 }
+  
+void StarSpace::nearestNeighbor(const string& line, int k) {
+  auto vec = getDocVector(line, " ");
+  auto preds = model_->findLHSLike(vec, k);
+  for (auto n : preds) {
+    cout << dict_->getSymbol(n.first) << ' ' << n.second << endl;
+  }
+}
 
 void StarSpace::loadBaseDocs() {
   if (args_->basedoc.empty()) {
