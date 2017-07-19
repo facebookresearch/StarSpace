@@ -139,7 +139,7 @@ void StarSpace::initFromTsv() {
   initParser();
   testData_ = initData();
 }
-  
+
 void StarSpace::train() {
   float rate = args_->lr;
   float decrPerEpoch = (rate - 1e-9) / args_->epoch;
@@ -165,7 +165,7 @@ Matrix<Real> StarSpace::getDocVector(const string& line, const string& sep) {
   parser_->parse(tokens, ids);
   return model_->projectRHS(ids);
 }
-  
+
 void StarSpace::nearestNeighbor(const string& line, int k) {
   auto vec = getDocVector(line, " ");
   auto preds = model_->findLHSLike(vec, k);

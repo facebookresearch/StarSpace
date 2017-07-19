@@ -74,17 +74,16 @@ public:
   std::vector<std::pair<int32_t, Real>>
     kNN(std::shared_ptr<SparseLinear<Real>> lookup,
         Matrix<Real> point,
-        bool isLabel,
         int numSim);
 
   std::vector<std::pair<int32_t, Real>>
     findLHSLike(Matrix<Real> point, int numSim = 5) {
-    return kNN(LHSEmbeddings_, point, false, numSim);
+    return kNN(LHSEmbeddings_, point, numSim);
   }
 
   std::vector<std::pair<int32_t, Real>>
     findRHSLike(Matrix<Real> point, int numSim = 5) {
-    return kNN(RHSEmbeddings_, point, true, numSim);
+    return kNN(RHSEmbeddings_, point, numSim);
   }
 
   Matrix<Real>
