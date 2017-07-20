@@ -10,6 +10,7 @@
 
 #include "starspace.h"
 #include <iostream>
+#include <queue>
 #include <unordered_set>
 
 #include <boost/algorithm/string.hpp>
@@ -114,6 +115,7 @@ void StarSpace::initFromSavedModel() {
   // init data parser
   initParser();
   testData_ = initData();
+  cout << "Model loaded.\n";
 }
 
 void StarSpace::initFromTsv() {
@@ -184,14 +186,16 @@ void StarSpace::loadBaseDocs() {
       exit(EXIT_FAILURE);
     }
     for (int i = 0; i < dict_->nlabels(); i++) {
-      baseDocs_.push_back(model_->projectRHS({i + dict_->nwords()}));
+      baseDocs_.push_back(dict_->getLabel(i));
+      baseDocVectors_.push_back(model_->projectRHS({i + dict_->nwords()}));
     }
   } else {
     cout << "Loading base docs from file : " << args_->basedoc << endl;
     ifstream fin(args_->basedoc);
     string line;
     while (getline(fin, line)) {
-      baseDocs_.push_back(getDocVector(line, " "));
+      baseDocs_.push_back(line);
+      baseDocVectors_.push_back(getDocVector(line, "\t "));
     }
     fin.close();
     cout << "Finished loading base docs.\n";
@@ -200,36 +204,49 @@ void StarSpace::loadBaseDocs() {
 
 Metrics StarSpace::evaluateOne(
     const vector<int32_t>& lhs,
-    const vector<int32_t>& rhs) {
+    const vector<int32_t>& rhs,
+    vector<Predictions>& pred) {
 
-  typedef pair<int32_t, Real> Cand;
-  vector<Cand> result;
+  std::priority_queue<Predictions> heap;
 
   auto lhsM = model_->projectLHS(lhs);
   auto rhsM = model_->projectRHS(rhs);
-  // here similarity is dot product
-  result.push_back({0, model_->similarity(lhsM, rhsM)});
+  auto score = model_->similarity(lhsM, rhsM);
 
-  for (int i = 0; i < baseDocs_.size(); i++) {
+  int rank = 1;
+  heap.push({ score, 0 });
+
+  for (int i = 0; i < baseDocVectors_.size(); i++) {
     // in case base labels are not provided, basedoc is all label
     if ((args_->basedoc.empty()) && (i == rhs[0] - dict_->nwords())) {
       continue;
     }
-    result.push_back({i + 1, model_->similarity(lhsM, baseDocs_[i])});
+    auto cur_score = model_->similarity(lhsM, baseDocVectors_[i]);
+    if (cur_score > score) {
+      rank++;
+    }
+    heap.push({ cur_score, i + 1 });
   }
 
-  std::sort(result.begin(), result.end(),
-           [&](Cand a, Cand b) {return a.second > b.second; });
+  // get the first K predictions
+  int i = 0;
+  while (i < args_->K && heap.size() > 0) {
+    pred.push_back(heap.top());
+    heap.pop();
+    i++;
+  }
 
   Metrics s;
   s.clear();
-  for (int i = 0; i < result.size(); i++) {
-    if (result[i].first == 0) {
-      s.update(i + 1);
-      break;
-    }
-  }
+  s.update(rank);
   return s;
+}
+
+void StarSpace::printDoc(ofstream& ofs, const vector<int32_t>& tokens) {
+  for (auto t : tokens) {
+    ofs << dict_->getSymbol(t) << ' ';
+  }
+  ofs << endl;
 }
 
 void StarSpace::evaluate() {
@@ -241,15 +258,17 @@ void StarSpace::evaluate() {
   auto numThreads = args_->thread;
   vector<thread> threads;
   vector<Metrics> metrics(numThreads);
+  vector<vector<Predictions>> predictions(N);
   int numPerThread = ceil(N / numThreads);
   assert(numPerThread > 0);
+
+  vector<ParseResults> examples;
+  testData_->getNextKExamples(N, examples);
 
   auto evalThread = [&] (int idx, int start, int end) {
     metrics[idx].clear();
     for (int i = start; i < end; i++) {
-      ParseResults ex;
-      testData_->getExampleById(i, ex);
-      auto s = evaluateOne(ex.LHSTokens, ex.RHSTokens);
+      auto s = evaluateOne(examples[i].LHSTokens, examples[i].RHSTokens, predictions[i]);
       metrics[idx].add(s);
     }
   };
@@ -258,7 +277,6 @@ void StarSpace::evaluate() {
     auto start = i * numPerThread;
     auto end = std::min(start + numPerThread, N);
     assert(end >= start);
-    assert(end <= N);
     threads.emplace_back(thread([=] {
       evalThread(i, start, end);
     }));
@@ -273,6 +291,28 @@ void StarSpace::evaluate() {
   }
   result.average();
   result.print();
+
+  if (!args_->predictionFile.empty()) {
+    // print out prediction results to file
+    ofstream ofs(args_->predictionFile);
+    for (int i = 0; i < N; i++) {
+      ofs << "Example " << i << ":\nLHS:\n";
+      printDoc(ofs, examples[i].LHSTokens);
+      ofs << "RHS: \n";
+      printDoc(ofs, examples[i].RHSTokens);
+      ofs << "Predictions: \n";
+      for (auto pred : predictions[i]) {
+        if (pred.second == 0) {
+          ofs << "* ";
+          printDoc(ofs, examples[i].RHSTokens);
+        } else {
+          ofs << "- " << baseDocs_[pred.second - 1] << "\n";
+        }
+      }
+      ofs << "\n";
+    }
+    ofs.close();
+  }
 }
 
 void StarSpace::saveModel() {

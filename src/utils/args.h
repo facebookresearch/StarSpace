@@ -20,6 +20,7 @@ class Args {
     std::string trainFile;
     std::string validationFile;
     std::string testFile;
+    std::string predictionFile;
     std::string model;
     std::string fileFormat;
     std::string label;
@@ -42,6 +43,7 @@ class Args {
     int bucket;
     int ngrams;
     int trainMode;
+    int K;
     bool verbose;
     bool debug;
     bool adagrad;

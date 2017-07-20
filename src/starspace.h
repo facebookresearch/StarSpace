@@ -19,6 +19,8 @@
 
 namespace starspace {
 
+typedef std::pair<Real, int32_t> Predictions;
+
 class StarSpace {
   public:
     explicit StarSpace(std::shared_ptr<Args> args);
@@ -35,6 +37,7 @@ class StarSpace {
 
     void saveModel();
     void saveModelTsv();
+    void printDoc(std::ofstream& ofs, const std::vector<int32_t>& tokens);
 
     const std::string kMagic = "STARSPACE-2017-1";
 
@@ -45,7 +48,8 @@ class StarSpace {
 
     Metrics evaluateOne(
         const std::vector<int32_t>& lhs,
-        const std::vector<int32_t>& rhs);
+        const std::vector<int32_t>& rhs,
+        std::vector<Predictions>& pred);
 
     std::shared_ptr<Args> args_;
     std::shared_ptr<Dictionary> dict_;
@@ -55,7 +59,8 @@ class StarSpace {
     std::shared_ptr<InternDataHandler> testData_;
     std::shared_ptr<EmbedModel> model_;
 
-    std::vector<Matrix<Real>> baseDocs_;
+    std::vector<std::string> baseDocs_;
+    std::vector<Matrix<Real>> baseDocVectors_;
 };
 
 }
