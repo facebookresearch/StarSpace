@@ -33,6 +33,11 @@ class StarSpace {
     void evaluate();
 
     Matrix<Real> getDocVector(const std::string& line, const std::string& sep);
+    void parseDoc(
+        const std::string& line,
+        std::vector<int32_t>& ids,
+        const std::string& sep);
+
     void nearestNeighbor(const std::string& line, int k);
 
     void saveModel();
@@ -59,7 +64,7 @@ class StarSpace {
     std::shared_ptr<InternDataHandler> testData_;
     std::shared_ptr<EmbedModel> model_;
 
-    std::vector<std::string> baseDocs_;
+    std::vector<std::vector<int32_t>> baseDocs_;
     std::vector<Matrix<Real>> baseDocVectors_;
 };
 
