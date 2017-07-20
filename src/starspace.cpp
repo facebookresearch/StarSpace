@@ -177,11 +177,19 @@ void StarSpace::train() {
   }
 }
 
-Matrix<Real> StarSpace::getDocVector(const string& line, const string& sep) {
+void StarSpace::parseDoc(
+    const string& line,
+    vector<int32_t>& ids,
+    const string& sep) {
+
   vector<string> tokens;
   boost::split(tokens, line, boost::is_any_of(string(sep)));
-  vector<int32_t> ids;
   parser_->parse(tokens, ids);
+}
+
+Matrix<Real> StarSpace::getDocVector(const string& line, const string& sep) {
+  vector<int32_t> ids;
+  parseDoc(line, ids, sep);
   return model_->projectRHS(ids);
 }
 
@@ -200,7 +208,7 @@ void StarSpace::loadBaseDocs() {
       exit(EXIT_FAILURE);
     }
     for (int i = 0; i < dict_->nlabels(); i++) {
-      baseDocs_.push_back(dict_->getLabel(i));
+      baseDocs_.push_back({ i + dict_->nwords() });
       baseDocVectors_.push_back(model_->projectRHS({i + dict_->nwords()}));
     }
   } else {
@@ -208,8 +216,11 @@ void StarSpace::loadBaseDocs() {
     ifstream fin(args_->basedoc);
     string line;
     while (getline(fin, line)) {
-      baseDocs_.push_back(line);
-      baseDocVectors_.push_back(getDocVector(line, "\t "));
+      vector<int32_t> ids;
+      parseDoc(line, ids, "\t ");
+      baseDocs_.push_back(ids);
+      auto docVec = model_->projectRHS(ids);
+      baseDocVectors_.push_back(docVec);
     }
     fin.close();
     cout << "Finished loading base docs.\n";
@@ -318,7 +329,8 @@ void StarSpace::evaluate() {
           ofs << "(++) [" << pred.first << "]\t";
           printDoc(ofs, examples[i].RHSTokens);
         } else {
-          ofs << "(--) [" << pred.first << "]\t" << baseDocs_[pred.second - 1] << "\n";
+          ofs << "(--) [" << pred.first << "]\t";
+          printDoc(ofs, baseDocs_[pred.second - 1]);
         }
       }
       ofs << "\n";
