@@ -34,7 +34,9 @@ bool LayerDataParser::parse(
   boost::split(tokens, s, boost::is_any_of(string(sep)));
 
   for (auto token : tokens) {
-    normalize_text(token);
+    if (args_->normalizeText) {
+      normalize_text(token);
+    }
     int32_t wid = dict_->getId(token);
     if (wid != -1)  {
       feats.push_back(wid);

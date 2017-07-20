@@ -54,6 +54,11 @@ void DataParser::parseForDict(
 
   chomp(line);
   boost::split(tokens, line, boost::is_any_of(sep));
+  if (args_->normalizeText) {
+    for (int i = 0; i < tokens.size(); i++) {
+      normalize_text(tokens[i]);
+    }
+  }
 }
 
 // check wether it is a valid example
@@ -98,7 +103,9 @@ bool DataParser::parse(
 
   for (auto &token: tokens) {
     auto t = token;
-    normalize_text(t);
+    if (args_->normalizeText) {
+      normalize_text(t);
+    }
     int32_t wid = dict_->getId(t);
     if (wid < 0) {
       continue;
@@ -125,7 +132,9 @@ bool DataParser::parse(
 
   for (auto &token: tokens) {
     auto t = token;
-    normalize_text(t);
+    if (args_->normalizeText) {
+      normalize_text(t);
+    }
     int32_t wid = dict_->getId(t);
     if (wid < 0) {
       continue;
