@@ -26,6 +26,7 @@ Args::Args() {
   initRandSd = 0.001;
   dim = 10;
   epoch = 5;
+  maxTrainTime = 60*60*24*100;
   thread = 10;
   maxNegSamples = 10;
   negSearchLimit = 50;
@@ -112,6 +113,8 @@ void Args::parseArgs(int argc, char** argv) {
       dim = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-epoch") == 0) {
       epoch = atoi(argv[i + 1]);
+    } else if (strcmp(argv[i], "-maxTrainTime") == 0) {
+      maxTrainTime = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-thread") == 0) {
       thread = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-maxNegSamples") == 0) {
@@ -201,6 +204,7 @@ void Args::printHelp() {
        << "  -lr              learning rate [" << lr << "]\n"
        << "  -dim             size of embedding vectors [" << dim << "]\n"
        << "  -epoch           number of epochs [" << epoch << "]\n"
+       << "  -maxTrainTime    max train time (secs) [" << maxTrainTime << "]\n"
        << "  -negiSearchLimit number of negatives sampled [" << negSearchLimit << "]\n"
        << "  -maxNegSamples   max number of negatives in a batch update [" << maxNegSamples << "]\n"
        << "  -loss            loss function {hinge, softmax} [hinge]\n"
@@ -223,6 +227,7 @@ void Args::printArgs() {
        << "lr: " << lr << endl
        << "dim: " << dim << endl
        << "epoch: " << epoch << endl
+       << "maxTrainTime: " << maxTrainTime << endl
        << "loss: " << loss << endl
        << "margin: " << margin << endl
        << "similarity: " << similarity << endl
@@ -242,6 +247,7 @@ void Args::printArgs() {
 void Args::save(std::ostream& out) {
   out.write((char*) &(dim), sizeof(int));
   out.write((char*) &(epoch), sizeof(int));
+  out.write((char*) &(maxTrainTime), sizeof(int));
   out.write((char*) &(minCount), sizeof(int));
   out.write((char*) &(minCountLabel), sizeof(int));
   out.write((char*) &(maxNegSamples), sizeof(int));
@@ -257,6 +263,7 @@ void Args::save(std::ostream& out) {
 void Args::load(std::istream& in) {
   in.read((char*) &(dim), sizeof(int));
   in.read((char*) &(epoch), sizeof(int));
+  in.read((char*) &(maxTrainTime), sizeof(int));
   in.read((char*) &(minCount), sizeof(int));
   in.read((char*) &(minCountLabel), sizeof(int));
   in.read((char*) &(maxNegSamples), sizeof(int));

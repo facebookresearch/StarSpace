@@ -34,6 +34,7 @@ class Args {
     double initRandSd;
     size_t dim;
     int epoch;
+    int maxTrainTime;
     int thread;
     int maxNegSamples;
     int negSearchLimit;
