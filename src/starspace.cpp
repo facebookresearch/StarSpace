@@ -214,6 +214,10 @@ void StarSpace::loadBaseDocs() {
   } else {
     cout << "Loading base docs from file : " << args_->basedoc << endl;
     ifstream fin(args_->basedoc);
+    if (!fin.is_open()) {
+      std::cerr << "Base doc file cannot be opened for loading!" << std::endl;
+      exit(EXIT_FAILURE);
+    }
     string line;
     while (getline(fin, line)) {
       vector<int32_t> ids;
