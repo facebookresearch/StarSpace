@@ -179,6 +179,9 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
         int etam = (eta - etah * 3600) / 60;
         int etas = (eta - etah * 3600 - etam * 60);
 	auto tot_spent = std::chrono::duration<double>(t_end-t_start).count();
+	if (tot_spent > args_->maxTrainTime) {
+	  break;
+	}
        	int toth = int(tot_spent) / 3600;
         int totm = (tot_spent - toth * 3600) / 60;
         int tots = (tot_spent - toth * 3600 - totm * 60);

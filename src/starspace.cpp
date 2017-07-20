@@ -167,6 +167,13 @@ void StarSpace::train() {
       cout << "Validation error: " << valid_err << endl;
     }
     rate -= decrPerEpoch;
+
+    auto t_end = std::chrono::high_resolution_clock::now();
+    auto tot_spent = std::chrono::duration<double>(t_end-t_start).count();
+    if (tot_spent >args_->maxTrainTime) {
+      cout << "MaxTrainTime exceeded." << endl;
+      break;
+    }
   }
 }
 
