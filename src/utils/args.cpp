@@ -31,11 +31,11 @@ Args::Args() {
   negSearchLimit = 50;
   minCount = 1;
   minCountLabel = 1;
+  K = 5;
   verbose = false;
   debug = false;
   adagrad = true;
   trainMode = 0;
-  basedoc = "";
   fileFormat = "fastText";
   label = "__label__";
   bucket = 2000000;
@@ -86,6 +86,8 @@ void Args::parseArgs(int argc, char** argv) {
       validationFile = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-testFile") == 0) {
       testFile = string(argv[i + 1]);
+    } else if (strcmp(argv[i], "-predictionFile") == 0) {
+      predictionFile = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-basedoc") == 0) {
       basedoc = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-model") == 0) {
@@ -128,6 +130,8 @@ void Args::parseArgs(int argc, char** argv) {
       bucket = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-ngrams") == 0) {
       ngrams = atoi(argv[i + 1]);
+    } else if (strcmp(argv[i], "-K") == 0) {
+      K = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-trainMode") == 0) {
       trainMode = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-verbose") == 0) {
@@ -215,6 +219,8 @@ void Args::printHelp() {
        << "\nThe following arguments for eval are optional:\n"
        << "  -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.\n"
        << "                   In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.\n"
+       << "  -predicitonFile  file path for save predictions. If not empty, top K predictions for each example will be saved.\n"
+       << "  -K               if -predictionFile is not empty, top K predictions for each example will be saved.\n"
        <<  "\nThe following arguments are optional:\n"
        << "  -verbose         verbosity level [" << verbose << "]\n"
        << "  -debug           whether it's in debug mode [" << debug << "]\n"

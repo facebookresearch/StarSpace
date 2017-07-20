@@ -81,6 +81,8 @@ Real norm2(Matrix<Real>::Row a) {
 
 Real EmbedModel::train(shared_ptr<InternDataHandler> data,
                        int numThreads,
+		       std::chrono::time_point<std::chrono::high_resolution_clock> t_start,
+		       int epochs_done,
                        Real rate,
                        Real finishRate,
                        bool verbose) {
@@ -116,7 +118,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
     assert(end <= indices.end());
     bool amMaster = idx == 0;
     int64_t elapsed;
-    auto t_start = std::chrono::high_resolution_clock::now();
+    auto t_epoch_start = std::chrono::high_resolution_clock::now();
     losses[idx] = 0.0;
     counts[idx] = 0;
     for (auto ip = start; ip < end; ip++) {
@@ -164,17 +166,32 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
       }
       if (amMaster && ((ip - indices.begin()) % 100 == 99 || (ip + 1) == end)) {
         auto t_end = std::chrono::high_resolution_clock::now();
-        auto t_spent = std::chrono::duration<double>(t_end-t_start).count();
-        auto progress = (double)(ip - indices.begin()) / (end - start);
-        int eta = int(t_spent / progress * (1 - progress));
+        auto t_epoch_spent =
+	  std::chrono::duration<double>(t_end-t_epoch_start).count();
+	double ex_done_this_epoch = ip - indices.begin();
+	int ex_left = ((end - start) * (args_->epoch - epochs_done))
+	  - ex_done_this_epoch;
+	double ex_done = epochs_done * (end - start) + ex_done_this_epoch;
+	double time_per_ex = double(t_epoch_spent) / ex_done_this_epoch;
+        int eta = int(time_per_ex * double(ex_left));
+	double progress = ex_done / (ex_done + ex_left);
         int etah = eta / 3600;
         int etam = (eta - etah * 3600) / 60;
-
-        std::cerr << std::fixed;
+        int etas = (eta - etah * 3600 - etam * 60);
+	auto tot_spent = std::chrono::duration<double>(t_end-t_start).count();
+       	int toth = int(tot_spent) / 3600;
+        int totm = (tot_spent - toth * 3600) / 60;
+        int tots = (tot_spent - toth * 3600 - totm * 60);
+	std::cerr << std::fixed;
         std::cerr << "\rProgress: " << std::setprecision(1) << 100 * progress << "%";
         std::cerr << "  lr: " << std::setprecision(6) << rate;
         std::cerr << "  loss: " << std::setprecision(6) << losses[idx] / counts[idx];
-        std::cerr << "  eta: " << std::setprecision(3) << etah << "h" << etam << "m ";
+	if (eta < 60) {
+	  std::cerr << "  eta: <1min ";
+	} else {
+	  std::cerr << "  eta: " << std::setprecision(3) << etah << "h" << etam << "m";
+	}
+	std::cerr << "  tot: " << std::setprecision(3) << toth << "h" << totm << "m"  << tots << "s ";
         std::cerr << std::flush;
       }
     }

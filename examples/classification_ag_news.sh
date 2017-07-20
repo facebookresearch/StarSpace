@@ -75,5 +75,5 @@ echo "Start to evaluate trained model:"
   -label "__label__" \
   -thread 10 \
   -similarity "dot" \
-  -trainmode 0 \
+  -trainMode 0 \
   -verbose true

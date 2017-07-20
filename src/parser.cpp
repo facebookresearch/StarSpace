@@ -97,7 +97,9 @@ bool DataParser::parse(
     ParseResults& rslts) {
 
   for (auto &token: tokens) {
-    int32_t wid = dict_->getId(token);
+    auto t = token;
+    normalize_text(t);
+    int32_t wid = dict_->getId(t);
     if (wid < 0) {
       continue;
     }
@@ -123,7 +125,8 @@ bool DataParser::parse(
 
   for (auto &token: tokens) {
     auto t = token;
-    int32_t wid = dict_->getId(token);
+    normalize_text(t);
+    int32_t wid = dict_->getId(t);
     if (wid < 0) {
       continue;
     }
