@@ -315,10 +315,10 @@ void StarSpace::evaluate() {
       ofs << "Predictions: \n";
       for (auto pred : predictions[i]) {
         if (pred.second == 0) {
-          ofs << "* ";
+          ofs << "(++) [" << pred.first << "]\t";
           printDoc(ofs, examples[i].RHSTokens);
         } else {
-          ofs << "- " << baseDocs_[pred.second - 1] << "\n";
+          ofs << "(--) [" << pred.first << "]\t" << baseDocs_[pred.second - 1] << "\n";
         }
       }
       ofs << "\n";
