@@ -178,17 +178,20 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
 	if (tot_spent > args_->maxTrainTime) {
 	  break;
 	}
-        if (eta > args_->maxTrainTime - tot_spent)
+	double epoch_progress = ex_done_this_epoch / (end - start);
+	double progress = ex_done / (ex_done + ex_left);
+        if (eta > args_->maxTrainTime - tot_spent) {
           eta = args_->maxTrainTime - tot_spent;
+          progress = tot / (eta + tot);
+        }
         int etah = eta / 3600;
         int etam = (eta - etah * 3600) / 60;
         int etas = (eta - etah * 3600 - etam * 60);
        	int toth = int(tot_spent) / 3600;
         int totm = (tot_spent - toth * 3600) / 60;
         int tots = (tot_spent - toth * 3600 - totm * 60);
-	double progress = ex_done / (ex_done + ex_left);
 	std::cerr << std::fixed;
-        std::cerr << "\rProgress: " << std::setprecision(1) << 100 * progress << "%";
+        std::cerr << "\rEpoch: " << std::setprecision(1) << 100 * epoch_progress << "%";
         std::cerr << "  lr: " << std::setprecision(6) << rate;
         std::cerr << "  loss: " << std::setprecision(6) << losses[idx] / counts[idx];
 	if (eta < 60) {
@@ -197,6 +200,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
 	  std::cerr << "  eta: " << std::setprecision(3) << etah << "h" << etam << "m";
 	}
 	std::cerr << "  tot: " << std::setprecision(3) << toth << "h" << totm << "m"  << tots << "s ";
+        std::cerr << " (" << std::setprecision(1) << 100 * progress << "%)";
         std::cerr << std::flush;
       }
     }
