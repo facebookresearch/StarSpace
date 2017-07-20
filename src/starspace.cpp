@@ -144,9 +144,12 @@ void StarSpace::train() {
   float rate = args_->lr;
   float decrPerEpoch = (rate - 1e-9) / args_->epoch;
 
+  auto t_start = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < args_->epoch; i++) {
     cout << "Training epoch " << i << ": " << rate << ' ' << decrPerEpoch << endl;
-    auto err = model_->train(trainData_, args_->thread, rate, rate - decrPerEpoch);
+    auto err = model_->train(trainData_, args_->thread,
+			     t_start,  i,
+			     rate, rate - decrPerEpoch);
     printf("\n ---+++ %20s %4d Train error : %3.8f +++--- %c%c%c\n",
            "Epoch", i, err,
            0xe2, 0x98, 0x83);
