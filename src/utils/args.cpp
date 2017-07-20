@@ -223,7 +223,7 @@ void Args::printHelp() {
        << "\nThe following arguments for eval are optional:\n"
        << "  -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.\n"
        << "                   In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.\n"
-       << "  -predicitonFile  file path for save predictions. If not empty, top K predictions for each example will be saved.\n"
+       << "  -predictionFile  file path for save predictions. If not empty, top K predictions for each example will be saved.\n"
        << "  -K               if -predictionFile is not empty, top K predictions for each example will be saved.\n"
        <<  "\nThe following arguments are optional:\n"
        << "  -verbose         verbosity level [" << verbose << "]\n"
@@ -256,7 +256,7 @@ void Args::printArgs() {
 void Args::save(std::ostream& out) {
   out.write((char*) &(dim), sizeof(int));
   out.write((char*) &(epoch), sizeof(int));
-  out.write((char*) &(maxTrainTime), sizeof(int));
+  // out.write((char*) &(maxTrainTime), sizeof(int));
   out.write((char*) &(minCount), sizeof(int));
   out.write((char*) &(minCountLabel), sizeof(int));
   out.write((char*) &(maxNegSamples), sizeof(int));
@@ -272,7 +272,7 @@ void Args::save(std::ostream& out) {
 void Args::load(std::istream& in) {
   in.read((char*) &(dim), sizeof(int));
   in.read((char*) &(epoch), sizeof(int));
-  in.read((char*) &(maxTrainTime), sizeof(int));
+  // in.read((char*) &(maxTrainTime), sizeof(int));
   in.read((char*) &(minCount), sizeof(int));
   in.read((char*) &(minCountLabel), sizeof(int));
   in.read((char*) &(maxNegSamples), sizeof(int));
