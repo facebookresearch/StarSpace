@@ -90,6 +90,8 @@ void Args::parseArgs(int argc, char** argv) {
       basedoc = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-model") == 0) {
       model = string(argv[i + 1]);
+    } else if (strcmp(argv[i], "-initModel") == 0) {
+      initModel = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-fileFormat") == 0) {
       fileFormat = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-label") == 0) {
@@ -196,6 +198,7 @@ void Args::printHelp() {
        << "  -bucket          number of buckets [" << bucket << "]\n"
        << "  -label           labels prefix [" << label << "]\n"
        << "\nThe following arguments for training are optional:\n"
+       << "  -initModel       if not empty, it loads a previously trained model in -initModel and carry on training.\n"
        << "  -trainMode       takes value in [0, 1, 2, 3], see Training Mode Section. [" << trainMode << "]\n"
        << "  -fileFormat      currently support 'fastText' and 'labelDoc', see File Format Section. [" << fileFormat << "]\n"
        << "  -lr              learning rate [" << lr << "]\n"

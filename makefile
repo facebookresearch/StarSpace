@@ -10,7 +10,7 @@
 CXX = g++
 CXXFLAGS = -pthread -std=gnu++11
 
-BOOST_DIR = /usr/bin/boost_1_63_0/
+BOOST_DIR = /usr/bin/local/boost_1_63_0/
 GTEST_DIR = /usr/bin/googletest
 
 OBJS = normalize.o dict.o args.o proj.o parser.o data.o model.o starspace.o doc_parser.o doc_data.o utils.o
