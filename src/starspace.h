@@ -27,7 +27,7 @@ class StarSpace {
 
     void init();
     void initFromTsv();
-    void initFromSavedModel();
+    void initFromSavedModel(const std::string& filename);
 
     void train();
     void evaluate();

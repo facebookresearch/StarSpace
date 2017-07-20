@@ -22,6 +22,7 @@ class Args {
     std::string testFile;
     std::string predictionFile;
     std::string model;
+    std::string initModel;
     std::string fileFormat;
     std::string label;
     std::string basedoc;

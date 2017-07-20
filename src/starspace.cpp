@@ -65,12 +65,9 @@ void StarSpace::init() {
   parser_->resetDict(dict_);
   if (args_->debug) {dict_->save(cout);}
 
-  // init parser and laod trian data
+  // init train data class
   trainData_ = initData();
   trainData_->loadFromFile(args_->trainFile, parser_);
-  if (args_->debug) {
-    trainData_->save(cout);
-  }
 
   // init model with args and dict
   model_ = make_shared<EmbedModel>(args_, dict_);
@@ -79,14 +76,12 @@ void StarSpace::init() {
   if (!args_->validationFile.empty()) {
     validData_ = initData();
     validData_->loadFromFile(args_->validationFile, parser_);
-  } else {
-    validData_ = nullptr;
   }
 }
 
-void StarSpace::initFromSavedModel() {
+void StarSpace::initFromSavedModel(const string& filename) {
   cout << "Start to load a trained starspace model.\n";
-  std::ifstream in(args_->model, std::ifstream::binary);
+  std::ifstream in(filename, std::ifstream::binary);
   if (!in.is_open()) {
     std::cerr << "Model file cannot be opened for loading!" << std::endl;
     exit(EXIT_FAILURE);
@@ -111,11 +106,22 @@ void StarSpace::initFromSavedModel() {
   // init and load model
   model_ = make_shared<EmbedModel>(args_, dict_);
   model_->load(in);
+  cout << "Model loaded.\n";
 
   // init data parser
   initParser();
-  testData_ = initData();
-  cout << "Model loaded.\n";
+  if (args_->isTrain) {
+    trainData_ = initData();
+    trainData_->loadFromFile(args_->trainFile, parser_);
+    // set validation data
+    if (!args_->validationFile.empty()) {
+      validData_ = initData();
+      validData_->loadFromFile(args_->validationFile, parser_);
+    }
+  } else {
+    testData_ = initData();
+    testData_->loadFromFile(args_->testFile, parser_);
+  }
 }
 
 void StarSpace::initFromTsv() {
@@ -140,6 +146,7 @@ void StarSpace::initFromTsv() {
   // init data parser
   initParser();
   testData_ = initData();
+  testData_->loadFromFile(args_->testFile, parser_);
 }
 
 void StarSpace::train() {
@@ -250,8 +257,6 @@ void StarSpace::printDoc(ofstream& ofs, const vector<int32_t>& tokens) {
 }
 
 void StarSpace::evaluate() {
-  testData_->loadFromFile(args_->testFile, parser_);
-  if (args_->debug) {testData_->save(cout);}
   loadBaseDocs();
   int N = testData_->getSize();
 

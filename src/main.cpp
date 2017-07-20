@@ -21,7 +21,11 @@ int main(int argc, char** argv) {
 
   StarSpace sp(args);
   if (args->isTrain) {
-    sp.init();
+    if (!args->initModel.empty()) {
+      sp.initFromSavedModel(args->initModel);
+    } else {
+      sp.init();
+    }
     sp.train();
     sp.saveModel();
     sp.saveModelTsv();
@@ -29,7 +33,7 @@ int main(int argc, char** argv) {
     if (boost::algorithm::ends_with(args->model, ".tsv")) {
       sp.initFromTsv();
     } else {
-      sp.initFromSavedModel();
+      sp.initFromSavedModel(args->model);
     }
     sp.evaluate();
   }
