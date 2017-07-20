@@ -9,7 +9,7 @@ given a query entity/document or object, which is not necessarily the same type 
 items in the set.
 
 Use cases:
-- Ranking of sets of entities/documents or objects, e.g. ranking web documents.
+- Information retrieval: ranking of sets of entities/documents or objects, e.g. ranking web documents.
 - Content-based or Collaborative filtering-based Recommendation, e.g. recommending music or videos.
 - Text classification, or any other labeling task.
 - Embedding graphs, e.g. multi-relational graphs such as Freebase.
