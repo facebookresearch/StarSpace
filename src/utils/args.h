@@ -50,6 +50,7 @@ class Args {
     bool debug;
     bool adagrad;
     bool isTrain;
+    bool normalizeText;
 
     void parseArgs(int, char**);
     void printHelp();
