@@ -168,8 +168,9 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
         auto t_end = std::chrono::high_resolution_clock::now();
         auto t_epoch_spent =
 	  std::chrono::duration<double>(t_end-t_epoch_start).count();
-	int ex_left = (end - start) * (args_->epoch - epochs_done);
 	double ex_done_this_epoch = ip - indices.begin();
+	int ex_left = ((end - start) * (args_->epoch - epochs_done))
+	  - ex_done_this_epoch;
 	double ex_done = epochs_done * (end - start) + ex_done_this_epoch;
 	double time_per_ex = double(t_epoch_spent) / ex_done_this_epoch;
         int eta = int(time_per_ex * double(ex_left));
@@ -181,8 +182,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
        	int toth = int(tot_spent) / 3600;
         int totm = (tot_spent - toth * 3600) / 60;
         int tots = (tot_spent - toth * 3600 - totm * 60);
-
-        std::cerr << std::fixed;
+	std::cerr << std::fixed;
         std::cerr << "\rProgress: " << std::setprecision(1) << 100 * progress << "%";
         std::cerr << "  lr: " << std::setprecision(6) << rate;
         std::cerr << "  loss: " << std::setprecision(6) << losses[idx] / counts[idx];
