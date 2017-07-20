@@ -186,7 +186,11 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
         std::cerr << "\rProgress: " << std::setprecision(1) << 100 * progress << "%";
         std::cerr << "  lr: " << std::setprecision(6) << rate;
         std::cerr << "  loss: " << std::setprecision(6) << losses[idx] / counts[idx];
-        std::cerr << "  eta: " << std::setprecision(3) << etah << "h" << etam << "m" << etas << "s ";
+	if (eta < 60) {
+	  std::cerr << "  eta: <1min ";
+	} else {
+	  std::cerr << "  eta: " << std::setprecision(3) << etah << "h" << etam << "m";
+	}
 	std::cerr << "  tot: " << std::setprecision(3) << toth << "h" << totm << "m"  << tots << "s ";
         std::cerr << std::flush;
       }
