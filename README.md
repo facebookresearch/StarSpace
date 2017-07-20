@@ -10,7 +10,7 @@ items in the set.
 
 Use cases:
 - Information retrieval: ranking of sets of entities/documents or objects, e.g. ranking web documents.
-- Metric/similarity learning, e.g. sentence or document similarity.
+- Metric/similarity learning, e.g. learning sentence or document similarity.
 - Content-based or Collaborative filtering-based Recommendation, e.g. recommending music or videos.
 - Text classification, or any other labeling task.
 - Embedding graphs, e.g. multi-relational graphs such as Freebase.
