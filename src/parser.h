@@ -63,11 +63,11 @@ public:
 
   bool parse(
       const std::vector<std::string>& tokens,
-      ParseResults& rslt);
+      std::vector<int32_t>& rslt);
 
   bool parse(
       const std::vector<std::string>& tokens,
-      std::vector<int32_t>& rslt);
+      ParseResults& rslt);
 
   bool check(const ParseResults& example);
 
