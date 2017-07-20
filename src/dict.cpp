@@ -9,7 +9,6 @@
 
 #include "dict.h"
 #include "parser.h"
-#include "utils/normalize.h"
 
 #include <assert.h>
 #include <algorithm>
@@ -147,7 +146,6 @@ void Dictionary::readFromFile(
     vector<string> tokens;
     parser->parseForDict(line, tokens);
     for (auto token : tokens) {
-      normalize_text(token);
       insert(token);
       if ((ntokens_ % 1000000 == 0) && args_->verbose) {
         std::cerr << "\rRead " << ntokens_  / 1000000 << "M words" << std::flush;

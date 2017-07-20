@@ -36,6 +36,7 @@ Args::Args() {
   verbose = false;
   debug = false;
   adagrad = true;
+  normalizeText = true;
   trainMode = 0;
   fileFormat = "fastText";
   label = "__label__";
@@ -143,6 +144,8 @@ void Args::parseArgs(int argc, char** argv) {
       debug = (string(argv[i + 1]) == "true");
     } else if (strcmp(argv[i], "-adagrad") == 0) {
       adagrad = (string(argv[i + 1]) == "true");
+    } else if (strcmp(argv[i], "-normalizeText") == 0) {
+      normalizeText = (string(argv[i + 1]) == "true");
     } else {
       cerr << "Unknown argument: " << argv[i] << std::endl;
       printHelp();
@@ -226,6 +229,7 @@ void Args::printHelp() {
        << "  -predictionFile  file path for save predictions. If not empty, top K predictions for each example will be saved.\n"
        << "  -K               if -predictionFile is not empty, top K predictions for each example will be saved.\n"
        <<  "\nThe following arguments are optional:\n"
+       << "  -normalizeText   whether to run basic text preprocess for input files [" << normalizeText << "]\n"
        << "  -verbose         verbosity level [" << verbose << "]\n"
        << "  -debug           whether it's in debug mode [" << debug << "]\n"
        << std::endl;
@@ -250,7 +254,8 @@ void Args::printArgs() {
        << "bucket: " << bucket << endl
        << "adagrad: " << adagrad << endl
        << "trainMode: " << trainMode << endl
-       << "fileFormat: " << fileFormat << endl;
+       << "fileFormat: " << fileFormat << endl
+       << "normalizeText: " << normalizeText << endl;
 }
 
 void Args::save(std::ostream& out) {
