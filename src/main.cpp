@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
     } else {
       sp.initFromSavedModel(args->model);
       cout << "------Loaded model args:\n";
-      args->trainMode = 3;
+      // TODO: add text mode a la ? args->trainMode = 3;
       args->printArgs();
     }
     sp.evaluate();
