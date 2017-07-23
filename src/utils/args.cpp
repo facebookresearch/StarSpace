@@ -43,6 +43,7 @@ Args::Args() {
   ngrams = 1;
   loss = "hinge";
   similarity = "cosine";
+  isTrain = false;
 }
 
 void Args::parseArgs(int argc, char** argv) {
