@@ -119,8 +119,10 @@ void StarSpace::initFromSavedModel(const string& filename) {
       validData_->loadFromFile(args_->validationFile, parser_);
     }
   } else {
-    testData_ = initData();
-    testData_->loadFromFile(args_->testFile, parser_);
+    if (args_->testFile != "") {
+      testData_ = initData();
+      testData_->loadFromFile(args_->testFile, parser_);
+    }
   }
 }
 
