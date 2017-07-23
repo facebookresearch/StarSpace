@@ -182,7 +182,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
 	double progress = ex_done / (ex_done + ex_left);
         if (eta > args_->maxTrainTime - tot_spent) {
           eta = args_->maxTrainTime - tot_spent;
-          progress = tot / (eta + tot);
+          progress = tot_spent / (eta + tot_spent);
         }
         int etah = eta / 3600;
         int etam = (eta - etah * 3600) / 60;
@@ -191,7 +191,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
         int totm = (tot_spent - toth * 3600) / 60;
         int tots = (tot_spent - toth * 3600 - totm * 60);
 	std::cerr << std::fixed;
-        std::cerr << "\rEpoch: " << std::setprecision(1) << 100 * epoch_progress << "%";
+        std::cerr << "\rEpoch:  " << std::setprecision(1) << 100 * epoch_progress << "%";
         std::cerr << "  lr: " << std::setprecision(6) << rate;
         std::cerr << "  loss: " << std::setprecision(6) << losses[idx] / counts[idx];
 	if (eta < 60) {

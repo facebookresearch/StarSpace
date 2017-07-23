@@ -23,6 +23,8 @@ int main(int argc, char** argv) {
   if (args->isTrain) {
     if (!args->initModel.empty()) {
       sp.initFromSavedModel(args->initModel);
+      cout << "------Loaded model args:\n";
+      args->printArgs();
     } else {
       sp.init();
     }
@@ -34,6 +36,9 @@ int main(int argc, char** argv) {
       sp.initFromTsv();
     } else {
       sp.initFromSavedModel(args->model);
+      cout << "------Loaded model args:\n";
+      args->trainMode = 3;
+      args->printArgs();
     }
     sp.evaluate();
   }
