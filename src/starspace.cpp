@@ -126,10 +126,10 @@ void StarSpace::initFromSavedModel(const string& filename) {
   }
 }
 
-void StarSpace::initFromTsv() {
+void StarSpace::initFromTsv(const string& filename) {
   cout << "Start to load a trained embedding model in tsv format.\n";
   assert(args_ != nullptr);
-  ifstream in(args_->model);
+  ifstream in(filename);
   if (!in.is_open()) {
     std::cerr << "Model file cannot be opened for loading!" << std::endl;
     exit(EXIT_FAILURE);
@@ -143,12 +143,17 @@ void StarSpace::initFromTsv() {
 
   // load Model
   model_ = make_shared<EmbedModel>(args_, dict_);
-  model_->loadTsv(args_->model);
+  model_->loadTsv(filename);
 
   // init data parser
   initParser();
-  testData_ = initData();
-  testData_->loadFromFile(args_->testFile, parser_);
+  if (args_->isTrain) {
+    trainData_ = initData();
+    trainData_->loadFromFile(filename, parser_);
+  } else {
+    testData_ = initData();
+    testData_->loadFromFile(filename, parser_);
+  }
 }
 
 void StarSpace::train() {
