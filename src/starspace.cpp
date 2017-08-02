@@ -142,7 +142,7 @@ void StarSpace::initFromTsv(const string& filename) {
 
   // build dict
   dict_ = make_shared<Dictionary>(args_);
-  dict_->loadDictFromModel(args_->model);
+  dict_->loadDictFromModel(filename);
   if (args_->debug) {dict_->save(cout);}
 
   // load Model
