@@ -40,6 +40,23 @@ void StarSpace::initParser() {
   }
 }
 
+void StarSpace::initDataHandler() {
+  if (args_->isTrain) {
+    trainData_ = initData();
+    trainData_->loadFromFile(args_->trainFile, parser_);
+    // set validation data
+    if (!args_->validationFile.empty()) {
+      validData_ = initData();
+      validData_->loadFromFile(args_->validationFile, parser_);
+    }
+  } else {
+    if (args_->testFile != "") {
+      testData_ = initData();
+      testData_->loadFromFile(args_->testFile, parser_);
+    }
+  }
+}
+
 shared_ptr<InternDataHandler> StarSpace::initData() {
   if (args_->fileFormat == "fastText") {
     return make_shared<InternDataHandler>(args_);
@@ -110,26 +127,13 @@ void StarSpace::initFromSavedModel(const string& filename) {
 
   // init data parser
   initParser();
-  if (args_->isTrain) {
-    trainData_ = initData();
-    trainData_->loadFromFile(args_->trainFile, parser_);
-    // set validation data
-    if (!args_->validationFile.empty()) {
-      validData_ = initData();
-      validData_->loadFromFile(args_->validationFile, parser_);
-    }
-  } else {
-    if (args_->testFile != "") {
-      testData_ = initData();
-      testData_->loadFromFile(args_->testFile, parser_);
-    }
-  }
+  initDataHandler();
 }
 
-void StarSpace::initFromTsv() {
+void StarSpace::initFromTsv(const string& filename) {
   cout << "Start to load a trained embedding model in tsv format.\n";
   assert(args_ != nullptr);
-  ifstream in(args_->model);
+  ifstream in(filename);
   if (!in.is_open()) {
     std::cerr << "Model file cannot be opened for loading!" << std::endl;
     exit(EXIT_FAILURE);
@@ -138,17 +142,16 @@ void StarSpace::initFromTsv() {
 
   // build dict
   dict_ = make_shared<Dictionary>(args_);
-  dict_->loadDictFromModel(args_->model);
+  dict_->loadDictFromModel(filename);
   if (args_->debug) {dict_->save(cout);}
 
   // load Model
   model_ = make_shared<EmbedModel>(args_, dict_);
-  model_->loadTsv(args_->model);
+  model_->loadTsv(filename);
 
   // init data parser
   initParser();
-  testData_ = initData();
-  testData_->loadFromFile(args_->testFile, parser_);
+  initDataHandler();
 }
 
 void StarSpace::train() {
