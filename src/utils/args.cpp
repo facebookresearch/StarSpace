@@ -273,6 +273,9 @@ void Args::save(std::ostream& out) {
   size_t size = fileFormat.size();
   out.write((char*) &(size), sizeof(size_t));
   out.write((char*) &(fileFormat[0]), size);
+  size = similarity.size();
+  out.write((char*) &(size), sizeof(size_t));
+  out.write((char*) &(similarity[0]), size);
 }
 
 void Args::load(std::istream& in) {
@@ -290,6 +293,9 @@ void Args::load(std::istream& in) {
   in.read((char*) &(size), sizeof(size_t));
   fileFormat.resize(size);
   in.read((char*) &(fileFormat[0]), size);
+  in.read((char*) &(size), sizeof(size_t));
+  similarity.resize(size);
+  in.read((char*) &(similarity[0]), size);
 }
 
 }
