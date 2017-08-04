@@ -44,19 +44,13 @@ make
 ./starspace train \
   -trainFile ${DATADIR}/${DATASET}/fb15k.train \
   -model ${MODELDIR}/fb15k \
-  -initRandSd 0.01 \
   -adagrad false \
-  -ngrams 1 \
-  -bucket 10000000 \
-  -margin 0.5 \
+  -margin 0.05 \
   -lr 0.05 \
-  -minCount 1 \
-  -minCountLabel 1 \
-  -epoch 50 \
+  -epoch 20 \
   -thread 40 \
   -dim 50 \
-  -negSearchLimit 1000 \
-  -maxNegSamples 10 \
+  -negSearchLimit 100 \
   -trainMode 4 \
   -label "/m/" \
   -similarity "dot" \
