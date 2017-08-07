@@ -51,9 +51,14 @@ void EmbedModel::initModelWeights() {
       new SparseLinear<Real>({num_lhs, args_->dim},args_->initRandSd)
     );
 
-  // currently do not support different lhs / rhs embedding matrix
-  // will add support later
-  RHSEmbeddings_ = LHSEmbeddings_;
+  if (args_->shareEmb) {
+    RHSEmbeddings_ = LHSEmbeddings_;
+  } else {
+    RHSEmbeddings_ =
+      std::shared_ptr<SparseLinear<Real>>(
+        new SparseLinear<Real>({num_lhs, args_->dim},args_->initRandSd)
+      );
+  }
 
   if (args_->adagrad) {
     LHSUpdates_.resize(LHSEmbeddings_->numRows());
@@ -694,11 +699,18 @@ void EmbedModel::saveTsv(ostream& out, const char sep) const {
 
 void EmbedModel::save(ostream& out) const {
   LHSEmbeddings_->write(out);
+  if (!args_->shareEmb) {
+    RHSEmbeddings_->write(out);
+  }
 }
 
 void EmbedModel::load(ifstream& in) {
   LHSEmbeddings_.reset(new SparseLinear<Real>(in));
-  RHSEmbeddings_ = LHSEmbeddings_;
+  if (args_->shareEmb) {
+    RHSEmbeddings_ = LHSEmbeddings_;
+  } else {
+    RHSEmbeddings_.reset(new SparseLinear<Real>(in));
+  }
 }
 
 }
