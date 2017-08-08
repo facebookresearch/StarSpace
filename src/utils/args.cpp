@@ -45,6 +45,7 @@ Args::Args() {
   loss = "hinge";
   similarity = "cosine";
   isTrain = false;
+  shareEmb = true;
 }
 
 void Args::parseArgs(int argc, char** argv) {
@@ -145,6 +146,8 @@ void Args::parseArgs(int argc, char** argv) {
       debug = (string(argv[i + 1]) == "true");
     } else if (strcmp(argv[i], "-adagrad") == 0) {
       adagrad = (string(argv[i + 1]) == "true");
+    } else if (strcmp(argv[i], "-shareEmb") == 0) {
+      shareEmb = (string(argv[i + 1]) == "true");
     } else if (strcmp(argv[i], "-normalizeText") == 0) {
       normalizeText = (string(argv[i + 1]) == "true");
     } else {
@@ -270,6 +273,7 @@ void Args::save(std::ostream& out) {
   out.write((char*) &(ngrams), sizeof(int));
   out.write((char*) &(bucket), sizeof(int));
   out.write((char*) &(trainMode), sizeof(int));
+  out.write((char*) &(shareEmb), sizeof(bool));
   size_t size = fileFormat.size();
   out.write((char*) &(size), sizeof(size_t));
   out.write((char*) &(fileFormat[0]), size);
@@ -289,6 +293,7 @@ void Args::load(std::istream& in) {
   in.read((char*) &(ngrams), sizeof(int));
   in.read((char*) &(bucket), sizeof(int));
   in.read((char*) &(trainMode), sizeof(int));
+  in.read((char*) &(shareEmb), sizeof(bool));
   size_t size;
   in.read((char*) &(size), sizeof(size_t));
   fileFormat.resize(size);
