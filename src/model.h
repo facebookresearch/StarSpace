@@ -112,9 +112,9 @@ public:
     if (ws.size()) retval.matrix /= ws.size();
   }
 
-  void loadTsv(std::istream& in, const std::string sep = "\t");
-  void loadTsv(const char* fname, const std::string sep = "\t");
-  void loadTsv(const std::string& fname, const std::string sep = "\t") {
+  void loadTsv(std::istream& in, const std::string sep = "\t ");
+  void loadTsv(const char* fname, const std::string sep = "\t ");
+  void loadTsv(const std::string& fname, const std::string sep = "\t ") {
     return loadTsv(fname.c_str(), sep);
   }
 

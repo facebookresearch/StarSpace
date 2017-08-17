@@ -21,7 +21,7 @@ void normalize_text(std::string& str) {
    * Don't normalize super-short strings; "747" means "747", NwA stays
    * NwA, etc.
    */
-  if (str.size() <= 3) return;
+  //if (str.size() <= 3) return;
 
   /*
    * We categorize longer strings into the following buckets:
