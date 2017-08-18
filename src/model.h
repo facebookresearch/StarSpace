@@ -91,26 +91,11 @@ public:
     return kNN(RHSEmbeddings_, point, numSim);
   }
 
-  Matrix<Real>
-  projectRHS(std::vector<int32_t> ws) {
-    Matrix<Real> retval;
-    RHSEmbeddings_->forward(ws, retval);
-    if (ws.size()) retval.matrix /= ws.size();
-    return retval;
-  }
+  Matrix<Real> projectRHS(std::vector<int32_t> ws);
+  Matrix<Real> projectLHS(std::vector<int32_t> ws);
 
-  Matrix<Real>
-  projectLHS(std::vector<int32_t> ws) {
-    Matrix<Real> retval;
-    LHSEmbeddings_->forward(ws, retval);
-    if (ws.size()) retval.matrix /= ws.size();
-    return retval;
-  }
-
-  void projectLHS(std::vector<int32_t> ws, Matrix<Real>& retval) {
-    LHSEmbeddings_->forward(ws, retval);
-    if (ws.size()) retval.matrix /= ws.size();
-  }
+  void projectLHS(std::vector<int32_t> ws, Matrix<Real>& retval);
+  void projectRHS(std::vector<int32_t> ws, Matrix<Real>& retval);
 
   void loadTsv(std::istream& in, const std::string sep = "\t ");
   void loadTsv(const char* fname, const std::string sep = "\t ");

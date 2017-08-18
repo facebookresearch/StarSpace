@@ -34,6 +34,7 @@ class Args {
     double norm;
     double margin;
     double initRandSd;
+    double p;
     size_t dim;
     int epoch;
     int maxTrainTime;

@@ -84,6 +84,36 @@ Real norm2(Matrix<Real>::Row a) {
   return std::max(std::numeric_limits<Real>::epsilon(), retval);
 }
 
+Matrix<Real> EmbedModel::projectRHS(std::vector<int32_t> ws) {
+  Matrix<Real> retval;
+  projectRHS(ws, retval);
+  return retval;
+}
+
+Matrix<Real> EmbedModel::projectLHS(std::vector<int32_t> ws) {
+  Matrix<Real> retval;
+  projectLHS(ws, retval);
+  return retval;
+}
+
+void EmbedModel::projectLHS(std::vector<int32_t> ws, Matrix<Real>& retval) {
+  LHSEmbeddings_->forward(ws, retval);
+  if (ws.size()) {
+    auto norm = (args_->similarity == "dot") ?
+      pow(ws.size(), args_->p) : norm2(retval);
+    retval.matrix /= norm;
+  }
+}
+
+void EmbedModel::projectRHS(std::vector<int32_t> ws, Matrix<Real>& retval) {
+  RHSEmbeddings_->forward(ws, retval);
+  if (ws.size()) {
+    auto norm = (args_->similarity == "dot") ?
+      pow(ws.size(), args_->p) : norm2(retval);
+    retval.matrix /= norm;
+  }
+}
+
 Real EmbedModel::train(shared_ptr<InternDataHandler> data,
                        int numThreads,
 		       std::chrono::time_point<std::chrono::high_resolution_clock> t_start,
@@ -278,17 +308,11 @@ float EmbedModel::trainOne(shared_ptr<InternDataHandler> data,
 
   Matrix<Real> lhs, rhsP, rhsN;
 
-  LHSEmbeddings_->forward(items, lhs);
-  // normalize queries.
-  auto norm = args_->similarity == "dot" ? items.size() : norm2(lhs);
-  lhs.matrix /= norm;
+  projectLHS(items, lhs);
   check(lhs);
   auto cols = lhs.numCols();
 
-  RHSEmbeddings_->forward(labels, rhsP);
-  // normalize labels
-  norm = args_->similarity == "dot" ? labels.size() : norm2(rhsP);
-  rhsP.matrix /= norm;
+  projectRHS(labels, rhsP);
   check(rhsP);
 
   const auto posSim = similarity(lhs, rhsP);
@@ -324,9 +348,7 @@ float EmbedModel::trainOne(shared_ptr<InternDataHandler> data,
       data->getRandomRHS(negLabels);
     } while (negLabels == labels);
 
-    RHSEmbeddings_->forward(negLabels, rhsN);
-    norm = args_->similarity == "dot" ? negLabels.size() : norm2(rhsN);
-    rhsN.matrix /= norm;
+    projectRHS(negLabels, rhsN);
 
     check(rhsN);
     auto thisLoss = tripleLoss(posSim, similarity(lhs, rhsN));
@@ -386,13 +408,11 @@ float EmbedModel::trainNLL(shared_ptr<InternDataHandler> data,
 
   using namespace boost::numeric::ublas;
 
-  LHSEmbeddings_->forward(items, lhs);
-  lhs.matrix /= items.size();
+  projectLHS(items, lhs);
   check(lhs);
   auto cols = lhs.numCols();
 
-  RHSEmbeddings_->forward(labels, rhsP);
-  rhsP.matrix /= labels.size();
+  projectRHS(labels, rhsP);
   check(rhsP);
 
   // label is treated as class 0
@@ -409,8 +429,7 @@ float EmbedModel::trainNLL(shared_ptr<InternDataHandler> data,
     do {
       data->getRandomRHS(negLabels);
     } while (negLabels == labels);
-    RHSEmbeddings_->forward(negLabels, rhsN);
-    rhsN.matrix /= negLabels.size();
+    projectRHS(negLabels, rhsN);
     check(rhsN);
     negClassVec.push_back(rhsN);
     negLabelsBatch.push_back(negLabels);

@@ -24,6 +24,7 @@ Args::Args() {
   norm = 1.0;
   margin = 0.05;
   initRandSd = 0.001;
+  p = 0.5;
   dim = 10;
   epoch = 5;
   maxTrainTime = 60*60*24*100;
@@ -108,6 +109,8 @@ void Args::parseArgs(int argc, char** argv) {
       similarity = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-lr") == 0) {
       lr = atof(argv[i + 1]);
+    } else if (strcmp(argv[i], "-p") == 0) {
+      p = atof(argv[i + 1]);
     } else if (strcmp(argv[i], "-termLr") == 0) {
       termLr = atof(argv[i + 1]);
     } else if (strcmp(argv[i], "-norm") == 0) {
