@@ -147,7 +147,7 @@ void StarSpace::initFromTsv(const string& filename) {
 
   // load Model
   model_ = make_shared<EmbedModel>(args_, dict_);
-  model_->loadTsv(filename);
+  model_->loadTsv(filename, "\t ");
 
   // init data parser
   initParser();
