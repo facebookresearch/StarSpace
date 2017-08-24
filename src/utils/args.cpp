@@ -24,6 +24,7 @@ Args::Args() {
   norm = 1.0;
   margin = 0.05;
   initRandSd = 0.001;
+  dropout = 0.0;
   p = 0.5;
   dim = 10;
   epoch = 5;
@@ -119,6 +120,8 @@ void Args::parseArgs(int argc, char** argv) {
       margin = atof(argv[i + 1]);
     } else if (strcmp(argv[i], "-initRandSd") == 0) {
       initRandSd = atof(argv[i + 1]);
+    } else if (strcmp(argv[i], "-dropout") == 0) {
+      dropout = atof(argv[i + 1]);
     } else if (strcmp(argv[i], "-dim") == 0) {
       dim = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-epoch") == 0) {
@@ -262,7 +265,8 @@ void Args::printArgs() {
        << "adagrad: " << adagrad << endl
        << "trainMode: " << trainMode << endl
        << "fileFormat: " << fileFormat << endl
-       << "normalizeText: " << normalizeText << endl;
+       << "normalizeText: " << normalizeText << endl
+       << "dropout: " << dropout << endl;
 }
 
 void Args::save(std::ostream& out) {

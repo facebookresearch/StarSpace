@@ -53,8 +53,26 @@ void LayerDataHandler::loadFromFile(
   size_ = examples_.size();
 }
 
-void LayerDataHandler::insert(vector<int32_t>& rslt, const vector<int32_t>& ex) const {
-  rslt.insert(rslt.end(), ex.begin(), ex.end());
+void LayerDataHandler::insert(
+    vector<int32_t>& rslt,
+    const vector<int32_t>& ex,
+    float dropout) const {
+
+  if (dropout < 1e-8) {
+    rslt.insert(rslt.end(), ex.begin(), ex.end());
+  } else {
+    // dropout enabled
+    auto rnd = [&] {
+      static __thread unsigned int rState;
+      return rand_r(&rState);
+    };
+    for (const auto& it : ex) {
+      auto p = (double)(rnd()) / RAND_MAX;
+      if (p > dropout) {
+        rslt.push_back(it);
+      }
+    }
+  }
 }
 
 void LayerDataHandler::convert(
@@ -88,9 +106,9 @@ void LayerDataHandler::convert(
       auto idx = rand() % example.RHSFeatures.size();
       for (int i = 0; i < example.RHSFeatures.size(); i++) {
         if (i == idx) {
-          insert(rslt.LHSTokens, example.RHSFeatures[i]);
+          insert(rslt.LHSTokens, example.RHSFeatures[i], 0.0);
         } else {
-          insert(rslt.RHSTokens, example.RHSFeatures[i]);
+          insert(rslt.RHSTokens, example.RHSFeatures[i], args_->dropout);
         }
       }
     } else
@@ -123,7 +141,7 @@ void LayerDataHandler::getRandomRHS(vector<int32_t>& result) const {
     // pick one random, the rest is rhs features
     for (int i = 0; i < ex.RHSFeatures.size(); i++) {
       if (i != r) {
-        insert(result, ex.RHSFeatures[i]);
+        insert(result, ex.RHSFeatures[i], args_->dropout);
       }
     }
   } else {
