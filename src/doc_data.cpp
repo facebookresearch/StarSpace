@@ -57,6 +57,19 @@ void LayerDataHandler::insert(vector<int32_t>& rslt, const vector<int32_t>& ex) 
   rslt.insert(rslt.end(), ex.begin(), ex.end());
 }
 
+void LayerDataHandler::getWordExamples(
+    int idx,
+    vector<ParseResults>& rslts) const {
+
+  assert(idx < size_);
+  const auto& example = examples_[idx];
+  assert(example.RHSFeatures.size() > 0);
+
+  // take one random sentence and train on word
+  auto r = rand() % example.RHSFeatures.size();
+  InternDataHandler::getWordExamples(example.RHSFeatures[r], rslts);
+}
+
 void LayerDataHandler::convert(
     const ParseResults& example,
     ParseResults& rslt) const {
@@ -106,9 +119,9 @@ void LayerDataHandler::convert(
       insert(rslt.RHSTokens, example.RHSFeatures[idx2]);
     } else
     if (args_->trainMode == 4) {
-        // the first one as lhs and the second one as rhs
-        insert(rslt.LHSTokens, example.RHSFeatures[0]);
-        insert(rslt.RHSTokens, example.RHSFeatures[1]);
+      // the first one as lhs and the second one as rhs
+      insert(rslt.LHSTokens, example.RHSFeatures[0]);
+      insert(rslt.RHSTokens, example.RHSFeatures[1]);
     }
   }
 }
@@ -126,6 +139,11 @@ void LayerDataHandler::getRandomRHS(vector<int32_t>& result) const {
         insert(result, ex.RHSFeatures[i]);
       }
     }
+  } else
+  if (args_->trainMode == 5) {
+    // pick random word
+    int wid = rand() % ex.RHSFeatures[r].size();
+    result.push_back(ex.RHSFeatures[r][wid]);
   } else {
     insert(result, ex.RHSFeatures[r]);
   }
