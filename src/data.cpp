@@ -119,6 +119,35 @@ void InternDataHandler::convert(
   }
 }
 
+void InternDataHandler::getWordExamples(
+    const vector<int32_t>& doc,
+    vector<ParseResults>& rslts) const {
+
+  rslts.clear();
+  for (int widx = 0; widx < doc.size(); widx++) {
+    ParseResults rslt;
+    rslt.LHSTokens.clear();
+    rslt.RHSTokens.clear();
+    rslt.RHSTokens.push_back(doc[widx]);
+    for (int i = max(widx - args_->ws, 0);
+         i < min(size_t(widx + args_->ws), doc.size()); i++) {
+      if (i != widx) {
+        rslt.LHSTokens.push_back(doc[i]);
+      }
+    }
+    rslts.emplace_back(rslt);
+  }
+}
+
+void InternDataHandler::getWordExamples(
+    int idx,
+    vector<ParseResults>& rslts) const {
+
+  assert(idx < size_);
+  const auto& example = examples_[idx];
+  getWordExamples(example.LHSTokens, rslts);
+}
+
 void InternDataHandler::addExample(const ParseResults& example) {
   examples_.push_back(example);
   size_++;
@@ -195,4 +224,4 @@ void InternDataHandler::save(std::ostream& out) {
   }
 }
 
-} // namespace starspace
+} // unamespace starspace
