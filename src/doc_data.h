@@ -29,7 +29,9 @@ class LayerDataHandler : public InternDataHandler {
 public:
   explicit LayerDataHandler(std::shared_ptr<Args> args);
 
-  void convert(const ParseResults& example, ParseResults& rslt) const override;
+  void convert(const ParseResults& example, ParseResults& rslts) const override;
+
+  void getWordExamples(int idx, std::vector<ParseResults>& rslts) const override;
 
   void loadFromFile(const std::string& file,
                     std::shared_ptr<DataParser> parser) override;

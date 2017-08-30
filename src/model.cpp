@@ -158,38 +158,46 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
     counts[idx] = 0;
     for (auto ip = start; ip < end; ip++) {
       auto i = *ip;
-      ParseResults s;
-      data->getExampleById(i, s);
-      if (s.RHSTokens.size() == 0 || s.LHSTokens.size() == 0) {
-        continue;
-      }
-
-      if (args_->debug) {
-        auto printVec = [&](const vector<int32_t>& vec) {
-          cout << "vec : ";
-          for (auto v : vec) {cout << v << ' ';}
-          cout << endl;
-        };
-
-        printVec(s.LHSTokens);
-        printVec(s.RHSTokens);
-        cout << endl;
-      }
-
-      float thisLoss;
-      if (args_->loss == "softmax") {
-        thisLoss = trainNLL(
-          data,
-          s.LHSTokens, s.RHSTokens,
-          negSearchLimit, rate
-        );
+      vector<ParseResults> exs;
+      if (args_->trainMode == 5) {
+        data->getWordExamples(i, exs);
       } else {
-        // default is hinge loss
-        thisLoss = trainOne(
-          data,
-          s.LHSTokens, s.RHSTokens,
-          negSearchLimit, rate
-        );
+        ParseResults ex;
+        data->getExampleById(i, ex);
+        exs.emplace_back(ex);
+      }
+      float thisLoss = 0.0;
+      for (auto& s : exs) {
+        if (s.RHSTokens.size() == 0 || s.LHSTokens.size() == 0) {
+          continue;
+        }
+
+        if (args_->debug) {
+          auto printVec = [&](const vector<int32_t>& vec) {
+            cout << "vec : ";
+            for (auto v : vec) {cout << v << ' ';}
+            cout << endl;
+          };
+
+          printVec(s.LHSTokens);
+          printVec(s.RHSTokens);
+          cout << endl;
+        }
+
+        if (args_->loss == "softmax") {
+          thisLoss += trainNLL(
+            data,
+            s.LHSTokens, s.RHSTokens,
+            negSearchLimit, rate
+          );
+        } else {
+          // default is hinge loss
+          thisLoss += trainOne(
+            data,
+            s.LHSTokens, s.RHSTokens,
+            negSearchLimit, rate
+          );
+        }
       }
 
       assert(thisLoss >= 0.0);
@@ -202,19 +210,19 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
       if (amMaster && ((ip - indices.begin()) % 100 == 99 || (ip + 1) == end)) {
         auto t_end = std::chrono::high_resolution_clock::now();
         auto t_epoch_spent =
-	  std::chrono::duration<double>(t_end-t_epoch_start).count();
-	double ex_done_this_epoch = ip - indices.begin();
-	int ex_left = ((end - start) * (args_->epoch - epochs_done))
-	  - ex_done_this_epoch;
-	double ex_done = epochs_done * (end - start) + ex_done_this_epoch;
-	double time_per_ex = double(t_epoch_spent) / ex_done_this_epoch;
+          std::chrono::duration<double>(t_end-t_epoch_start).count();
+        double ex_done_this_epoch = ip - indices.begin();
+        int ex_left = ((end - start) * (args_->epoch - epochs_done))
+                      - ex_done_this_epoch;
+        double ex_done = epochs_done * (end - start) + ex_done_this_epoch;
+        double time_per_ex = double(t_epoch_spent) / ex_done_this_epoch;
         int eta = int(time_per_ex * double(ex_left));
-	auto tot_spent = std::chrono::duration<double>(t_end-t_start).count();
-	if (tot_spent > args_->maxTrainTime) {
-	  break;
-	}
-	double epoch_progress = ex_done_this_epoch / (end - start);
-	double progress = ex_done / (ex_done + ex_left);
+        auto tot_spent = std::chrono::duration<double>(t_end-t_start).count();
+        if (tot_spent > args_->maxTrainTime) {
+          break;
+        }
+        double epoch_progress = ex_done_this_epoch / (end - start);
+        double progress = ex_done / (ex_done + ex_left);
         if (eta > args_->maxTrainTime - tot_spent) {
           eta = args_->maxTrainTime - tot_spent;
           progress = tot_spent / (eta + tot_spent);
@@ -222,19 +230,19 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
         int etah = eta / 3600;
         int etam = (eta - etah * 3600) / 60;
         int etas = (eta - etah * 3600 - etam * 60);
-       	int toth = int(tot_spent) / 3600;
+        int toth = int(tot_spent) / 3600;
         int totm = (tot_spent - toth * 3600) / 60;
         int tots = (tot_spent - toth * 3600 - totm * 60);
-	std::cerr << std::fixed;
+        std::cerr << std::fixed;
         std::cerr << "\rEpoch: " << std::setprecision(1) << 100 * epoch_progress << "%";
         std::cerr << "  lr: " << std::setprecision(6) << rate;
         std::cerr << "  loss: " << std::setprecision(6) << losses[idx] / counts[idx];
-	if (eta < 60) {
-	  std::cerr << "  eta: <1min ";
-	} else {
-	  std::cerr << "  eta: " << std::setprecision(3) << etah << "h" << etam << "m";
-	}
-	std::cerr << "  tot: " << std::setprecision(3) << toth << "h" << totm << "m"  << tots << "s ";
+        if (eta < 60) {
+          std::cerr << "  eta: <1min ";
+        } else {
+          std::cerr << "  eta: " << std::setprecision(3) << etah << "h" << etam << "m";
+        }
+        std::cerr << "  tot: " << std::setprecision(3) << toth << "h" << totm << "m"  << tots << "s ";
         std::cerr << " (" << std::setprecision(1) << 100 * progress << "%)";
         std::cerr << std::flush;
       }

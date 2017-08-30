@@ -1,9 +1,9 @@
 // Copyright 2004-, Facebook, Inc. All Rights Reserved.
 
-/* This is the basic class of internal data handler. 
- * It loads data from file and stores it in internal format for easy access 
- * at training/testing time. 
- * 
+/* This is the basic class of internal data handler.
+ * It loads data from file and stores it in internal format for easy access
+ * at training/testing time.
+ *
  * It also provides random RHS sampling for negative sampling in training.
  */
 
@@ -25,11 +25,17 @@ public:
                             std::shared_ptr<DataParser> parser);
 
   virtual void convert(const ParseResults& example, ParseResults& rslt) const;
-  
+
   virtual void getRandomRHS(std::vector<int32_t>& results) const;
-  
+
   virtual void save(std::ostream& out);
-  
+
+  virtual void getWordExamples(int idx, std::vector<ParseResults>& rslt) const;
+
+  void getWordExamples(
+      const std::vector<int32_t>& doc,
+      std::vector<ParseResults>& rslt) const;
+
   void addExample(const ParseResults& example);
 
   void getExampleById(int32_t idx, ParseResults& rslt) const;

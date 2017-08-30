@@ -35,9 +35,11 @@ class Args {
     double margin;
     double initRandSd;
     double p;
-    double dropout;
+    double dropoutLHS;
+    double dropoutRHS;
     size_t dim;
     int epoch;
+    int ws;
     int maxTrainTime;
     int thread;
     int maxNegSamples;
