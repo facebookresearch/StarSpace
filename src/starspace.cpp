@@ -284,6 +284,10 @@ void StarSpace::printDoc(ofstream& ofs, const vector<int32_t>& tokens) {
 }
 
 void StarSpace::evaluate() {
+  // set dropout probability to 0 in test case
+  args_->dropoutLHS = 0.0;
+  args_->dropoutRHS = 0.0;
+
   loadBaseDocs();
   int N = testData_->getSize();
 

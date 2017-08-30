@@ -41,7 +41,10 @@ public:
   void save(std::ostream& out) override;
 
 private:
-  void insert(std::vector<int32_t>& rslt, const std::vector<int32_t>& ex) const;
+  void insert(
+      std::vector<int32_t>& rslt,
+      const std::vector<int32_t>& ex,
+      float dropout = 0.0) const;
 
 };
 

@@ -17,7 +17,7 @@
 namespace starspace {
 
 void normalize_text(std::string& str) {
-  /*
+   /*
    * We categorize longer strings into the following buckets:
    *
    * 1. All punctuation-and-numeric. Things in this bucket get
