@@ -1,3 +1,5 @@
+<p align="center"><img width="20%" src="examples/funkstar02.png" /></p>
+
 # StarSpace
 
 StarSpace is a library for efficient learning of entity representations from relations among collections of discrete entities. 
