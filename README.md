@@ -1,4 +1,4 @@
-<p align="center"><img width="20%" src="examples/funkstar02.png" /></p>
+<p align="center"><img width="15%" src="examples/starspace.png" /></p>
 
 # StarSpace
 
