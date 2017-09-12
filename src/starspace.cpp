@@ -245,6 +245,8 @@ Metrics StarSpace::evaluateOne(
 
   auto lhsM = model_->projectLHS(lhs);
   auto rhsM = model_->projectRHS(rhs);
+  // Our evaluation function currently assumes there is only one correct label.
+  // TODO: generalize this to the multilabel case.
   auto score = model_->similarity(lhsM, rhsM);
 
   int rank = 1;
