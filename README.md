@@ -79,7 +79,7 @@ StarSpace supports the following training modes (the default is the first one):
     * **Use case:**  content-based or collaborative filtering-based recommendation, see _pagespace_ example below.
 * trainMode = 2:
     * Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the input, and the rest of the labels in the collection become the label.
-    * **Use case:** learning a mapping from an object to a set of objetcs, e.g. sentence to document.
+    * **Use case:** learning a mapping from an object to a set of objects, e.g. sentence to document.
 * trainMode = 3:
     * Each example contains a collection of labels. At training time, two labels from the collection are randomly picked as the input and label.
     * **Use case:** learn pairwise similarity from collections of similar objects, e.g. sentence similiarity.
@@ -107,15 +107,15 @@ For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> 
     $./starspace train -trainFile input.txt -model tagspace -label '#'
 
 ### Example scripts:
-We apply the model to the problem of text classification on <a href="https://github.com/mhjabreel/CharCNN/tree/master/data/ag_news_csv">AG's News Topic Classification Dataset</a>. Here our tags are news article categories, and we use the p@1 metric to measure classification accuracy. <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/classification_ag_news.sh">This example script</a> downloads the data and run StarSpace model on it under the examples directory:
+We apply the model to the problem of text classification on <a href="https://github.com/mhjabreel/CharCNN/tree/master/data/ag_news_csv">AG's News Topic Classification Dataset</a>. Here our tags are news article categories, and we use the hits@1 metric to measure classification accuracy. <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/classification_ag_news.sh">This example script</a> downloads the data and run StarSpace model on it under the examples directory:
 
     $bash examples/classification_ag_news.sh
     
 ## PageSpace user / page embeddings 
 
-**Setting:** On Facebook, users can fan (follow) public pages they're interested in. When a user fans a page, the user can receive all things the page posts on Facebook. We want to learn page embeddings based on users' fanning data, and use it to recommend users new pages they might be interested to fan (follow). This setting can be generalized to other recommendation problems: for instance, embedding and recommend movies to users based on movies watched in the past; embed and recommend restaurants to users based on the restaurants checked-in by users in the past, etc.
+**Setting:** On Facebook, users can fan (follow) public pages they're interested in. When a user fans a page, the user can receive all things the page posts on Facebook. We want to learn page embeddings based on users' fanning data, and use it to recommend users new pages they might be interested to fan (follow). This setting can be generalized to other recommendation problems: for instance, embedding and recommending movies to users based on movies watched in the past; embed and recommend restaurants to users based on the restaurants checked-in by users in the past, etc.
 
-**Model：** Users are represented as the bag of pages that they follow (fan). Pages are embedded directly. Here we do not learn a direct embedding of users, instead, each user will have an embedding which is the average embedding of pages fanned by the user. This can work better in the case where the number of users is larger than the number of pages, and the number of pages fanned by each user is small on average (i.e. the edges between user and page is relatively sparse), and also generalizes to new users without retraining. However, the more traditional recommendation setting can also be used.
+**Model：** Users are represented as the bag of pages that they follow (fan). That is, we do not learn a direct embedding of users, instead, each user will have an embedding which is the average embedding of pages fanned by the user. Pages are embedded directly (with a unique feature in the dictionary). This setup can work better in the case where the number of users is larger than the number of pages, and the number of pages fanned by each user is small on average (i.e. the edges between user and page is relatively sparse). It also generalizes to new users without retraining. However, the more traditional recommendation setting can also be used.
 
 ![user-page](https://github.com/facebookresearch/Starspace/blob/master/examples/user-page.png)
 
@@ -137,7 +137,7 @@ At training time, at each step for each example (user), one random page is selec
 **Setting:** We want to embed and recommend web documents for users based on their historical likes/click data. 
 
 **Model:** Each document is represented by a bag-of-words of the document. Each user is represented as a (bag of) the documents that they liked/clicked in the past. 
-At training time, one random document is selected as the label and the rest of the bag of documents are selected as input. 
+At training time, at each step one random document is selected as the label and the rest of the bag of documents are selected as input. 
 
 ![user-doc](https://github.com/facebookresearch/Starspace/blob/master/examples/user-doc.png)
 
@@ -151,20 +151,20 @@ At training time, one random document is selected as the label and the rest of t
     ./starspace train -trainFile input.txt -model docspace -trainMode 1 -fileFormat labelDoc
     
     
-## Link Prediction in Knowledge Base ##
+## Link Prediction in Knowledge Bases ##
 
 **Setting:** Learning the mapping between entities and relations in <a href="http://www.freebase.com">Freebase</a>. In freebase, data comes in the format 
 
     (head_entity, relation_type, tail_entity)
 
-Performing link perdiction can be formalized as filling in incomplete triples like 
+Performing link prediction can be formalized as filling in incomplete triples like 
 
     (head_entity, relation_type, ?) or (?, relation_type, tail_entity)
 
-**Model:** We learn embeddings of all entities and relation types. For each realtion_type, we learn two embeddings: one for predicting tail_entity given head_entity, one for predicting head_entity given tail_entity.
+**Model:** We learn the embeddings of all entities and relation types. For each realtion_type, we learn two embeddings: one for predicting tail_entity given head_entity, one for predicting head_entity given tail_entity.
 
 ### Example scripts:
-<a href="https://github.com/facebookresearch/Starspace/blob/multi-ex/examples/multi_relation_example.sh">This example script</a> downloads the Freebase15k data from <a href="https://everest.hds.utc.fr/doku.php?id=en:transe">here</a> and run StarSpace model on it:
+<a href="https://github.com/facebookresearch/Starspace/blob/multi-ex/examples/multi_relation_example.sh">This example script</a> downloads the Freebase15k data from <a href="https://everest.hds.utc.fr/doku.php?id=en:transe">here</a> and runs the StarSpace model on it:
 
     $bash examples/multi_relation_example.sh
 
