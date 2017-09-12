@@ -260,6 +260,11 @@ Metrics StarSpace::evaluateOne(
     auto cur_score = model_->similarity(lhsM, baseDocVectors_[i]);
     if (cur_score > score) {
       rank++;
+    } else if (cur_score == score) {
+      float flip = (float) rand() / RAND_MAX;
+      if (flip > 0.5) {
+        rank++;
+      }
     }
     heap.push({ cur_score, i + 1 });
   }
@@ -297,7 +302,7 @@ void StarSpace::evaluate() {
   vector<thread> threads;
   vector<Metrics> metrics(numThreads);
   vector<vector<Predictions>> predictions(N);
-  int numPerThread = ceil(N / numThreads);
+  int numPerThread = ceil((float) N / numThreads);
   assert(numPerThread > 0);
 
   vector<ParseResults> examples;
@@ -312,7 +317,7 @@ void StarSpace::evaluate() {
   };
 
   for (int i = 0; i < numThreads; i++) {
-    auto start = i * numPerThread;
+    auto start = std::min(i * numPerThread, N);
     auto end = std::min(start + numPerThread, N);
     assert(end >= start);
     threads.emplace_back(thread([=] {
