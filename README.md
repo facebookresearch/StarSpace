@@ -227,7 +227,7 @@ Note: We use the same implementation of word n-grams for words as in <a href="ht
 
 ## Citation
 
-Please cite the [arXiv paper](https://arxiv.org/abs/1705.06476) if you use StarSpace in your work:
+Please cite the [arXiv paper](https://arxiv.org/abs/1709.03856) if you use StarSpace in your work:
 
 ```
 @article{wu2017starspace,
