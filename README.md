@@ -223,3 +223,17 @@ Performing link prediction can be formalized as filling in incomplete triples li
 
 
 Note: We use the same implementation of word n-grams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. When "-ngrams" is set to be larger than 1, a hashing map of size specified by the "-bucket" argument is used for n-grams; when "-ngrams" is set to 1, no hash map is used, and the dictionary contains all words within the minCount and minCountLabel constraints.
+
+
+## Citation
+
+Please cite the [arXiv paper](https://arxiv.org/abs/1705.06476) if you use StarSpace in your work:
+
+```
+@article{wu2017starspace,
+  title={StarSpace: Embed All The Things!},
+  author = {{Wu}, L. and {Fisch}, A. and {Chopra}, S. and {Adams}, K. and {Bordes}, A. and {Weston}, J.},
+  journal={arXiv preprint arXiv:{1709.03856}},
+  year={2017}
+}
+```
