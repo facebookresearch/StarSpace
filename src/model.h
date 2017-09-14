@@ -177,8 +177,8 @@ private:
     if (!debug) return;
     for (int i = 0; i < m.size1(); i++) {
       for (int j = 0; j < m.size2(); j++) {
-        assert(!isnan(m(i, j)));
-        assert(!isinf(m(i, j)));
+        assert(!std::isnan(m(i, j)));
+        assert(!std::isinf(m(i, j)));
       }
     }
   }
