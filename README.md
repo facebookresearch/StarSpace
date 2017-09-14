@@ -154,7 +154,7 @@ At training time, at each step one random document is selected as the label and 
     ./starspace train -trainFile input.txt -model docspace -trainMode 1 -fileFormat labelDoc
     
     
-## Link Prediction in Knowledge Bases ##
+## GraphSpace: Link Prediction in Knowledge Bases ##
 
 **Setting:** Learning the mapping between entities and relations in <a href="http://www.freebase.com">Freebase</a>. In freebase, data comes in the format 
 
