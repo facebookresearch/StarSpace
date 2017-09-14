@@ -14,6 +14,8 @@ In the general case, it learns to represent objects of different types into a co
 hence the star ('*', wildcard) and space in the name, and in that space compares them against each other.
 It learns to rank a set of entities/documents or objects given a query entity/document or object, which is not necessarily the same type as the items in the set.
 
+See the [paper](https://arxiv.org/abs/1709.03856) for more details on how it works.
+
 
 # Requirements
 
