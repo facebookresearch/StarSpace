@@ -29,7 +29,7 @@ You need to install <a href=http://www.boost.org/>Boost</a> library and specify 
 
     $wget https://dl.bintray.com/boostorg/release/1.63.0/source/boost_1_63_0.zip
     $unzip boost_1_63_0.zip
-    $sudo mv boost_1_63_0 /usr/bin
+    $sudo mv boost_1_63_0 /usr/local/bin
 
 Optional: if one wishes to run the unit tests in src directory, <a href=https://github.com/google/googletest>google test</a> is required and its path needs to be specified in 'TEST_INCLUDES' in the makefile.
 
