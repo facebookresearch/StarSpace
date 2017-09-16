@@ -138,7 +138,7 @@ At training time, at each step for each example (user), one random page is selec
     $./starspace train -trainFile input.txt -model pagespace -label 'page' -trainMode 1
 
 
-## DocSpace document recommendation
+## UserDocSpace document recommendation
 
 **Setting:** We want to embed and recommend web documents for users based on their historical likes/click data. 
 
@@ -173,7 +173,18 @@ Performing link prediction can be formalized as filling in incomplete triples li
 <a href="https://github.com/facebookresearch/Starspace/blob/multi-ex/examples/multi_relation_example.sh">This example script</a> downloads the Freebase15k data from <a href="https://everest.hds.utc.fr/doku.php?id=en:transe">here</a> and runs the StarSpace model on it:
 
     $bash examples/multi_relation_example.sh
+   
+    
+## SentenceSpace: Learning Sentence Embeddings
 
+**Setting:** Learning the mapping between sentences. Given the embedding of one sentence, one can find semantically similar/relevant sentences.
+
+**Model:** Each example is a collection of sentences which are semantically related. Two are picked at random using trainMode 2, one as the input and one as the label, other sentences are picked as random negatives. One easy way to obtain semantically related sentences without labeling is to consider all sentences in the same document are related, and then train on those documents.
+
+### Example scripts:
+<a href="https://github.com/facebookresearch/Starspace/blob/multi-ex/examples/wikipedia_sentence_matching.sh">This example script</a> downloads data where each example is a set of sentences from the same Wikipedia page and runs the StarSpace model on it:
+
+    $bash examples/wikipedia_sentence_matching.sh
 
 # Full Documentation of Parameters
     
