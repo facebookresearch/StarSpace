@@ -18,9 +18,9 @@ DATADIR=/tmp/starspace/data
 mkdir -p "${MODELDIR}"
 mkdir -p "${DATADIR}"
 
-echo "Downloading dataset ag_news"
 if [ ! -f "${DATADIR}/${DATASET[i]}_shuf_train250k.txt" ]
 then
+    echo "Downloading wikipedia data"
     wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_trn250k.tgz" -O "${DATADIR}/${DATASET[0]}_train.tar.gz"
     tar -xzvf "${DATADIR}/${DATASET[0]}_train.tar.gz" -C "${DATADIR}"
     wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_devtst.tgz" -O "${DATADIR}/${DATASET[0]}_test.tar.gz"
@@ -43,7 +43,7 @@ echo "Start to train on wikipedia data (small training set example version, not 
   -lr 0.05 \
   -epoch 5 \
   -thread 20 \
-  -dim 50 \
+  -dim 100 \
   -negSearchLimit 10 \
   -fileFormat labelDoc \
   -similarity "cosine" \
