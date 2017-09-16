@@ -82,7 +82,7 @@ StarSpace supports the following training modes (the default is the first one):
     * **Use case:**  content-based or collaborative filtering-based recommendation, see _pagespace_ example below.
 * trainMode = 2:
     * Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the input, and the rest of the labels in the collection become the label.
-    * **Use case:** learning a mapping from an object to a set of objects, e.g. sentence to document.
+    * **Use case:** learning a mapping from an object to a set of objects of which it is a part, e.g. sentence (from within document) to document.
 * trainMode = 3:
     * Each example contains a collection of labels. At training time, two labels from the collection are randomly picked as the input and label.
     * **Use case:** learn pairwise similarity from collections of similar objects, e.g. sentence similiarity.
