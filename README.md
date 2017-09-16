@@ -73,7 +73,10 @@ In order to learn the embeddings in the more general case where each label consi
 StarSpace supports the following training modes (the default is the first one):
 * trainMode = 0:
     * Each example contains both input and labels.
+    * If fileFormat is 'fastText' then the labels are individuals features/words specified (e.g. with a prefix __label__, see file format above).
     * **Use case:**  classification tasks, see _tagspace_ example below.
+    * If fileFormat is 'labelDoc' then the labels are bags of features, and one of those bags is selected (see file format, above).
+    * **Use case:**  retrieval/search tasks, each example consists of a query followed by a set of relevant documents.
 * trainMode = 1:
     * Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the label, and the rest of the labels in the collection become the input.
     * **Use case:**  content-based or collaborative filtering-based recommendation, see _pagespace_ example below.
@@ -174,11 +177,13 @@ Performing link prediction can be formalized as filling in incomplete triples li
 
 # Full Documentation of Parameters
     
+    Run "starspace train ..." or "starspace test ..."
+    
     The following arguments are mandatory for train: 
       -trainFile       training file path
       -model           output model file path
 
-    The following arguments are mandatory for eval: 
+    The following arguments are mandatory for test: 
       -testFile        test file path
       -model           model file path
 
@@ -203,14 +208,13 @@ Performing link prediction can be formalized as filling in incomplete triples li
       -margin          margin parameter in hinge loss. It's only effective if hinge loss is used. [0.05]
       -similarity      takes value in [cosine, dot]. Whether to use cosine or dot product as similarity function in  hinge loss.
                        It's only effective if hinge loss is used. [cosine]
-      -thread          number of threads [10]
       -adagrad         whether to use adagrad in training [1]
       -shareEmb        whether to use the same embedding matrix for LHS and RHS. [1]
       -ws              only used in trainMode 5, the size of the context window for word level training. [5]
       -dropoutLHS      dropout probability for LHS features. [0]
       -dropoutRHS      dropout probability for RHS features. [0]
 
-    The following arguments for eval are optional:
+    The following arguments for test are optional:
       -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.
                        In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.
       -predictionFile  file path for save predictions. If not empty, top K predictions for each example will be saved.
@@ -220,6 +224,7 @@ Performing link prediction can be formalized as filling in incomplete triples li
       -normalizeText   whether to run basic text preprocess for input files [1]
       -verbose         verbosity level [0]
       -debug           whether it's in debug mode [0]
+      -thread          number of threads [10]
 
 
 Note: We use the same implementation of word n-grams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. When "-ngrams" is set to be larger than 1, a hashing map of size specified by the "-bucket" argument is used for n-grams; when "-ngrams" is set to 1, no hash map is used, and the dictionary contains all words within the minCount and minCountLabel constraints.
