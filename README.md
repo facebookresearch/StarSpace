@@ -197,7 +197,7 @@ Performing link prediction can be formalized as filling in incomplete triples li
       -dim             size of embedding vectors [10]
       -epoch           number of epochs [5]
       -maxTrainTime    max train time (secs) [8640000]
-      -negiSearchLimit number of negatives sampled [50]
+      -negSearchLimit number of negatives sampled [50]
       -maxNegSamples   max number of negatives in a batch update [10]
       -loss            loss function {hinge, softmax} [hinge]
       -margin          margin parameter in hinge loss. It's only effective if hinge loss is used. [0.05]
