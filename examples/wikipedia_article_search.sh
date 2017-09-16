@@ -18,10 +18,10 @@ DATADIR=/tmp/starspace/data
 mkdir -p "${MODELDIR}"
 mkdir -p "${DATADIR}"
 
-if [ ! -f "${DATADIR}/${DATASET[i]}_shuf_train250k.txt" ]
+if [ ! -f "${DATADIR}/${DATASET[i]}_train250k.txt" ]
 then
     echo "Downloading wikipedia data"
-    wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_trn250k.tgz" -O "${DATADIR}/${DATASET[0]}_train.tar.gz"
+    wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_train250k.tgz" -O "${DATADIR}/${DATASET[0]}_train.tar.gz"
     tar -xzvf "${DATADIR}/${DATASET[0]}_train.tar.gz" -C "${DATADIR}"
     wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_devtst.tgz" -O "${DATADIR}/${DATASET[0]}_test.tar.gz"
     tar -xzvf "${DATADIR}/${DATASET[0]}_test.tar.gz" -C "${DATADIR}"
@@ -34,7 +34,7 @@ make
 echo "Start to train on wikipedia data (small training set example version, not the same as the paper which takes longer to run on a bigger training set):"
 
 ./starspace train \
-  -trainFile "${DATADIR}"/wikipedia_shuf_train250k.txt \
+  -trainFile "${DATADIR}"/wikipedia_train250k.txt \
   -model "${MODELDIR}"/wikipedia_article_search \
   -trainMode 2 \
   -initRandSd 0.01 \
