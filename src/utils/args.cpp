@@ -184,7 +184,7 @@ void Args::parseArgs(int argc, char** argv) {
   }
   // check for trainMode
   if ((trainMode < 0) || (trainMode > 5)) {
-    cerr << "Uknown trainMode. We currently support the follow train mode:\n";
+    cerr << "Uknown trainMode. We currently support the follow train modes:\n";
     cerr << "trainMode 0: at training time, one label from RHS is picked as true label; LHS is the same from input.\n";
     cerr << "trainMode 1: at training time, one label from RHS is picked as true label; LHS is the bag of the rest RHS labels.\n";
     cerr << "trainMode 2: at training time, one label from RHS is picked as LHS; the bag of the rest RHS labels becomes the true label.\n";
@@ -212,10 +212,11 @@ void Args::parseArgs(int argc, char** argv) {
 
 void Args::printHelp() {
   cout << "\n"
+       << "\"starspace train ...\"  or \"starspace test ...\"\n\n"
        << "The following arguments are mandatory for train: \n"
        << "  -trainFile       training file path\n"
        << "  -model           output model file path\n\n"
-       << "The following arguments are mandatory for eval: \n"
+       << "The following arguments are mandatory for test: \n"
        << "  -testFile        test file path\n"
        << "  -model           model file path\n\n"
        << "The following arguments for the dictionary are optional:\n"
@@ -238,13 +239,12 @@ void Args::printHelp() {
        << "  -margin          margin parameter in hinge loss. It's only effective if hinge loss is used. [" << margin << "]\n"
        << "  -similarity      takes value in [cosine, dot]. Whether to use cosine or dot product as similarity function in  hinge loss.\n"
        << "                   It's only effective if hinge loss is used. [" << similarity << "]\n"
-       << "  -thread          number of threads [" << thread << "]\n"
        << "  -adagrad         whether to use adagrad in training [" << adagrad << "]\n"
        << "  -shareEmb        whether to use the same embedding matrix for LHS and RHS. [" << shareEmb << "]\n"
        << "  -ws              only used in trainMode 5, the size of the context window for word level training. [" << ws << "]\n"
        << "  -dropoutLHS      dropout probability for LHS features. [" << dropoutLHS << "]\n"
        << "  -dropoutRHS      dropout probability for RHS features. [" << dropoutRHS << "]\n"
-       << "\nThe following arguments for eval are optional:\n"
+       << "\nThe following arguments for test are optional:\n"
        << "  -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.\n"
        << "                   In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.\n"
        << "  -predictionFile  file path for save predictions. If not empty, top K predictions for each example will be saved.\n"
@@ -253,6 +253,7 @@ void Args::printHelp() {
        << "  -normalizeText   whether to run basic text preprocess for input files [" << normalizeText << "]\n"
        << "  -verbose         verbosity level [" << verbose << "]\n"
        << "  -debug           whether it's in debug mode [" << debug << "]\n"
+       << "  -thread          number of threads [" << thread << "]\n"
        << std::endl;
 }
 
