@@ -232,7 +232,7 @@ void Args::printHelp() {
        << "  -dim             size of embedding vectors [" << dim << "]\n"
        << "  -epoch           number of epochs [" << epoch << "]\n"
        << "  -maxTrainTime    max train time (secs) [" << maxTrainTime << "]\n"
-       << "  -negiSearchLimit number of negatives sampled [" << negSearchLimit << "]\n"
+       << "  -negSearchLimit  number of negatives sampled [" << negSearchLimit << "]\n"
        << "  -maxNegSamples   max number of negatives in a batch update [" << maxNegSamples << "]\n"
        << "  -loss            loss function {hinge, softmax} [hinge]\n"
        << "  -margin          margin parameter in hinge loss. It's only effective if hinge loss is used. [" << margin << "]\n"
