@@ -23,10 +23,6 @@ DATASET=(
   ag_news
 )
 
-ID=(
-  0Bz8a_Dbh9QhbUDNpeUdjb0wxRms # ag_news
-)
-
 MODELDIR=/tmp/starspace/models
 DATADIR=/tmp/starspace/data
 
