@@ -35,7 +35,7 @@ echo "Start to train on wikipedia data (meant to replicate experiment from paper
 
 ./starspace train \
   -trainFile "${DATADIR}"/wikipedia_shuf_train5M.txt \
-  -model "${MODELDIR}"/wikipedia_article_search \
+  -model "${MODELDIR}"/wikipedia_article_search_full \
   -trainMode 2 \
   -initRandSd 0.01 \
   -adagrad true \
@@ -58,7 +58,7 @@ echo "Start to evaluate trained model:"
 ./starspace test \
   -testFile "${DATADIR}"/wikipedia_test10k.txt \
   -basedoc "${DATADIR}"/wikipedia_test_basedocs.txt \
-  -model "${MODELDIR}"/wikipedia_article_search \
+  -model "${MODELDIR}"/wikipedia_article_search_full \
   -thread 20 \
   -trainMode 2 \
   -verbose true
