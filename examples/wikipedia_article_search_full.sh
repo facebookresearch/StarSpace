@@ -18,7 +18,7 @@ DATADIR=/tmp/starspace/data
 mkdir -p "${MODELDIR}"
 mkdir -p "${DATADIR}"
 
-if [ ! -f "${DATADIR}/${DATASET[i]}_train250k.txt" ]
+if [ ! -f "${DATADIR}/${DATASET[i]}_shuf_train5M.txt" ]
 then
     echo "Downloading wikipedia data"
     wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_train5M.tgz" -O "${DATADIR}/${DATASET[0]}_train.tar.gz"
