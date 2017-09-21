@@ -4,8 +4,8 @@
 
 StarSpace is a general-purpose neural model for efficient learning of entity embeddings for solving a wide variety of problems: 
 - Learning word, sentence or document level embeddings.
-- Text classification, or any other labeling task.
 - Information retrieval: ranking of sets of entities/documents or objects, e.g. ranking web documents.
+- Text classification, or any other labeling task.
 - Metric/similarity learning, e.g. learning sentence or document similarity.
 - Content-based or Collaborative filtering-based Recommendation, e.g. recommending music or videos.
 - Embedding graphs, e.g. multi-relational graphs such as Freebase.
