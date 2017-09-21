@@ -170,7 +170,7 @@ Performing link prediction can be formalized as filling in incomplete triples li
 **Model:** We learn the embeddings of all entities and relation types. For each realtion_type, we learn two embeddings: one for predicting tail_entity given head_entity, one for predicting head_entity given tail_entity.
 
 ### Example scripts:
-<a href="https://github.com/facebookresearch/Starspace/blob/multi-ex/examples/multi_relation_example.sh">This example script</a> downloads the Freebase15k data from <a href="https://everest.hds.utc.fr/doku.php?id=en:transe">here</a> and runs the StarSpace model on it:
+<a href="https://github.com/facebookresearch/Starspace/blob/master/examples/multi_relation_example.sh">This example script</a> downloads the Freebase15k data from <a href="https://everest.hds.utc.fr/doku.php?id=en:transe">here</a> and runs the StarSpace model on it:
 
     $bash examples/multi_relation_example.sh
    
