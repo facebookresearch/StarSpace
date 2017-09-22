@@ -20,11 +20,9 @@ mkdir -p "${DATADIR}"
 
 if [ ! -f "${DATADIR}/${DATASET[i]}_shuf_train5M.txt" ]
 then
-    echo "Downloading wikipedia data"
+    echo "Downloading wikipedia train data"
     wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_train5M.tgz" -O "${DATADIR}/${DATASET[0]}_train.tar.gz"
     tar -xzvf "${DATADIR}/${DATASET[0]}_train.tar.gz" -C "${DATADIR}"
-    wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_devtst.tgz" -O "${DATADIR}/${DATASET[0]}_test.tar.gz"
-    tar -xzvf "${DATADIR}/${DATASET[0]}_test.tar.gz" -C "${DATADIR}"
   fi
 
 echo "Compiling StarSpace"
@@ -46,12 +44,18 @@ echo "Start to train on wikipedia data (meant to replicate experiment from paper
   -thread 40 \
   -dim 300 \
   -negSearchLimit 100 \
-  -maxNegSamples 3 \
   -dropoutRHS 0.8 \
   -fileFormat labelDoc \
   -similarity "cosine" \
   -minCount 5 \
   -verbose true
+
+if [ ! -f "${DATADIR}/${DATASET[i]}_test10k.txt" ]
+then
+    echo "Downloading wikipedia test data"
+    wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_devtst.tgz" -O "${DATADIR}/${DATASET[0]}_test.tar.gz"
+    tar -xzvf "${DATADIR}/${DATASET[0]}_test.tar.gz" -C "${DATADIR}"
+fi
 
 echo "Start to evaluate trained model:"
 
