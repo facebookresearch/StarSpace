@@ -50,6 +50,7 @@ Args::Args() {
   similarity = "cosine";
   isTrain = false;
   shareEmb = true;
+  saveEveryEpoch = false;
 }
 
 void Args::parseArgs(int argc, char** argv) {
@@ -162,6 +163,8 @@ void Args::parseArgs(int argc, char** argv) {
       shareEmb = (string(argv[i + 1]) == "true");
     } else if (strcmp(argv[i], "-normalizeText") == 0) {
       normalizeText = (string(argv[i + 1]) == "true");
+    } else if (strcmp(argv[i], "-saveEveryEpoch") == 0) {
+      saveEveryEpoch = (string(argv[i + 1]) == "true");
     } else {
       cerr << "Unknown argument: " << argv[i] << std::endl;
       printHelp();
@@ -229,6 +232,7 @@ void Args::printHelp() {
        << "  -initModel       if not empty, it loads a previously trained model in -initModel and carry on training.\n"
        << "  -trainMode       takes value in [0, 1, 2, 3, 4, 5], see Training Mode Section. [" << trainMode << "]\n"
        << "  -fileFormat      currently support 'fastText' and 'labelDoc', see File Format Section. [" << fileFormat << "]\n"
+       << "  -saveEveryEpoch  save intermediate models after each epoch [" << saveEveryEpoch << "]\n"
        << "  -lr              learning rate [" << lr << "]\n"
        << "  -dim             size of embedding vectors [" << dim << "]\n"
        << "  -epoch           number of epochs [" << epoch << "]\n"
@@ -263,6 +267,7 @@ void Args::printArgs() {
        << "dim: " << dim << endl
        << "epoch: " << epoch << endl
        << "maxTrainTime: " << maxTrainTime << endl
+       << "saveEveryEpoch: " << saveEveryEpoch << endl
        << "loss: " << loss << endl
        << "margin: " << margin << endl
        << "similarity: " << similarity << endl

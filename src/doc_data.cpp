@@ -27,6 +27,13 @@ void LayerDataHandler::loadFromFile(
   const string& fileName,
   shared_ptr<DataParser> parser) {
 
+  ifstream fin(fileName);
+  if (!fin.is_open()) {
+    std::cerr << fileName << " cannot be opened for loading!" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  fin.close();
+
   cout << "Loading data from file : " << fileName << endl;
   vector<Corpus> corpora(args_->thread);
   foreach_line(

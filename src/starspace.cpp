@@ -160,6 +160,10 @@ void StarSpace::train() {
 
   auto t_start = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < args_->epoch; i++) {
+    if (args_->saveEveryEpoch && i > 0) {
+      saveModel();
+      saveModelTsv();
+    }
     cout << "Training epoch " << i << ": " << rate << ' ' << decrPerEpoch << endl;
     auto err = model_->train(trainData_, args_->thread,
 			     t_start,  i,
