@@ -253,3 +253,6 @@ Please cite the [arXiv paper](https://arxiv.org/abs/1709.03856) if you use StarS
   year={2017}
 }
 ```
+## Contact
+* Facebook group: [StarSpace Users](https://www.facebook.com/groups/532005453808326)
+* emails: ledell@fb.com, jase@fb.com
