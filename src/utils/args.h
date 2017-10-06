@@ -55,6 +55,7 @@ class Args {
     bool adagrad;
     bool isTrain;
     bool normalizeText;
+    bool saveEveryEpoch;
     bool shareEmb;
 
     void parseArgs(int, char**);

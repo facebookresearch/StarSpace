@@ -130,8 +130,8 @@ struct Matrix {
   void sanityCheck() const {
 #ifndef NDEBUG
     forEachCell([&](Real r, size_t i, size_t j) {
-      assert(!isnan(r));
-      assert(!isinf(r));
+      assert(!std::isnan(r));
+      assert(!std::isinf(r));
     });
 #endif
   }

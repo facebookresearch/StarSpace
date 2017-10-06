@@ -30,6 +30,13 @@ void InternDataHandler::loadFromFile(
   const string& fileName,
   shared_ptr<DataParser> parser) {
 
+  ifstream fin(fileName);
+  if (!fin.is_open()) {
+    std::cerr << fileName << " cannot be opened for loading!" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  fin.close();
+
   cout << "Loading data from file : " << fileName << endl;
   vector<Corpus> corpora(args_->thread);
   foreach_line(
@@ -197,18 +204,22 @@ void InternDataHandler::getNextKExamples(int K, vector<ParseResults>& c) {
 // The result is usually used as negative samples in training
 void InternDataHandler::getRandomRHS(vector<int32_t>& results) const {
   assert(size_ > 0);
-  auto& ex = examples_[rand() % size_];
-  int r = rand() % ex.RHSTokens.size();
-
   results.clear();
-  if (args_->trainMode == 2) {
-    for (int i = 0; i < ex.RHSTokens.size(); i++) {
-      if (i != r) {
-        results.push_back(ex.RHSTokens[i]);
-      }
-    }
+  auto& ex = examples_[rand() % size_];
+  if (args_->trainMode == 5) {
+    int r = rand() % ex.LHSTokens.size();
+    results.push_back(ex.LHSTokens[r]);
   } else {
-    results.push_back(ex.RHSTokens[r]);
+    int r = rand() % ex.RHSTokens.size();
+    if (args_->trainMode == 2) {
+      for (int i = 0; i < ex.RHSTokens.size(); i++) {
+        if (i != r) {
+          results.push_back(ex.RHSTokens[i]);
+        }
+      }
+    } else {
+      results.push_back(ex.RHSTokens[r]);
+    }
   }
 }
 

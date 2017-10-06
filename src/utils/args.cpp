@@ -50,6 +50,7 @@ Args::Args() {
   similarity = "cosine";
   isTrain = false;
   shareEmb = true;
+  saveEveryEpoch = false;
 }
 
 void Args::parseArgs(int argc, char** argv) {
@@ -162,6 +163,8 @@ void Args::parseArgs(int argc, char** argv) {
       shareEmb = (string(argv[i + 1]) == "true");
     } else if (strcmp(argv[i], "-normalizeText") == 0) {
       normalizeText = (string(argv[i + 1]) == "true");
+    } else if (strcmp(argv[i], "-saveEveryEpoch") == 0) {
+      saveEveryEpoch = (string(argv[i + 1]) == "true");
     } else {
       cerr << "Unknown argument: " << argv[i] << std::endl;
       printHelp();
@@ -184,7 +187,7 @@ void Args::parseArgs(int argc, char** argv) {
   }
   // check for trainMode
   if ((trainMode < 0) || (trainMode > 5)) {
-    cerr << "Uknown trainMode. We currently support the follow train mode:\n";
+    cerr << "Uknown trainMode. We currently support the follow train modes:\n";
     cerr << "trainMode 0: at training time, one label from RHS is picked as true label; LHS is the same from input.\n";
     cerr << "trainMode 1: at training time, one label from RHS is picked as true label; LHS is the bag of the rest RHS labels.\n";
     cerr << "trainMode 2: at training time, one label from RHS is picked as LHS; the bag of the rest RHS labels becomes the true label.\n";
@@ -212,10 +215,11 @@ void Args::parseArgs(int argc, char** argv) {
 
 void Args::printHelp() {
   cout << "\n"
+       << "\"starspace train ...\"  or \"starspace test ...\"\n\n"
        << "The following arguments are mandatory for train: \n"
        << "  -trainFile       training file path\n"
        << "  -model           output model file path\n\n"
-       << "The following arguments are mandatory for eval: \n"
+       << "The following arguments are mandatory for test: \n"
        << "  -testFile        test file path\n"
        << "  -model           model file path\n\n"
        << "The following arguments for the dictionary are optional:\n"
@@ -228,23 +232,23 @@ void Args::printHelp() {
        << "  -initModel       if not empty, it loads a previously trained model in -initModel and carry on training.\n"
        << "  -trainMode       takes value in [0, 1, 2, 3, 4, 5], see Training Mode Section. [" << trainMode << "]\n"
        << "  -fileFormat      currently support 'fastText' and 'labelDoc', see File Format Section. [" << fileFormat << "]\n"
+       << "  -saveEveryEpoch  save intermediate models after each epoch [" << saveEveryEpoch << "]\n"
        << "  -lr              learning rate [" << lr << "]\n"
        << "  -dim             size of embedding vectors [" << dim << "]\n"
        << "  -epoch           number of epochs [" << epoch << "]\n"
        << "  -maxTrainTime    max train time (secs) [" << maxTrainTime << "]\n"
-       << "  -negiSearchLimit number of negatives sampled [" << negSearchLimit << "]\n"
+       << "  -negSearchLimit  number of negatives sampled [" << negSearchLimit << "]\n"
        << "  -maxNegSamples   max number of negatives in a batch update [" << maxNegSamples << "]\n"
        << "  -loss            loss function {hinge, softmax} [hinge]\n"
        << "  -margin          margin parameter in hinge loss. It's only effective if hinge loss is used. [" << margin << "]\n"
        << "  -similarity      takes value in [cosine, dot]. Whether to use cosine or dot product as similarity function in  hinge loss.\n"
        << "                   It's only effective if hinge loss is used. [" << similarity << "]\n"
-       << "  -thread          number of threads [" << thread << "]\n"
        << "  -adagrad         whether to use adagrad in training [" << adagrad << "]\n"
        << "  -shareEmb        whether to use the same embedding matrix for LHS and RHS. [" << shareEmb << "]\n"
        << "  -ws              only used in trainMode 5, the size of the context window for word level training. [" << ws << "]\n"
        << "  -dropoutLHS      dropout probability for LHS features. [" << dropoutLHS << "]\n"
        << "  -dropoutRHS      dropout probability for RHS features. [" << dropoutRHS << "]\n"
-       << "\nThe following arguments for eval are optional:\n"
+       << "\nThe following arguments for test are optional:\n"
        << "  -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.\n"
        << "                   In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.\n"
        << "  -predictionFile  file path for save predictions. If not empty, top K predictions for each example will be saved.\n"
@@ -253,6 +257,7 @@ void Args::printHelp() {
        << "  -normalizeText   whether to run basic text preprocess for input files [" << normalizeText << "]\n"
        << "  -verbose         verbosity level [" << verbose << "]\n"
        << "  -debug           whether it's in debug mode [" << debug << "]\n"
+       << "  -thread          number of threads [" << thread << "]\n"
        << std::endl;
 }
 
@@ -262,6 +267,7 @@ void Args::printArgs() {
        << "dim: " << dim << endl
        << "epoch: " << epoch << endl
        << "maxTrainTime: " << maxTrainTime << endl
+       << "saveEveryEpoch: " << saveEveryEpoch << endl
        << "loss: " << loss << endl
        << "margin: " << margin << endl
        << "similarity: " << similarity << endl

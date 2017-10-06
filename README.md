@@ -2,20 +2,20 @@
 
 # StarSpace
 
-StarSpace is a library for efficient learning of entity representations from relations among collections of discrete entities. 
-
-In the general case, it embeds objects of different types into a vectorial embedding space,
-hence the star ('*') and space in the name, and in that space compares them against each other.
-It learns to rank a set of entities/documents or objects
-given a query entity/document or object, which is not necessarily the same type as the
-items in the set.
-
-Use cases:
+StarSpace is a general-purpose neural model for efficient learning of entity embeddings for solving a wide variety of problems: 
+- Learning word, sentence or document level embeddings.
 - Information retrieval: ranking of sets of entities/documents or objects, e.g. ranking web documents.
+- Text classification, or any other labeling task.
 - Metric/similarity learning, e.g. learning sentence or document similarity.
 - Content-based or Collaborative filtering-based Recommendation, e.g. recommending music or videos.
-- Text classification, or any other labeling task.
 - Embedding graphs, e.g. multi-relational graphs such as Freebase.
+
+In the general case, it learns to represent objects of different types into a common vectorial embedding space,
+hence the star ('*', wildcard) and space in the name, and in that space compares them against each other.
+It learns to rank a set of entities/documents or objects given a query entity/document or object, which is not necessarily the same type as the items in the set.
+
+See the [paper](https://arxiv.org/abs/1709.03856) for more details on how it works.
+
 
 # Requirements
 
@@ -29,7 +29,7 @@ You need to install <a href=http://www.boost.org/>Boost</a> library and specify 
 
     $wget https://dl.bintray.com/boostorg/release/1.63.0/source/boost_1_63_0.zip
     $unzip boost_1_63_0.zip
-    $sudo mv boost_1_63_0 /usr/bin
+    $sudo mv boost_1_63_0 /usr/local/bin
 
 Optional: if one wishes to run the unit tests in src directory, <a href=https://github.com/google/googletest>google test</a> is required and its path needs to be specified in 'TEST_INCLUDES' in the makefile.
 
@@ -73,13 +73,16 @@ In order to learn the embeddings in the more general case where each label consi
 StarSpace supports the following training modes (the default is the first one):
 * trainMode = 0:
     * Each example contains both input and labels.
+    * If fileFormat is 'fastText' then the labels are individuals features/words specified (e.g. with a prefix __label__, see file format above).
     * **Use case:**  classification tasks, see _tagspace_ example below.
+    * If fileFormat is 'labelDoc' then the labels are bags of features, and one of those bags is selected (see file format, above).
+    * **Use case:**  retrieval/search tasks, each example consists of a query followed by a set of relevant documents.
 * trainMode = 1:
     * Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the label, and the rest of the labels in the collection become the input.
     * **Use case:**  content-based or collaborative filtering-based recommendation, see _pagespace_ example below.
 * trainMode = 2:
     * Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the input, and the rest of the labels in the collection become the label.
-    * **Use case:** learning a mapping from an object to a set of objects, e.g. sentence to document.
+    * **Use case:** learning a mapping from an object to a set of objects of which it is a part, e.g. sentence (from within document) to document.
 * trainMode = 3:
     * Each example contains a collection of labels. At training time, two labels from the collection are randomly picked as the input and label.
     * **Use case:** learn pairwise similarity from collections of similar objects, e.g. sentence similiarity.
@@ -94,7 +97,7 @@ StarSpace supports the following training modes (the default is the first one):
 
 ## TagSpace word / tag embeddings
 
-**Setting:** Learning the mapping from a short text to relevant hashtags, , e.g. as in <a href="https://research.fb.com/publications/tagspace-semantic-embeddings-from-hashtags/">this paper</a>. This is a classical classification setting.
+**Setting:** Learning the mapping from a short text to relevant hashtags, e.g. as in <a href="https://research.fb.com/publications/tagspace-semantic-embeddings-from-hashtags/">this paper</a>. This is a classical classification setting.
 
 **Model:** the mapping learnt goes from bags of words to bags of tags, by learning an embedding of both. 
 For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> #yum” will be translated into the following graph. (Nodes in the graph are entities for which embeddings will be learned, and edges in the graph are relationships between the entities).
@@ -154,7 +157,7 @@ At training time, at each step one random document is selected as the label and 
     ./starspace train -trainFile input.txt -model docspace -trainMode 1 -fileFormat labelDoc
     
     
-## Link Prediction in Knowledge Bases ##
+## GraphSpace: Link Prediction in Knowledge Bases ##
 
 **Setting:** Learning the mapping between entities and relations in <a href="http://www.freebase.com">Freebase</a>. In freebase, data comes in the format 
 
@@ -167,18 +170,31 @@ Performing link prediction can be formalized as filling in incomplete triples li
 **Model:** We learn the embeddings of all entities and relation types. For each realtion_type, we learn two embeddings: one for predicting tail_entity given head_entity, one for predicting head_entity given tail_entity.
 
 ### Example scripts:
-<a href="https://github.com/facebookresearch/Starspace/blob/multi-ex/examples/multi_relation_example.sh">This example script</a> downloads the Freebase15k data from <a href="https://everest.hds.utc.fr/doku.php?id=en:transe">here</a> and runs the StarSpace model on it:
+<a href="https://github.com/facebookresearch/Starspace/blob/master/examples/multi_relation_example.sh">This example script</a> downloads the Freebase15k data from <a href="https://everest.hds.utc.fr/doku.php?id=en:transe">here</a> and runs the StarSpace model on it:
 
     $bash examples/multi_relation_example.sh
+   
+    
+## SentenceSpace: Learning Sentence Embeddings
 
+**Setting:** Learning the mapping between sentences. Given the embedding of one sentence, one can find semantically similar/relevant sentences.
+
+**Model:** Each example is a collection of sentences which are semantically related. Two are picked at random using trainMode 3: one as the input and one as the label, other sentences are picked as random negatives. One easy way to obtain semantically related sentences without labeling is to consider all sentences in the same document are related, and then train on those documents.
+
+### Example scripts:
+<a href="https://github.com/facebookresearch/Starspace/blob/master/examples/wikipedia_sentence_matching.sh">This example script</a> downloads data where each example is a set of sentences from the same Wikipedia page and runs the StarSpace model on it:
+
+    $bash examples/wikipedia_sentence_matching.sh
 
 # Full Documentation of Parameters
+    
+    Run "starspace train ..." or "starspace test ..."
     
     The following arguments are mandatory for train: 
       -trainFile       training file path
       -model           output model file path
 
-    The following arguments are mandatory for eval: 
+    The following arguments are mandatory for test: 
       -testFile        test file path
       -model           model file path
 
@@ -197,20 +213,19 @@ Performing link prediction can be formalized as filling in incomplete triples li
       -dim             size of embedding vectors [10]
       -epoch           number of epochs [5]
       -maxTrainTime    max train time (secs) [8640000]
-      -negiSearchLimit number of negatives sampled [50]
+      -negSearchLimit  number of negatives sampled [50]
       -maxNegSamples   max number of negatives in a batch update [10]
       -loss            loss function {hinge, softmax} [hinge]
       -margin          margin parameter in hinge loss. It's only effective if hinge loss is used. [0.05]
       -similarity      takes value in [cosine, dot]. Whether to use cosine or dot product as similarity function in  hinge loss.
                        It's only effective if hinge loss is used. [cosine]
-      -thread          number of threads [10]
       -adagrad         whether to use adagrad in training [1]
       -shareEmb        whether to use the same embedding matrix for LHS and RHS. [1]
       -ws              only used in trainMode 5, the size of the context window for word level training. [5]
       -dropoutLHS      dropout probability for LHS features. [0]
       -dropoutRHS      dropout probability for RHS features. [0]
 
-    The following arguments for eval are optional:
+    The following arguments for test are optional:
       -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.
                        In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.
       -predictionFile  file path for save predictions. If not empty, top K predictions for each example will be saved.
@@ -220,6 +235,24 @@ Performing link prediction can be formalized as filling in incomplete triples li
       -normalizeText   whether to run basic text preprocess for input files [1]
       -verbose         verbosity level [0]
       -debug           whether it's in debug mode [0]
+      -thread          number of threads [10]
 
 
 Note: We use the same implementation of word n-grams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. When "-ngrams" is set to be larger than 1, a hashing map of size specified by the "-bucket" argument is used for n-grams; when "-ngrams" is set to 1, no hash map is used, and the dictionary contains all words within the minCount and minCountLabel constraints.
+
+
+## Citation
+
+Please cite the [arXiv paper](https://arxiv.org/abs/1709.03856) if you use StarSpace in your work:
+
+```
+@article{wu2017starspace,
+  title={StarSpace: Embed All The Things!},
+  author = {{Wu}, L. and {Fisch}, A. and {Chopra}, S. and {Adams}, K. and {Bordes}, A. and {Weston}, J.},
+  journal={arXiv preprint arXiv:{1709.03856}},
+  year={2017}
+}
+```
+## Contact
+* Facebook group: [StarSpace Users](https://www.facebook.com/groups/532005453808326)
+* emails: ledell@fb.com, jase@fb.com
