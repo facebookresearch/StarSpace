@@ -202,6 +202,32 @@ Matrix<Real> StarSpace::getDocVector(const string& line, const string& sep) {
   return model_->projectRHS(ids);
 }
 
+MatrixRow StarSpace::getNgramVector(const string& phrase) {
+  vector<string> tokens;
+  boost::split(tokens, phrase, boost::is_any_of(string(" ")));
+  if (tokens.size() > args_->ngrams) {
+    std::cerr << "Error! Input ngrams size is greater than model ngrams size.\n";
+    exit(EXIT_FAILURE);
+  }
+  if (tokens.size() == 1) {
+    // looking up the entity embedding directly
+    auto id = dict_->getId(tokens[0]);
+    if (id != -1) {
+      return model_->getLHSEmbeddings()->row(id);
+    }
+  }
+
+  uint64_t h = 0;
+  for (auto token: tokens) {
+    int32_t wid = dict_->getId(token);
+    if (dict_->getType(token) == entry_type::word) {
+      h = h * Dictionary::HASH_C + dict_->hash(token);
+    }
+  }
+  int64_t id = h % args_->bucket;
+  return model_->getLHSEmbeddings()->row(id + dict_->nwords() + dict_->nlabels());
+}
+
 void StarSpace::nearestNeighbor(const string& line, int k) {
   auto vec = getDocVector(line, " ");
   auto preds = model_->findLHSLike(vec, k);
