@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#include "starspace.h"
+#include "../starspace.h"
 #include <iostream>
 #include <boost/algorithm/string/predicate.hpp>
 
