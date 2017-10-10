@@ -236,6 +236,10 @@ void StarSpace::loadBaseDocs() {
       baseDocVectors_.push_back(docVec);
     }
     fin.close();
+    if (baseDocVectors_.size() == 0) {
+      std::cerr << "ERROR: basedoc file '" << args_->basedoc << "' is empty." << std::endl;
+      exit(EXIT_FAILURE);
+    }
     cout << "Finished loading base docs.\n";
   }
 }
