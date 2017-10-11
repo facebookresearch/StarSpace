@@ -201,7 +201,7 @@ use <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/
 **Model:** Each example is an article which contains multiple sentences. At training time, one sentence is picked at random as the input, the remaining sentences in the article becomes the label, other articles are picked as random negatives (trainMode 2).
 
 ### Example scripts:
-<a href="https://github.com/facebookresearch/Starspace/blob/master/examples/wikipedia_article_search.sh">This example script</a> downloads data where each example is a Wikipedia arcile and runs the StarSpace model on it:
+<a href="https://github.com/facebookresearch/Starspace/blob/master/examples/wikipedia_article_search.sh">This example script</a> downloads data where each example is a Wikipedia article and runs the StarSpace model on it:
 
     $bash examples/wikipedia_article_search.sh
     
