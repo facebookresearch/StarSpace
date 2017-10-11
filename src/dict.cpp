@@ -142,10 +142,12 @@ void Dictionary::readFromFile(
     exit(EXIT_FAILURE);
   }
   int64_t minThreshold = 1;
+  size_t lines_read = 0;
   std::string line;
   while (getline(fin, line)) {
     vector<string> tokens;
     parser->parseForDict(line, tokens);
+    lines_read++;
     for (auto token : tokens) {
       insert(token);
       if ((ntokens_ % 1000000 == 0) && args_->verbose) {
@@ -164,6 +166,10 @@ void Dictionary::readFromFile(
   std::cerr << "\rRead " << ntokens_  / 1000000 << "M words" << std::endl;
   std::cerr << "Number of words in dictionary:  " << nwords_ << std::endl;
   std::cerr << "Number of labels in dictionary: " << nlabels_ << std::endl;
+  if (lines_read == 0) {
+    std::cerr << "ERROR: Empty file." << std::endl;
+    exit(EXIT_FAILURE);
+  }
   if (size_ == 0) {
     std::cerr << "Empty vocabulary. Try a smaller -minCount value."
               << std::endl;
