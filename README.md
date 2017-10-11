@@ -189,9 +189,26 @@ Performing link prediction can be formalized as filling in incomplete triples li
     $bash examples/wikipedia_sentence_matching.sh
     
 To run the full experiment on Wikipedia Sentence Matching presented in [this paper](https://arxiv.org/abs/1709.03856), 
-use <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/wikipedia_sentence_matching.sh">this script</a> (warning: it takes a long time to download data and train the model):
+use <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/wikipedia_sentence_matching_full.sh">this script</a> (warning: it takes a long time to download data and train the model):
 
     $bash examples/wikipedia_sentence_matching_full.sh
+    
+    
+## ArticleSpace: Learning Sentence and Article Embeddings
+
+**Setting:** Learning the mapping between sentences and articles. Given the embedding of one sentence, one can find the most relevant articles.
+
+**Model:** Each example is an article which contains multiple sentences. At training time, one sentence is picked at random as the input, the remaining sentences in the article becomes the label, other articles are picked as random negatives (trainMode 2).
+
+### Example scripts:
+<a href="https://github.com/facebookresearch/Starspace/blob/master/examples/wikipedia_article_search.sh">This example script</a> downloads data where each example is a Wikipedia arcile and runs the StarSpace model on it:
+
+    $bash examples/wikipedia_article_search.sh
+    
+To run the full experiment on Wikipedia Article Search presented in [this paper](https://arxiv.org/abs/1709.03856), 
+use <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/wikipedia_article_search_full.sh">this script</a> (warning: it takes a long time to download data and train the model):
+
+    $bash examples/wikipedia_article_search_full.sh
 
 # Full Documentation of Parameters
     
