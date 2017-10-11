@@ -8,7 +8,7 @@
  */
 
 #include <gtest/gtest.h>
-#include "matrix.h"
+#include "../matrix.h"
 
 using namespace starspace;
 
