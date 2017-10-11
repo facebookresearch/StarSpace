@@ -181,7 +181,7 @@ Performing link prediction can be formalized as filling in incomplete triples li
 
 **Model:** Each example is a collection of sentences which are semantically related. Two are picked at random using trainMode 3: one as the input and one as the label, other sentences are picked as random negatives. One easy way to obtain semantically related sentences without labeling is to consider all sentences in the same document are related, and then train on those documents.
 
-![sentences](https://github.com/facebookresearch/StarSpace/blob/more-in/examples/sentences.png)
+![sentences](https://github.com/facebookresearch/StarSpace/blob/master/examples/sentences.png)
 
 ### Example scripts:
 <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/wikipedia_sentence_matching.sh">This example script</a> downloads data where each example is a set of sentences from the same Wikipedia page and runs the StarSpace model on it:
