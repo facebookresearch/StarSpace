@@ -37,6 +37,7 @@ struct entry {
 class Dictionary {
   public:
     static const std::string EOS;
+    static const uint32_t HASH_C;
 
     explicit Dictionary(std::shared_ptr<Args>);
     int32_t size() const { return size_; };

@@ -93,7 +93,7 @@ void DataParser::addNgrams(
   for (int32_t i = 0; i < hashes.size(); i++) {
     uint64_t h = hashes[i];
     for (int32_t j = i + 1; j < hashes.size() && j < i + n; j++) {
-      h = h * 116049371 + hashes[j];
+      h = h * Dictionary::HASH_C + hashes[j];
       int64_t id = h % args_->bucket;
       line.push_back(dict_->nwords() + dict_->nlabels() + id);
     }

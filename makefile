@@ -101,10 +101,13 @@ starspace.o: src/starspace.cpp src/starspace.h
 starspace: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/main.cpp -o starspace
 
-nn: $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/querynn.cpp -o nn
+query_nn: $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/query_nn.cpp -o query_nn
+
+print_ngrams: $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/print_ngrams.cpp -o print_ngrams
 
 test: $(TESTS)
 
 clean:
-	rm -rf *.o starspace gtest.a gtest_main.a *_test
+	rm -rf *.o starspace gtest.a gtest_main.a *_test query_nn print_ngrams

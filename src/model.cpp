@@ -576,7 +576,8 @@ EmbedModel::kNN(shared_ptr<SparseLinear<Real>> lookup,
                 int numSim) {
 
     typedef pair<int32_t, Real> Cand;
-    int maxn = lookup->numRows();
+    int  maxn = dict_->nwords() + dict_->nlabels();
+
     vector<Cand> mostSimilar(std::min(numSim, maxn));
     for (auto& s: mostSimilar) {
       s = { -1, -1.0 };
@@ -587,7 +588,7 @@ EmbedModel::kNN(shared_ptr<SparseLinear<Real>> lookup,
     };
     Matrix<Real> contV;
 
-    for (int i = 0; i < lookup->numRows(); i++) {
+    for (int i = 0; i < maxn; i++) {
       lookup->forward(i, contV);
       Real sim = (args_->similarity == "dot") ?
           dot(point, contV) : cosine(point, contV);

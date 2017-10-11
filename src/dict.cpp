@@ -22,6 +22,7 @@ using namespace std;
 namespace starspace {
 
 const std::string Dictionary::EOS = "</s>";
+const uint32_t Dictionary::HASH_C = 116049371;
 
 Dictionary::Dictionary(shared_ptr<Args> args) : args_(args),
   hashToIndex_(MAX_VOCAB_SIZE, -1), size_(0), nwords_(0), nlabels_(0),
