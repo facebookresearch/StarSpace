@@ -8,7 +8,7 @@
  */
 
 
-#include "proj.h"
+#include "../proj.h"
 #include <gtest/gtest.h>
 
 using namespace std;
