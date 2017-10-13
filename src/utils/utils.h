@@ -117,7 +117,7 @@ void foreach_line(const String& fname,
   auto len = filelen(ifs);
   // partitions[i],partitions[i+1] will be the bytewise boundaries for the i'th
   // thread.
-  off_t partitions[numThreads + 1];
+  std::vector<off_t> partitions(numThreads + 1);
   partitions[0] = 0;
   partitions[numThreads] = len;
 
