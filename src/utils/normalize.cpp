@@ -42,7 +42,6 @@ void normalize_text(std::string& str) {
       continue;
     }
     if (!isalpha(c)) continue;
-    bool isUpper = isupper(c);
     allNumeric = false;
   }
 
