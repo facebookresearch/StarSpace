@@ -58,6 +58,10 @@ void LayerDataHandler::loadFromFile(
   }
   cout << "Total number of examples loaded : " << examples_.size() << endl;
   size_ = examples_.size();
+  if (size_ == 0) {
+    std::cerr << "ERROR: File '" << fileName << "' is empty." << std::endl;
+    exit(EXIT_FAILURE);
+  }
 }
 
 void LayerDataHandler::insert(
