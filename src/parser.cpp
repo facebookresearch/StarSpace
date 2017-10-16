@@ -83,7 +83,6 @@ void DataParser::addNgrams(
   vector<int32_t> hashes;
 
   for (auto token: tokens) {
-    int32_t wid = dict_->getId(token);
     entry_type type = dict_->getType(token);
     if (type == entry_type::word) {
       hashes.push_back(dict_->hash(token));

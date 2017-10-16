@@ -418,7 +418,6 @@ float EmbedModel::trainNLL(shared_ptr<InternDataHandler> data,
 
   projectLHS(items, lhs);
   check(lhs);
-  auto cols = lhs.numCols();
 
   projectRHS(labels, rhsP);
   check(rhsP);
