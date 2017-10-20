@@ -79,7 +79,7 @@ class Dictionary {
     int32_t size_;
     int32_t nwords_;
     int32_t nlabels_;
-    int32_t ntokens_;
+    int64_t ntokens_;
 };
 
 }
