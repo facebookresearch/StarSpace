@@ -53,11 +53,17 @@ void DataParser::parseForDict(
     const string& sep) {
 
   chomp(line);
-  boost::split(tokens, line, boost::is_any_of(sep));
-  if (args_->normalizeText) {
-    for (int i = 0; i < tokens.size(); i++) {
-      normalize_text(tokens[i]);
+  vector<string> toks;
+  boost::split(toks, line, boost::is_any_of(string(sep)));
+  for (int i = 0; i < toks.size(); i++) {
+    std::size_t pos = toks[i].find(":");
+    string token = (pos == std::string::npos) ?
+      toks[i] : toks[i].substr(0, pos);
+
+    if (args_->normalizeText) {
+      normalize_text(token);
     }
+    tokens.push_back(token);
   }
 }
 
@@ -77,7 +83,7 @@ bool DataParser::check(const ParseResults& example) {
 
 void DataParser::addNgrams(
     const std::vector<std::string>& tokens,
-    std::vector<int32_t>& line,
+    std::vector<Base>& line,
     int n) {
 
   vector<int32_t> hashes;
@@ -94,7 +100,7 @@ void DataParser::addNgrams(
     for (int32_t j = i + 1; j < hashes.size() && j < i + n; j++) {
       h = h * Dictionary::HASH_C + hashes[j];
       int64_t id = h % args_->bucket;
-      line.push_back(dict_->nwords() + dict_->nlabels() + id);
+      line.push_back(make_pair(dict_->nwords() + dict_->nlabels() + id, 1.0));
     }
   }
 }
@@ -104,7 +110,9 @@ bool DataParser::parse(
     ParseResults& rslts) {
 
   for (auto &token: tokens) {
-    auto t = token;
+    std::size_t pos = token.find(":");
+    string t = (pos == std::string::npos) ? token : token.substr(0, pos);
+
     if (args_->normalizeText) {
       normalize_text(t);
     }
@@ -113,12 +121,16 @@ bool DataParser::parse(
       continue;
     }
 
+    float weight = 1.0;
+    if (pos != std::string::npos) {
+      weight = atof(token.substr(pos + 1).c_str());
+    }
     entry_type type = dict_->getType(wid);
     if (type == entry_type::word) {
-      rslts.LHSTokens.push_back(wid);
+      rslts.LHSTokens.push_back(make_pair(wid, weight));
     }
     if (type == entry_type::label) {
-      rslts.RHSTokens.push_back(wid);
+      rslts.RHSTokens.push_back(make_pair(wid, weight));
     }
   }
 
@@ -130,7 +142,7 @@ bool DataParser::parse(
 
 bool DataParser::parse(
     const std::vector<std::string>& tokens,
-    vector<int32_t>& rslts) {
+    vector<Base>& rslts) {
 
   for (auto &token: tokens) {
     auto t = token;
@@ -144,7 +156,7 @@ bool DataParser::parse(
 
     entry_type type = dict_->getType(wid);
     if (type == entry_type::word) {
-      rslts.push_back(wid);
+      rslts.push_back(make_pair(wid, 1.0));
     }
   }
 
