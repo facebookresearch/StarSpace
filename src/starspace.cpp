@@ -219,7 +219,6 @@ MatrixRow StarSpace::getNgramVector(const string& phrase) {
 
   uint64_t h = 0;
   for (auto token: tokens) {
-    int32_t wid = dict_->getId(token);
     if (dict_->getType(token) == entry_type::word) {
       h = h * Dictionary::HASH_C + dict_->hash(token);
     }
