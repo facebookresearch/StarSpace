@@ -25,8 +25,9 @@ then
     tar -xzvf "${DATADIR}/${DATASET[0]}_train.tar.gz" -C "${DATADIR}"
     wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_devtst.tgz" -O "${DATADIR}/${DATASET[0]}_test.tar.gz"
     tar -xzvf "${DATADIR}/${DATASET[0]}_test.tar.gz" -C "${DATADIR}"
+    wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_shuf_test_basedocs_tm3.txt" -O "${DATADIR}/${DATASET[0]}_test_basedocs_tm3.txt"
   fi
-
+    
 echo "Compiling StarSpace"
 
 make
@@ -54,7 +55,7 @@ echo "Start to evaluate trained model:"
 
 ./starspace test \
   -testFile "${DATADIR}"/wikipedia_test10k.txt \
-  -basedoc "${DATADIR}"/wikipedia_test_basedocs.txt \
+  -basedoc "${DATADIR}"/wikipedia_test_basedocs_tm3.txt \
   -model "${MODELDIR}"/wikipedia_sentence_match \
   -thread 20 \
   -trainMode 3 \
