@@ -54,14 +54,15 @@ then
     echo "Downloading wikipedia test data"
     wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_devtst.tgz" -O "${DATADIR}/${DATASET[0]}_test.tar.gz"
     tar -xzvf "${DATADIR}/${DATASET[0]}_test.tar.gz" -C "${DATADIR}"
+    wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_shuf_test_basedocs_tm3.txt" -O "${DATADIR}/${DATASET[0]}_test_basedocs_tm3.txt"
 fi
 
 echo "Start to evaluate trained model:"
 
 ./starspace test \
   -testFile "${DATADIR}"/wikipedia_test10k.txt \
-  -basedoc "${DATADIR}"/wikipedia_test_basedocs.txt \
-  -model "${MODELDIR}"/wikipedia_sentence_matching_full \
+  -basedoc "${DATADIR}"/wikipedia_test_basedocs_tm3.txt \
+  -model  /mnt/vol/gfsai-flash-east/ai-group/users/ledell/models/starspace/ss-wiki-dim_300-similarity_cosine-trainMode_3-negSearchLimit_100-epoch_30-lr_0.05-minCount_5-margin_0.05.tsv \
   -thread 20 \
   -trainMode 3 \
   -verbose true
