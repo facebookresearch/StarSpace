@@ -175,7 +175,7 @@ void LayerDataHandler::getRandomRHS(vector<Base>& result) const {
     int wid = rand() % ex.RHSFeatures[r].size();
     result.push_back(ex.RHSFeatures[r][wid]);
   } else {
-    insert(result, ex.RHSFeatures[r]);
+    insert(result, ex.RHSFeatures[r], args_->dropoutRHS);
   }
 }
 
