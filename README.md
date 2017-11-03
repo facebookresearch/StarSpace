@@ -150,7 +150,11 @@ At training time, at each step one random document is selected as the label and 
 
 **Input file format:**
 
-    hello world <tab> good morning <tab> good night
+    roger federer loses <tab> venus williams wins <tab> world series ended
+    i love cats <tab> funny lolcat links <tab> how to be a petsitter  
+    
+Each line is a user, and each document (documents separated by tabs) are documents that they liked.
+So the first user likes sports, and the second is interested in pets in this case.
     
 **Command:**
 
