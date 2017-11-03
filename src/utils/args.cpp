@@ -10,6 +10,7 @@
 #include "args.h"
 
 #include <iostream>
+#include <algorithm>
 #include <string>
 #include <cstring>
 #include <assert.h>
@@ -51,6 +52,13 @@ Args::Args() {
   isTrain = false;
   shareEmb = true;
   saveEveryEpoch = false;
+}
+
+bool Args::isTrue(string arg) {
+  std::transform(arg.begin(), arg.end(), arg.begin(),
+      [&](char c) { return tolower(c); }
+  );
+  return (arg == "true" || arg == "1");
 }
 
 void Args::parseArgs(int argc, char** argv) {
@@ -154,17 +162,17 @@ void Args::parseArgs(int argc, char** argv) {
     } else if (strcmp(argv[i], "-trainMode") == 0) {
       trainMode = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-verbose") == 0) {
-      verbose = (string(argv[i + 1]) == "true");
+      verbose = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-debug") == 0) {
-      debug = (string(argv[i + 1]) == "true");
+      debug = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-adagrad") == 0) {
-      adagrad = (string(argv[i + 1]) == "true");
+      adagrad = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-shareEmb") == 0) {
-      shareEmb = (string(argv[i + 1]) == "true");
+      shareEmb = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-normalizeText") == 0) {
-      normalizeText = (string(argv[i + 1]) == "true");
+      normalizeText = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-saveEveryEpoch") == 0) {
-      saveEveryEpoch = (string(argv[i + 1]) == "true");
+      saveEveryEpoch = isTrue(string(argv[i + 1]));
     } else {
       cerr << "Unknown argument: " << argv[i] << std::endl;
       printHelp();
