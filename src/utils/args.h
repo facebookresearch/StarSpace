@@ -63,6 +63,7 @@ class Args {
     void printArgs();
     void save(std::ostream& out);
     void load(std::istream& in);
+    bool isTrue(std::string arg);
 };
 
 }
