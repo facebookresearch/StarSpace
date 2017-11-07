@@ -319,7 +319,10 @@ Metrics StarSpace::evaluateOne(
 
 void StarSpace::printDoc(ofstream& ofs, const vector<int32_t>& tokens) {
   for (auto t : tokens) {
-    ofs << dict_->getSymbol(t) << ' ';
+    // skip ngram tokens
+    if (t < dict_->size()) {
+      ofs << dict_->getSymbol(t) << ' ';
+    }
   }
   ofs << endl;
 }
