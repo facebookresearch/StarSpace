@@ -78,12 +78,7 @@ void StarSpace::init() {
   initParser();
   dict_ = make_shared<Dictionary>(args_);
   auto filename = args_->trainFile;
-  if (!args_->dictFile.empty()) {
-    dict_->loadTsv(args_->dictFile);
-  } else {
-    dict_->readFromFile(filename, parser_);
-    dict_->saveTsv(filename + ".dict");
-  }
+  dict_->readFromFile(filename, parser_);
   parser_->resetDict(dict_);
   if (args_->debug) {dict_->save(cout);}
 
@@ -327,8 +322,8 @@ Metrics StarSpace::evaluateOne(
 void StarSpace::printDoc(ofstream& ofs, const vector<Base>& tokens) {
   for (auto t : tokens) {
     // skip ngram tokens
-    if (t < dict_->size()) {
-      ofs << dict_->getSymbol(t) << ' ';
+    if (t.first < dict_->size()) {
+      ofs << dict_->getSymbol(t.first) << ' ';
     }
   }
   ofs << endl;

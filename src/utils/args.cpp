@@ -112,8 +112,6 @@ void Args::parseArgs(int argc, char** argv) {
       model = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-initModel") == 0) {
       initModel = string(argv[i + 1]);
-    } else if (strcmp(argv[i], "-dictFile") == 0) {
-      dictFile = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-fileFormat") == 0) {
       fileFormat = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-label") == 0) {
@@ -312,6 +310,7 @@ void Args::save(std::ostream& out) {
   out.write((char*) &(bucket), sizeof(int));
   out.write((char*) &(trainMode), sizeof(int));
   out.write((char*) &(shareEmb), sizeof(bool));
+  out.write((char*) &(useWeight), sizeof(bool));
   size_t size = fileFormat.size();
   out.write((char*) &(size), sizeof(size_t));
   out.write((char*) &(fileFormat[0]), size);
@@ -332,6 +331,7 @@ void Args::load(std::istream& in) {
   in.read((char*) &(bucket), sizeof(int));
   in.read((char*) &(trainMode), sizeof(int));
   in.read((char*) &(shareEmb), sizeof(bool));
+  in.read((char*) &(useWeight), sizeof(bool));
   size_t size;
   in.read((char*) &(size), sizeof(size_t));
   fileFormat.resize(size);

@@ -207,30 +207,6 @@ void Dictionary::computeCounts() {
   }
 }
 
-void Dictionary::loadTsv(const string& file) {
-  cout << "Loading dict from dict file : " << file << endl;
-  ifstream fin(file);
-  string line;
-  while (getline(fin, line)) {
-    insert(line);
-  }
-  fin.close();
-  computeCounts();
-
-  std::cout << "Number of words in dictionary:  " << nwords_ << std::endl;
-  std::cout << "Number of labels in dictionary: " << nlabels_ << std::endl;
-}
-
-void Dictionary::saveTsv(const string& file) {
-  cout << "Saving dict to tsv format : " << file << endl;
-  ofstream fout(file);
-  string line;
-  for (int i = 0; i < size_; i++) {
-    fout << entryList_[i].symbol << endl;
-  }
-  fout.close();
-}
-
 // Given a model saved in .tsv format, build the dictionary from model.
 void Dictionary::loadDictFromModel(const string& modelfile) {
   cout << "Loading dict from model file : " << modelfile << endl;

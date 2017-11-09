@@ -45,7 +45,7 @@ class StarSpace {
     void saveModelTsv();
     void printDoc(std::ofstream& ofs, const std::vector<Base>& tokens);
 
-    const std::string kMagic = "STARSPACE-2017-1";
+    const std::string kMagic = "STARSPACE-2017-2";
 
   private:
     void initParser();
