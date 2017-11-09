@@ -55,6 +55,8 @@ class Dictionary {
 
     void load(std::istream&);
     void save(std::ostream&) const;
+    void saveTsv(const std::string& filename);
+    void loadTsv(const std::string& filename);
     void readFromFile(const std::string&, std::shared_ptr<DataParser>);
     bool readWord(std::istream&, std::string&) const;
 

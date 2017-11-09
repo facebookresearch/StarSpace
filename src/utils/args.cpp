@@ -111,6 +111,8 @@ void Args::parseArgs(int argc, char** argv) {
       model = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-initModel") == 0) {
       initModel = string(argv[i + 1]);
+    } else if (strcmp(argv[i], "-dictFile") == 0) {
+      dictFile = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-fileFormat") == 0) {
       fileFormat = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-label") == 0) {

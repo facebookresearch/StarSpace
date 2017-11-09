@@ -21,6 +21,7 @@ class Args {
     std::string validationFile;
     std::string testFile;
     std::string predictionFile;
+    std::string dictFile;
     std::string model;
     std::string initModel;
     std::string fileFormat;

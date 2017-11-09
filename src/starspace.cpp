@@ -78,7 +78,12 @@ void StarSpace::init() {
   initParser();
   dict_ = make_shared<Dictionary>(args_);
   auto filename = args_->trainFile;
-  dict_->readFromFile(filename, parser_);
+  if (!args_->dictFile.empty()) {
+    dict_->loadTsv(args_->dictFile);
+  } else {
+    dict_->readFromFile(filename, parser_);
+    dict_->saveTsv(filename + ".dict");
+  }
   parser_->resetDict(dict_);
   if (args_->debug) {dict_->save(cout);}
 
