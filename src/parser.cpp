@@ -56,10 +56,13 @@ void DataParser::parseForDict(
   vector<string> toks;
   boost::split(toks, line, boost::is_any_of(string(sep)));
   for (int i = 0; i < toks.size(); i++) {
-    std::size_t pos = toks[i].find(":");
-    string token = (pos == std::string::npos) ?
-      toks[i] : toks[i].substr(0, pos);
-
+    string token = toks[i];
+    if (args_->useWeight) {
+      std::size_t pos = toks[i].find(":");
+      if (pos != std::string::npos) {
+        token = toks[i].substr(0, pos);
+      }
+    }
     if (args_->normalizeText) {
       normalize_text(token);
     }
@@ -110,8 +113,15 @@ bool DataParser::parse(
     ParseResults& rslts) {
 
   for (auto &token: tokens) {
-    std::size_t pos = token.find(":");
-    string t = (pos == std::string::npos) ? token : token.substr(0, pos);
+    string t = token;
+    float weight = 1.0;
+    if (args_->useWeight) {
+      std::size_t pos = token.find(":");
+      if (pos != std::string::npos) {
+        t = token.substr(0, pos);
+        weight = atof(token.substr(pos + 1).c_str());
+      }
+    }
 
     if (args_->normalizeText) {
       normalize_text(t);
@@ -121,10 +131,6 @@ bool DataParser::parse(
       continue;
     }
 
-    float weight = 1.0;
-    if (pos != std::string::npos) {
-      weight = atof(token.substr(pos + 1).c_str());
-    }
     entry_type type = dict_->getType(wid);
     if (type == entry_type::word) {
       rslts.LHSTokens.push_back(make_pair(wid, weight));

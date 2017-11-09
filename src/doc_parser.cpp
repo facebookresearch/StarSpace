@@ -34,18 +34,21 @@ bool LayerDataParser::parse(
   boost::split(tokens, s, boost::is_any_of(string(sep)));
 
   for (auto token : tokens) {
-    std::size_t pos = token.find(":");
-    string t = (pos == std::string::npos) ? token : token.substr(0, pos);
+    string t = token;
+    float weight = 1.0;
+    if (args_->useWeight) {
+      std::size_t pos = token.find(":");
+      if (pos != std::string::npos) {
+        t = token.substr(0, pos);
+        weight = atof(token.substr(pos + 1).c_str());
+      }
+    }
 
     if (args_->normalizeText) {
       normalize_text(t);
     }
     int32_t wid = dict_->getId(t);
     if (wid != -1)  {
-      float weight = 1.0;
-      if (pos != std::string::npos) {
-        weight = atof(token.substr(pos + 1).c_str());
-      }
       feats.push_back(make_pair(wid, weight));
     }
   }

@@ -52,6 +52,7 @@ Args::Args() {
   isTrain = false;
   shareEmb = true;
   saveEveryEpoch = false;
+  useWeight = false;
 }
 
 bool Args::isTrue(string arg) {
@@ -175,6 +176,8 @@ void Args::parseArgs(int argc, char** argv) {
       normalizeText = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-saveEveryEpoch") == 0) {
       saveEveryEpoch = isTrue(string(argv[i + 1]));
+    } else if (strcmp(argv[i], "-useWeight") == 0) {
+      useWeight = isTrue(string(argv[i + 1]));
     } else {
       cerr << "Unknown argument: " << argv[i] << std::endl;
       printHelp();
