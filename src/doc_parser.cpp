@@ -26,7 +26,7 @@ LayerDataParser::LayerDataParser(
 
 bool LayerDataParser::parse(
     string& s,
-    vector<int32_t>& feats,
+    vector<Base>& feats,
     const string& sep) {
 
   // split each part into tokens
@@ -34,12 +34,22 @@ bool LayerDataParser::parse(
   boost::split(tokens, s, boost::is_any_of(string(sep)));
 
   for (auto token : tokens) {
-    if (args_->normalizeText) {
-      normalize_text(token);
+    string t = token;
+    float weight = 1.0;
+    if (args_->useWeight) {
+      std::size_t pos = token.find(":");
+      if (pos != std::string::npos) {
+        t = token.substr(0, pos);
+        weight = atof(token.substr(pos + 1).c_str());
+      }
     }
-    int32_t wid = dict_->getId(token);
+
+    if (args_->normalizeText) {
+      normalize_text(t);
+    }
+    int32_t wid = dict_->getId(t);
     if (wid != -1)  {
-      feats.push_back(wid);
+      feats.push_back(make_pair(wid, weight));
     }
   }
 
@@ -64,7 +74,7 @@ bool LayerDataParser::parse(
     start_idx = 1;
   }
   for (int i = start_idx; i < parts.size(); i++) {
-    vector<int32_t> feats;
+    vector<Base> feats;
     if (parse(parts[i], feats)) {
       rslt.RHSFeatures.push_back(feats);
     }

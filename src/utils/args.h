@@ -57,6 +57,7 @@ class Args {
     bool normalizeText;
     bool saveEveryEpoch;
     bool shareEmb;
+    bool useWeight;
 
     void parseArgs(int, char**);
     void printHelp();

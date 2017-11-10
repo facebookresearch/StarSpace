@@ -36,16 +36,16 @@ class StarSpace {
     Matrix<Real> getDocVector(const std::string& line, const std::string& sep);
     void parseDoc(
         const std::string& line,
-        std::vector<int32_t>& ids,
+        std::vector<Base>& ids,
         const std::string& sep);
 
     void nearestNeighbor(const std::string& line, int k);
 
     void saveModel();
     void saveModelTsv();
-    void printDoc(std::ofstream& ofs, const std::vector<int32_t>& tokens);
+    void printDoc(std::ofstream& ofs, const std::vector<Base>& tokens);
 
-    const std::string kMagic = "STARSPACE-2017-1";
+    const std::string kMagic = "STARSPACE-2017-2";
 
   private:
     void initParser();
@@ -54,8 +54,8 @@ class StarSpace {
     void loadBaseDocs();
 
     Metrics evaluateOne(
-        const std::vector<int32_t>& lhs,
-        const std::vector<int32_t>& rhs,
+        const std::vector<Base>& lhs,
+        const std::vector<Base>& rhs,
         std::vector<Predictions>& pred);
 
     std::shared_ptr<Args> args_;
@@ -66,7 +66,7 @@ class StarSpace {
     std::shared_ptr<InternDataHandler> testData_;
     std::shared_ptr<EmbedModel> model_;
 
-    std::vector<std::vector<int32_t>> baseDocs_;
+    std::vector<std::vector<Base>> baseDocs_;
     std::vector<Matrix<Real>> baseDocVectors_;
 };
 

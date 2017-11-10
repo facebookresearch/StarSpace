@@ -26,14 +26,14 @@ public:
 
   virtual void convert(const ParseResults& example, ParseResults& rslt) const;
 
-  virtual void getRandomRHS(std::vector<int32_t>& results) const;
+  virtual void getRandomRHS(std::vector<Base>& results) const;
 
   virtual void save(std::ostream& out);
 
   virtual void getWordExamples(int idx, std::vector<ParseResults>& rslt) const;
 
   void getWordExamples(
-      const std::vector<int32_t>& doc,
+      const std::vector<Base>& doc,
       std::vector<ParseResults>& rslt) const;
 
   void addExample(const ParseResults& example);

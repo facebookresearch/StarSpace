@@ -37,10 +37,11 @@
 
 namespace starspace {
 
+typedef std::pair<int32_t, float> Base;
 struct ParseResults {
-  std::vector<int32_t> LHSTokens;
-  std::vector<int32_t> RHSTokens;
-  std::vector<std::vector<int32_t>> RHSFeatures;
+  std::vector<Base> LHSTokens;
+  std::vector<Base> RHSTokens;
+  std::vector<std::vector<Base>> RHSFeatures;
 };
 
 typedef std::vector<ParseResults> Corpus;
@@ -63,7 +64,7 @@ public:
 
   bool parse(
       const std::vector<std::string>& tokens,
-      std::vector<int32_t>& rslt);
+      std::vector<Base>& rslt);
 
   bool parse(
       const std::vector<std::string>& tokens,
@@ -73,7 +74,7 @@ public:
 
   void addNgrams(
       const std::vector<std::string>& tokens,
-      std::vector<int32_t>& line,
+      std::vector<Base>& line,
       int32_t n);
 
   std::shared_ptr<Dictionary> getDict() { return dict_; };

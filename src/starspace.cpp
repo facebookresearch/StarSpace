@@ -188,7 +188,7 @@ void StarSpace::train() {
 
 void StarSpace::parseDoc(
     const string& line,
-    vector<int32_t>& ids,
+    vector<Base>& ids,
     const string& sep) {
 
   vector<string> tokens;
@@ -197,7 +197,7 @@ void StarSpace::parseDoc(
 }
 
 Matrix<Real> StarSpace::getDocVector(const string& line, const string& sep) {
-  vector<int32_t> ids;
+  vector<Base> ids;
   parseDoc(line, ids, sep);
   return model_->projectRHS(ids);
 }
@@ -242,8 +242,10 @@ void StarSpace::loadBaseDocs() {
       exit(EXIT_FAILURE);
     }
     for (int i = 0; i < dict_->nlabels(); i++) {
-      baseDocs_.push_back({ i + dict_->nwords() });
-      baseDocVectors_.push_back(model_->projectRHS({i + dict_->nwords()}));
+      baseDocs_.push_back({ make_pair(i + dict_->nwords(), 1.0) });
+      baseDocVectors_.push_back(
+          model_->projectRHS({ make_pair(i + dict_->nwords(), 1.0) })
+      );
     }
   } else {
     cout << "Loading base docs from file : " << args_->basedoc << endl;
@@ -254,7 +256,7 @@ void StarSpace::loadBaseDocs() {
     }
     string line;
     while (getline(fin, line)) {
-      vector<int32_t> ids;
+      vector<Base> ids;
       parseDoc(line, ids, "\t ");
       baseDocs_.push_back(ids);
       auto docVec = model_->projectRHS(ids);
@@ -270,8 +272,8 @@ void StarSpace::loadBaseDocs() {
 }
 
 Metrics StarSpace::evaluateOne(
-    const vector<int32_t>& lhs,
-    const vector<int32_t>& rhs,
+    const vector<Base>& lhs,
+    const vector<Base>& rhs,
     vector<Predictions>& pred) {
 
   std::priority_queue<Predictions> heap;
@@ -288,7 +290,7 @@ Metrics StarSpace::evaluateOne(
   for (int i = 0; i < baseDocVectors_.size(); i++) {
     // in the case basedoc labels are not provided, all labels become basedoc,
     // and we skip the correct label for comparison.
-    if ((args_->basedoc.empty()) && (i == rhs[0] - dict_->nwords())) {
+    if ((args_->basedoc.empty()) && (i == rhs[0].first - dict_->nwords())) {
       continue;
     }
     auto cur_score = model_->similarity(lhsM, baseDocVectors_[i]);
@@ -317,11 +319,11 @@ Metrics StarSpace::evaluateOne(
   return s;
 }
 
-void StarSpace::printDoc(ofstream& ofs, const vector<int32_t>& tokens) {
+void StarSpace::printDoc(ofstream& ofs, const vector<Base>& tokens) {
   for (auto t : tokens) {
     // skip ngram tokens
-    if (t < dict_->size()) {
-      ofs << dict_->getSymbol(t) << ' ';
+    if (t.first < dict_->size()) {
+      ofs << dict_->getSymbol(t.first) << ' ';
     }
   }
   ofs << endl;
