@@ -263,6 +263,7 @@ use <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/
 
     The following arguments are optional:
       -normalizeText   whether to run basic text preprocess for input files [1]
+      -useWeight       whether input file contains weights [0]
       -verbose         verbosity level [0]
       -debug           whether it's in debug mode [0]
       -thread          number of threads [10]
