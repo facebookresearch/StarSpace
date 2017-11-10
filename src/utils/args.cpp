@@ -266,6 +266,7 @@ void Args::printHelp() {
        << "  -K               if -predictionFile is not empty, top K predictions for each example will be saved.\n"
        <<  "\nThe following arguments are optional:\n"
        << "  -normalizeText   whether to run basic text preprocess for input files [" << normalizeText << "]\n"
+       << "  -useWeight       whether input file contains weights [" << useWeight << "]\n"
        << "  -verbose         verbosity level [" << verbose << "]\n"
        << "  -debug           whether it's in debug mode [" << debug << "]\n"
        << "  -thread          number of threads [" << thread << "]\n"
