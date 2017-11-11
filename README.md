@@ -51,9 +51,13 @@ labels 1..r is a single word:
 
 This file format is the same as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. It assumes by default that labels are words that are prefixed by the string \_\_label\_\_, and the prefix string can be set by "-label" argument. 
 
-We also extend this file format to support real-valued weights by setting argument "-useWeight" to true (default is false). If "-useWeight" is true, we support weights by the following format
+We also extend this file format to support real-valued weights (in both input and label space) by setting argument "-useWeight" to true (default is false). If "-useWeight" is true, we support weights by the following format
 
     word_1:wt_1 word_2:wt_2 ... word_k:wt_k __label__1:lwt_1 ...    __label__r:lwt_r
+    
+e.g.,
+
+    dog:0.1 cat:0.5 ...
     
 The default weight is 1 for any word / label that does not contain weights.
 
@@ -224,13 +228,13 @@ use <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/
     
 ## ImageSpace: Learning Image and Label Embeddings
 
-With the most recent update, StarSpace can also be used to learn joint embeddings with images and other entities. For instance, one can use ResNet features (the last layer of a pre-trained ResNet model) to represent an image, and embed images with other entities (words, hashtags, etc.). Here we give an example using <a href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10</a> to illustrate how we train images with other entities (in this example, image class).
+With the most recent update, StarSpace can also be used to learn joint embeddings with images and other entities. For instance, one can use ResNet features (the last layer of a pre-trained ResNet model) to represent an image, and embed images with other entities (words, hashtags, etc.). Note that we can use weights in both input and label space. 
 
-We train a <a href="https://github.com/facebookresearch/ResNeXt">ResNeXt</a> model on CIFAR-10  which achieves 96.34% accuracy on test dataset, and use the last layer of ResNeXt as the features for each image. We embed 10 image classes together with image features in the same space using StarSpace. In this particular example, we convert our data to the following format:
+Here we give an example using <a href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10</a> to illustrate how we train images with other entities (in this example, image class):
+
+We train a <a href="https://github.com/facebookresearch/ResNeXt">ResNeXt</a> model on CIFAR-10  which achieves 96.34% accuracy on test dataset, and use the last layer of ResNeXt as the features for each image. We embed 10 image classes together with image features in the same space using StarSpace. For an example image from class 1 with last layer (0.8, 0.5, ..., 1.2), we convert it to the following format:
     
     d1:0.8  d2:0.5   ...    d1024:1.2   __label__1
-
-for an example image with last layer (0.8, 0.5, ..., 1.2) and that is from class 1.
 
 After converting train and test examples of CIFAR-10 to the above format, we ran <a href="https://github.com/facebookresearch/StarSpace/blob/master/examples/image_feature_example_cifar10.sh">this example script</a>:
 
