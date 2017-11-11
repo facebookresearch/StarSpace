@@ -232,7 +232,7 @@ We train a <a href="https://github.com/facebookresearch/ResNeXt">ResNeXt</a> mod
 
 for an example image with last layer (0.8, 0.5, ..., 1.2) and that is from class 1.
 
-After converting train and test examples of CIFAR-10 to the above format, we ran <a href="https://github.com/facebookresearch/StarSpace/blob/weight_example/examples/image_feature_example_cifar10.sh">this example script</a>:
+After converting train and test examples of CIFAR-10 to the above format, we ran <a href="https://github.com/facebookresearch/StarSpace/blob/master/examples/image_feature_example_cifar10.sh">this example script</a>:
 
     $bash examples/image_feature_example_cifar10.sh
 
