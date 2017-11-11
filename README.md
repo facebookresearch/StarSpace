@@ -51,6 +51,12 @@ labels 1..r is a single word:
 
 This file format is the same as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. It assumes by default that labels are words that are prefixed by the string \_\_label\_\_, and the prefix string can be set by "-label" argument. 
 
+**Note:** we also support weights of real values by setting argument "-useWeight" to true (default is false). If "-useWeight" is true, we support weights by the following format
+
+    word_1:wt_1 word_2:wt_2 ... word_k:wt_k __label__1:lwt_1 ...    __label__r:lwt_r
+    
+The default weight is 1 for any word / label that does not contain weights.
+
 In order to learn the embeddings, do:
 
     $./starspace train -trainFile data.txt -model modelSaveFile
@@ -215,6 +221,22 @@ To run the full experiment on Wikipedia Article Search presented in [this paper]
 use <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/wikipedia_article_search_full.sh">this script</a> (warning: it takes a long time to download data and train the model):
 
     $bash examples/wikipedia_article_search_full.sh
+    
+## ImageSpace: Learning Image and Label Embeddings
+
+With the most recent update, StarSpace can also be used to learn joint embeddings with images and other entities. For instance, one can use the last layer of a pre-trained image model to represent an image, and embed images with other entities (words, hashtags, etc.). Here we use an example on <a href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10</a> to illustrate how we train images with other entities (in this example, image class).
+
+We train a <a href="https://github.com/facebookresearch/ResNeXt">ResNeXt</a> model on CIFAR-10  which achieves 96.34% accuracy on test dataset, and use the last layer of ResNeXt as the features for each image. We embed a total of 10 image classes together with image features in the same space using StarSpace. In this particular example, we convert our data to the following format:
+    
+    d1:0.8  d2:0.5   ...    d1024:1.2   __label__1
+
+for an example image with last layer (0.8, 0.5, ..., 1.2) and is from class 1.
+
+After converting train and test examples of CIFAR-10 to the above format, we ran <a href="https://github.com/facebookresearch/StarSpace/blob/weight_example/examples/image_feature_example_cifar10.sh">this example script</a>:
+
+    $bash examples/image_feature_example_cifar10.sh
+
+and achieved 96.56% accuracy on an average of 5 runs.
 
 # Full Documentation of Parameters
     
