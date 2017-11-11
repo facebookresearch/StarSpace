@@ -51,7 +51,7 @@ labels 1..r is a single word:
 
 This file format is the same as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. It assumes by default that labels are words that are prefixed by the string \_\_label\_\_, and the prefix string can be set by "-label" argument. 
 
-**Note:** we also support weights of real values by setting argument "-useWeight" to true (default is false). If "-useWeight" is true, we support weights by the following format
+We also extend this file format and support weights of real values by setting argument "-useWeight" to true (default is false). If "-useWeight" is true, we support weights by the following format
 
     word_1:wt_1 word_2:wt_2 ... word_k:wt_k __label__1:lwt_1 ...    __label__r:lwt_r
     
@@ -224,7 +224,7 @@ use <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/
     
 ## ImageSpace: Learning Image and Label Embeddings
 
-With the most recent update, StarSpace can also be used to learn joint embeddings with images and other entities. For instance, one can use the last layer of a pre-trained image model to represent an image, and embed images with other entities (words, hashtags, etc.). Here we use an example on <a href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10</a> to illustrate how we train images with other entities (in this example, image class).
+With the most recent update, StarSpace can also be used to learn joint embeddings with images and other entities. For instance, one can use ResNet features (the last layer of a pre-trained ResNet model) to represent an image, and embed images with other entities (words, hashtags, etc.). Here we use an example on <a href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10</a> to illustrate how we train images with other entities (in this example, image class).
 
 We train a <a href="https://github.com/facebookresearch/ResNeXt">ResNeXt</a> model on CIFAR-10  which achieves 96.34% accuracy on test dataset, and use the last layer of ResNeXt as the features for each image. We embed a total of 10 image classes together with image features in the same space using StarSpace. In this particular example, we convert our data to the following format:
     
