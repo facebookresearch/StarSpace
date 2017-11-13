@@ -84,19 +84,30 @@ Real norm2(Matrix<Real>::Row a) {
   return std::max(std::numeric_limits<Real>::epsilon(), retval);
 }
 
-Matrix<Real> EmbedModel::projectRHS(std::vector<int32_t> ws) {
+// consistent accessor methods for straight indices and index-weight pairs
+int32_t index(int32_t idx) { return idx; }
+int32_t index(std::pair<int32_t, Real> idxWeightPair) {
+  return idxWeightPair.first;
+}
+
+constexpr float weight(int32_t idx) { return 1.0; }
+float weight(std::pair<int32_t, Real> idxWeightPair) {
+  return idxWeightPair.second;
+}
+
+Matrix<Real> EmbedModel::projectRHS(const std::vector<Base>& ws) {
   Matrix<Real> retval;
   projectRHS(ws, retval);
   return retval;
 }
 
-Matrix<Real> EmbedModel::projectLHS(std::vector<int32_t> ws) {
+Matrix<Real> EmbedModel::projectLHS(const std::vector<Base>& ws) {
   Matrix<Real> retval;
   projectLHS(ws, retval);
   return retval;
 }
 
-void EmbedModel::projectLHS(std::vector<int32_t> ws, Matrix<Real>& retval) {
+void EmbedModel::projectLHS(const std::vector<Base>& ws, Matrix<Real>& retval) {
   LHSEmbeddings_->forward(ws, retval);
   if (ws.size()) {
     auto norm = (args_->similarity == "dot") ?
@@ -105,7 +116,7 @@ void EmbedModel::projectLHS(std::vector<int32_t> ws, Matrix<Real>& retval) {
   }
 }
 
-void EmbedModel::projectRHS(std::vector<int32_t> ws, Matrix<Real>& retval) {
+void EmbedModel::projectRHS(const std::vector<Base>& ws, Matrix<Real>& retval) {
   RHSEmbeddings_->forward(ws, retval);
   if (ws.size()) {
     auto norm = (args_->similarity == "dot") ?
@@ -172,10 +183,10 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
           continue;
         }
 
-        if (args_->debug) {
-          auto printVec = [&](const vector<int32_t>& vec) {
+        if (amMaster && args_->debug) {
+          auto printVec = [&](const vector<Base>& vec) {
             cout << "vec : ";
-            for (auto v : vec) {cout << v << ' ';}
+            for (auto v : vec) {cout << v.first << ':' << v.second << ' ';}
             cout << endl;
           };
 
@@ -304,8 +315,8 @@ void EmbedModel::normalize(Matrix<float>::Row row, double maxNorm) {
 }
 
 float EmbedModel::trainOne(shared_ptr<InternDataHandler> data,
-                           const vector<int32_t>& items,
-                           const vector<int32_t>& labels,
+                           const vector<Base>& items,
+                           const vector<Base>& labels,
                            size_t negSearchLimit,
                            Real rate0) {
   if (items.size() == 0) return 0.0; // nothing to learn.
@@ -344,14 +355,14 @@ float EmbedModel::trainOne(shared_ptr<InternDataHandler> data,
   // Select negative examples
   Real loss = 0.0;
   std::vector<Matrix<Real>> negs;
-  std::vector<std::vector<int32_t>> negLabelsBatch;
+  std::vector<std::vector<Base>> negLabelsBatch;
   Matrix<Real> negMean;
   negMean.matrix = zero_matrix<Real>(1, cols);
 
   for (int i = 0; i < negSearchLimit &&
                   negs.size() < args_->maxNegSamples; i++) {
 
-    std::vector<int32_t> negLabels;
+    std::vector<Base> negLabels;
     do {
       data->getRandomRHS(negLabels);
     } while (negLabels == labels);
@@ -407,8 +418,8 @@ float EmbedModel::trainOne(shared_ptr<InternDataHandler> data,
 }
 
 float EmbedModel::trainNLL(shared_ptr<InternDataHandler> data,
-                           const vector<int32_t>& items,
-                           const vector<int32_t>& labels,
+                           const vector<Base>& items,
+                           const vector<Base>& labels,
                            int32_t negSearchLimit,
                            Real rate0) {
   if (items.size() == 0) return 0.0; // nothing to learn.
@@ -426,13 +437,13 @@ float EmbedModel::trainNLL(shared_ptr<InternDataHandler> data,
   auto numClass = args_->negSearchLimit + 1;
   std::vector<Real> prob(numClass);
   std::vector<Matrix<Real>> negClassVec;
-  std::vector<std::vector<int32_t>> negLabelsBatch;
+  std::vector<std::vector<Base>> negLabelsBatch;
 
   prob[0] = dot(lhs, rhsP);
   Real max = prob[0];
 
   for (int i = 1; i < numClass; i++) {
-    std::vector<int32_t> negLabels;
+    std::vector<Base> negLabels;
     do {
       data->getRandomRHS(negLabels);
     } while (negLabels == labels);
@@ -491,9 +502,9 @@ float EmbedModel::trainNLL(shared_ptr<InternDataHandler> data,
 }
 
 void EmbedModel::backward(
-    const vector<int32_t>& items,
-    const vector<int32_t>& labels,
-    const vector<vector<int32_t>>& negLabels,
+    const vector<Base>& items,
+    const vector<Base>& labels,
+    const vector<vector<Base>>& negLabels,
     Matrix<Real>& gradW,
     Matrix<Real>& lhs,
     Real rate_lhs,
@@ -535,21 +546,21 @@ void EmbedModel::backward(
 
   // Update input items.
   for (auto w : items) {
-    auto row = LHSEmbeddings_->row(w);
-    update(row, gradW, rate_lhs, n1, LHSUpdates_, w);
+    auto row = LHSEmbeddings_->row(index(w));
+    update(row, gradW, rate_lhs * weight(w), n1, LHSUpdates_, index(w));
   }
 
   // Update positive example.
-  for (auto label : labels) {
-    auto row = RHSEmbeddings_->row(label);
-    update(row, lhs, rate_rhsP, n2, RHSUpdates_, label);
+  for (auto la : labels) {
+    auto row = RHSEmbeddings_->row(index(la));
+    update(row, lhs, rate_rhsP * weight(la), n2, RHSUpdates_, index(la));
   }
 
   // Update negative example.
   for (size_t i = 0; i < negLabels.size(); i++) {
-    for (auto label : negLabels[i]) {
-      auto row = RHSEmbeddings_->row(label);
-      update(row, lhs, rate_rhsN[i], n2, RHSUpdates_, label);
+    for (auto la : negLabels[i]) {
+      auto row = RHSEmbeddings_->row(index(la));
+      update(row, lhs, rate_rhsN[i] * weight(la), n2, RHSUpdates_, index(la));
     }
   }
 }

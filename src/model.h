@@ -55,20 +55,20 @@ public:
   }
 
   float trainOne(std::shared_ptr<InternDataHandler> data,
-                 const std::vector<int32_t>& items,
-                 const std::vector<int32_t>& labels,
+                 const std::vector<Base>& items,
+                 const std::vector<Base>& labels,
                  size_t maxNegSamples,
                  Real rate);
 
   float trainNLL(std::shared_ptr<InternDataHandler> data,
-                 const std::vector<int32_t>& items,
-                 const std::vector<int32_t>& labels,
+                 const std::vector<Base>& items,
+                 const std::vector<Base>& labels,
                  int32_t negSearchLimit,
                  Real rate);
 
-  void backward(const std::vector<int32_t>& items,
-                const std::vector<int32_t>& labels,
-                const std::vector<std::vector<int32_t>>& negLabels,
+  void backward(const std::vector<Base>& items,
+                const std::vector<Base>& labels,
+                const std::vector<std::vector<Base>>& negLabels,
                 Matrix<Real>& gradW,
                 Matrix<Real>& lhs,
                 Real rate_lhs,
@@ -91,11 +91,11 @@ public:
     return kNN(RHSEmbeddings_, point, numSim);
   }
 
-  Matrix<Real> projectRHS(std::vector<int32_t> ws);
-  Matrix<Real> projectLHS(std::vector<int32_t> ws);
+  Matrix<Real> projectRHS(const std::vector<Base>& ws);
+  Matrix<Real> projectLHS(const std::vector<Base>& ws);
 
-  void projectLHS(std::vector<int32_t> ws, Matrix<Real>& retval);
-  void projectRHS(std::vector<int32_t> ws, Matrix<Real>& retval);
+  void projectLHS(const std::vector<Base>& ws, Matrix<Real>& retval);
+  void projectRHS(const std::vector<Base>& ws, Matrix<Real>& retval);
 
   void loadTsv(std::istream& in, const std::string sep = "\t ");
   void loadTsv(const char* fname, const std::string sep = "\t ");

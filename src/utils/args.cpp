@@ -52,6 +52,7 @@ Args::Args() {
   isTrain = false;
   shareEmb = true;
   saveEveryEpoch = false;
+  useWeight = false;
 }
 
 bool Args::isTrue(string arg) {
@@ -173,6 +174,8 @@ void Args::parseArgs(int argc, char** argv) {
       normalizeText = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-saveEveryEpoch") == 0) {
       saveEveryEpoch = isTrue(string(argv[i + 1]));
+    } else if (strcmp(argv[i], "-useWeight") == 0) {
+      useWeight = isTrue(string(argv[i + 1]));
     } else {
       cerr << "Unknown argument: " << argv[i] << std::endl;
       printHelp();
@@ -263,6 +266,7 @@ void Args::printHelp() {
        << "  -K               if -predictionFile is not empty, top K predictions for each example will be saved.\n"
        <<  "\nThe following arguments are optional:\n"
        << "  -normalizeText   whether to run basic text preprocess for input files [" << normalizeText << "]\n"
+       << "  -useWeight       whether input file contains weights [" << useWeight << "]\n"
        << "  -verbose         verbosity level [" << verbose << "]\n"
        << "  -debug           whether it's in debug mode [" << debug << "]\n"
        << "  -thread          number of threads [" << thread << "]\n"
@@ -307,6 +311,7 @@ void Args::save(std::ostream& out) {
   out.write((char*) &(bucket), sizeof(int));
   out.write((char*) &(trainMode), sizeof(int));
   out.write((char*) &(shareEmb), sizeof(bool));
+  out.write((char*) &(useWeight), sizeof(bool));
   size_t size = fileFormat.size();
   out.write((char*) &(size), sizeof(size_t));
   out.write((char*) &(fileFormat[0]), size);
@@ -327,6 +332,7 @@ void Args::load(std::istream& in) {
   in.read((char*) &(bucket), sizeof(int));
   in.read((char*) &(trainMode), sizeof(int));
   in.read((char*) &(shareEmb), sizeof(bool));
+  in.read((char*) &(useWeight), sizeof(bool));
   size_t size;
   in.read((char*) &(size), sizeof(size_t));
   fileFormat.resize(size);

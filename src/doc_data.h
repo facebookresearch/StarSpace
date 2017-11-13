@@ -36,14 +36,14 @@ public:
   void loadFromFile(const std::string& file,
                     std::shared_ptr<DataParser> parser) override;
 
-  void getRandomRHS(std::vector<int32_t>& results) const override;
+  void getRandomRHS(std::vector<Base>& results) const override;
 
   void save(std::ostream& out) override;
 
 private:
   void insert(
-      std::vector<int32_t>& rslt,
-      const std::vector<int32_t>& ex,
+      std::vector<Base>& rslt,
+      const std::vector<Base>& ex,
       float dropout = 0.0) const;
 
 };

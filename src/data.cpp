@@ -131,7 +131,7 @@ void InternDataHandler::convert(
 }
 
 void InternDataHandler::getWordExamples(
-    const vector<int32_t>& doc,
+    const vector<Base>& doc,
     vector<ParseResults>& rslts) const {
 
   rslts.clear();
@@ -206,7 +206,7 @@ void InternDataHandler::getNextKExamples(int K, vector<ParseResults>& c) {
 
 // Randomly sample one example and randomly sample a label from this example
 // The result is usually used as negative samples in training
-void InternDataHandler::getRandomRHS(vector<int32_t>& results) const {
+void InternDataHandler::getRandomRHS(vector<Base>& results) const {
   assert(size_ > 0);
   results.clear();
   auto& ex = examples_[rand() % size_];
@@ -231,10 +231,10 @@ void InternDataHandler::save(std::ostream& out) {
   out << "data size : " << size_ << endl;
   for (auto& example : examples_) {
     out << "lhs : ";
-    for (auto t : example.LHSTokens) {out << t << ' ';}
+    for (auto t : example.LHSTokens) {out << t.first << ':' << t.second << ' ';}
     out << endl;
     out << "rhs : ";
-    for (auto t : example.RHSTokens) {out << t << ' ';}
+    for (auto t : example.RHSTokens) {out << t.first << ':' << t.second << ' ';}
     out << endl;
   }
 }

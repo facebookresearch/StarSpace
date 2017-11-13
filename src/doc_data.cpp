@@ -65,8 +65,8 @@ void LayerDataHandler::loadFromFile(
 }
 
 void LayerDataHandler::insert(
-    vector<int32_t>& rslt,
-    const vector<int32_t>& ex,
+    vector<Base>& rslt,
+    const vector<Base>& ex,
     float dropout) const {
 
   if (dropout < 1e-8) {
@@ -156,7 +156,7 @@ void LayerDataHandler::convert(
   }
 }
 
-void LayerDataHandler::getRandomRHS(vector<int32_t>& result) const {
+void LayerDataHandler::getRandomRHS(vector<Base>& result) const {
   assert(size_ > 0);
   auto& ex = examples_[rand() % size_];
   int r = rand() % ex.RHSFeatures.size();
@@ -183,11 +183,11 @@ void LayerDataHandler::save(ostream& out) {
   for (auto example : examples_) {
     out << "lhs: ";
     for (auto t : example.LHSTokens) {
-      out << t << ' ';
+      out << t.first << ':' << t.second << ' ';
     }
     out << "\nrhs: ";
     for (auto feat : example.RHSFeatures) {
-      for (auto r : feat) { cout << r << ' '; }
+      for (auto r : feat) { cout << r.first << ':' << r.second << ' '; }
       out << "\t";
     }
     out << endl;

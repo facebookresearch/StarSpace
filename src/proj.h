@@ -19,6 +19,7 @@
 #include <assert.h>
 #include <string.h>
 #include <fstream>
+#include <cblas.h>
 
 namespace starspace {
 
@@ -44,6 +45,18 @@ struct SparseLinear : public Matrix<Real> {
     for (const auto& elt: in) {
       assert(elt < this->numRows());
       outRow += this->row(elt);
+    }
+  }
+
+  void forward(const std::vector<std::pair<int, Real>>& in,
+               Matrix<Real> &mout) {
+    using namespace boost::numeric::ublas;
+    const auto c = this->numCols();
+    mout.matrix = zero_matrix<Real>(1, c);
+    auto outRow = mout.row(0);
+    for (const auto& pair: in) {
+      assert(pair.first < this->numRows());
+      outRow += this->row(pair.first) * pair.second;
     }
   }
 
