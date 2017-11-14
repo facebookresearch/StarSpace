@@ -9,7 +9,7 @@ StarSpace is a general-purpose neural model for efficient learning of entity emb
 - Metric/similarity learning, e.g. learning sentence or document similarity.
 - Content-based or Collaborative filtering-based Recommendation, e.g. recommending music or videos.
 - Embedding graphs, e.g. multi-relational graphs such as Freebase.
-- <img width="15%" src="examples/starspace.png" /> Image classification, ranking or retrieval (e.g. by using existing ResNet features).
+- <img width="15%" src="examples/new.gif" /> Image classification, ranking or retrieval (e.g. by using existing ResNet features).
 
 In the general case, it learns to represent objects of different types into a common vectorial embedding space,
 hence the star ('*', wildcard) and space in the name, and in that space compares them against each other.
