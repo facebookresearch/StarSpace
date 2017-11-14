@@ -9,7 +9,7 @@ StarSpace is a general-purpose neural model for efficient learning of entity emb
 - Metric/similarity learning, e.g. learning sentence or document similarity.
 - Content-based or Collaborative filtering-based Recommendation, e.g. recommending music or videos.
 - Embedding graphs, e.g. multi-relational graphs such as Freebase.
-- **New!** Image classification, ranking or retrieval (e.g. by using existing ResNet features).
+- <img width="15%" src="examples/starspace.png" /> Image classification, ranking or retrieval (e.g. by using existing ResNet features).
 
 In the general case, it learns to represent objects of different types into a common vectorial embedding space,
 hence the star ('*', wildcard) and space in the name, and in that space compares them against each other.
@@ -55,6 +55,13 @@ labels 1..r is a single word:
 
 This file format is the same as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. It assumes by default that labels are words that are prefixed by the string \_\_label\_\_, and the prefix string can be set by "-label" argument. 
 
+In order to learn the embeddings, do:
+
+    $./starspace train -trainFile data.txt -model modelSaveFile
+
+where data.txt is a training file containing utf-8 encoded text. At the end of optimization the program will save two files: model and modelSaveFile.tsv. modelSaveFile.tsv is a standard tsv format file containing the entity embedding vectors, one per line. modelSaveFile is a binary file containing the parameters of the model along with the dictionary and all hyper parameters. The binary file can be used later to compute entity embedding vectors or to run evaluation tasks.
+
+
 We also extend this file format to support real-valued weights (in both input and label space) by setting argument "-useWeight" to true (default is false). If "-useWeight" is true, we support weights by the following format
 
     word_1:wt_1 word_2:wt_2 ... word_k:wt_k __label__1:lwt_1 ...    __label__r:lwt_r
@@ -64,12 +71,6 @@ e.g.,
     dog:0.1 cat:0.5 ...
     
 The default weight is 1 for any word / label that does not contain weights.
-
-In order to learn the embeddings, do:
-
-    $./starspace train -trainFile data.txt -model modelSaveFile
-
-where data.txt is a training file containing utf-8 encoded text. At the end of optimization the program will save two files: model and modelSaveFile.tsv. modelSaveFile.tsv is a standard tsv format file containing the entity embedding vectors, one per line. modelSaveFile is a binary file containing the parameters of the model along with the dictionary and all hyper parameters. The binary file can be used later to compute entity embedding vectors or to run evaluation tasks.
 
 In the more general case, each label also consists of words:
 
