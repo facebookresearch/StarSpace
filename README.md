@@ -61,17 +61,6 @@ In order to learn the embeddings, do:
 
 where data.txt is a training file containing utf-8 encoded text. At the end of optimization the program will save two files: model and modelSaveFile.tsv. modelSaveFile.tsv is a standard tsv format file containing the entity embedding vectors, one per line. modelSaveFile is a binary file containing the parameters of the model along with the dictionary and all hyper parameters. The binary file can be used later to compute entity embedding vectors or to run evaluation tasks.
 
-
-We also extend this file format to support real-valued weights (in both input and label space) by setting argument "-useWeight" to true (default is false). If "-useWeight" is true, we support weights by the following format
-
-    word_1:wt_1 word_2:wt_2 ... word_k:wt_k __label__1:lwt_1 ...    __label__r:lwt_r
-    
-e.g.,
-
-    dog:0.1 cat:0.5 ...
-    
-The default weight is 1 for any word / label that does not contain weights.
-
 In the more general case, each label also consists of words:
 
     word_1 word_2 ... word_k <tab> label_1_word_1 label_1_word_2 ... <tab> label_r_word_1 .. 
@@ -82,6 +71,15 @@ In order to learn the embeddings in the more general case where each label consi
 
     $./starspace train -trainFile data.txt -model modelSaveFile -fileFormat labelDoc
 
+We also extend the file format to support real-valued weights (in both input and label space) by setting argument "-useWeight" to true (default is false). If "-useWeight" is true, we support weights by the following format
+
+    word_1:wt_1 word_2:wt_2 ... word_k:wt_k __label__1:lwt_1 ...    __label__r:lwt_r
+    
+e.g.,
+
+    dog:0.1 cat:0.5 ...
+    
+The default weight is 1 for any word / label that does not contain weights.
 
 ## Training Mode
 
