@@ -9,6 +9,7 @@ StarSpace is a general-purpose neural model for efficient learning of entity emb
 - Metric/similarity learning, e.g. learning sentence or document similarity.
 - Content-based or Collaborative filtering-based Recommendation, e.g. recommending music or videos.
 - Embedding graphs, e.g. multi-relational graphs such as Freebase.
+- <img width="5%" src="examples/new2.gif" /> Image classification, ranking or retrieval (e.g. by using existing ResNet features).
 
 In the general case, it learns to represent objects of different types into a common vectorial embedding space,
 hence the star ('*', wildcard) and space in the name, and in that space compares them against each other.
@@ -16,6 +17,9 @@ It learns to rank a set of entities/documents or objects given a query entity/do
 
 See the [paper](https://arxiv.org/abs/1709.03856) for more details on how it works.
 
+# News
+
+We added support for real-valued input and label weights: checkout the <a href="https://github.com/facebookresearch/StarSpace/#file-format">File Format</a> and <a href="https://github.com/facebookresearch/StarSpace/#imagespace-learning-image-and-label-embeddings">ImageSpace</a> section for more details on how to use weights in input and label.
 
 # Requirements
 
@@ -51,16 +55,6 @@ labels 1..r is a single word:
 
 This file format is the same as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. It assumes by default that labels are words that are prefixed by the string \_\_label\_\_, and the prefix string can be set by "-label" argument. 
 
-We also extend this file format to support real-valued weights (in both input and label space) by setting argument "-useWeight" to true (default is false). If "-useWeight" is true, we support weights by the following format
-
-    word_1:wt_1 word_2:wt_2 ... word_k:wt_k __label__1:lwt_1 ...    __label__r:lwt_r
-    
-e.g.,
-
-    dog:0.1 cat:0.5 ...
-    
-The default weight is 1 for any word / label that does not contain weights.
-
 In order to learn the embeddings, do:
 
     $./starspace train -trainFile data.txt -model modelSaveFile
@@ -77,6 +71,15 @@ In order to learn the embeddings in the more general case where each label consi
 
     $./starspace train -trainFile data.txt -model modelSaveFile -fileFormat labelDoc
 
+We also extend the file format to support real-valued weights (in both input and label space) by setting argument "-useWeight" to true (default is false). If "-useWeight" is true, we support weights by the following format
+
+    word_1:wt_1 word_2:wt_2 ... word_k:wt_k __label__1:lwt_1 ...    __label__r:lwt_r
+    
+e.g.,
+
+    dog:0.1 cat:0.5 ...
+    
+The default weight is 1 for any word / label that does not contain weights.
 
 ## Training Mode
 
