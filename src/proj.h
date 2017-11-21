@@ -19,7 +19,6 @@
 #include <assert.h>
 #include <string.h>
 #include <fstream>
-#include <cblas.h>
 
 namespace starspace {
 
