@@ -16,7 +16,7 @@ using namespace starspace;
 
 // Read each sentence / document line by line,
 // and output it's embedding vector
-voiid embedDoc(StarSpace& sp, istream& fin) {
+void embedDoc(StarSpace& sp, istream& fin) {
   string input;
   while (getline(fin, input)) {
     if (input.size() ==0) break;
