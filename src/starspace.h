@@ -33,7 +33,9 @@ class StarSpace {
     void evaluate();
 
     MatrixRow getNgramVector(const std::string& phrase);
-    Matrix<Real> getDocVector(const std::string& line, const std::string& sep);
+    Matrix<Real> getDocVector(
+        const std::string& line,
+        const std::string& sep = " \t");
     void parseDoc(
         const std::string& line,
         std::vector<Base>& ids,
