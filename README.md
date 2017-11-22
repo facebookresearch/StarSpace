@@ -299,6 +299,39 @@ and achieved 96.56% accuracy on an average of 5 runs.
 Note: We use the same implementation of word n-grams for words as in <a href="https://github.com/facebookresearch/fastText">fastText</a>. When "-ngrams" is set to be larger than 1, a hashing map of size specified by the "-bucket" argument is used for n-grams; when "-ngrams" is set to 1, no hash map is used, and the dictionary contains all words within the minCount and minCountLabel constraints.
 
 
+## Utility Functions
+
+We also provide a few utitliy functions for StarSpace:
+### Nearest Neighbor Queries
+
+A simple way to check the quality of a trained embedding model is to inspect nearest neighbors of entities. To build and use this utility function, run the following commands:
+
+    make query_nn
+    ./query_nn <model> [k]
+    
+where "\<model\>" specifies a trained StarSpace model and the optional K (default value is 5) specifies how many nearest neighbors to search for.
+
+After loading the model, it reads a line of entities (can be either a single word or a sentence / document), and output the nearest entities in embedding space.
+
+### Print Ngrams
+
+As the ngrams used in the model is not saved in tsv format, we also provide a separate function to output n-grams embeddings from the model. To use that, run the following commands:
+
+    make print_ngrams
+    ./print_ngrams <model>
+    
+where "\<model\>" specifies a trained StarSpace model with argument -ngrams > 1.
+
+### Print Sentence / Document Embedding
+
+Sometimes it is useful to print out sentence / document embeddings from a trained model. To use that, run the following commands:
+
+    make embed_doc
+    ./embed_doc <model> [filename]
+    
+where "\<model\>" specifies a trained StarSpace model. If filename is provided, it reads each sentence / document from file, line by line, and outputs vector embeddings accordingly. If filename is not provided, it reads each sentence / document from stdin.
+
+
 ## Citation
 
 Please cite the [arXiv paper](https://arxiv.org/abs/1709.03856) if you use StarSpace in your work:
