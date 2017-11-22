@@ -301,7 +301,7 @@ Note: We use the same implementation of word n-grams for words as in <a href="ht
 
 ## Utility Functions
 
-We also provide a few utitliy functions for StarSpace:
+We also provide a few utility functions for StarSpace:
 ### Nearest Neighbor Queries
 
 A simple way to check the quality of a trained embedding model is to inspect nearest neighbors of entities. To build and use this utility function, run the following commands:
@@ -315,7 +315,7 @@ After loading the model, it reads a line of entities (can be either a single wor
 
 ### Print Ngrams
 
-As the ngrams used in the model is not saved in tsv format, we also provide a separate function to output n-grams embeddings from the model. To use that, run the following commands:
+As the ngrams used in the model are not saved in tsv format, we also provide a separate function to output n-grams embeddings from the model. To use that, run the following commands:
 
     make print_ngrams
     ./print_ngrams <model>
@@ -329,7 +329,7 @@ Sometimes it is useful to print out sentence / document embeddings from a traine
     make embed_doc
     ./embed_doc <model> [filename]
     
-where "\<model\>" specifies a trained StarSpace model. If filename is provided, it reads each sentence / document from file, line by line, and outputs vector embeddings accordingly. If filename is not provided, it reads each sentence / document from stdin.
+where "\<model\>" specifies a trained StarSpace model. If filename is provided, it reads each sentence / document from file, line by line, and outputs vector embeddings accordingly. If the filename is not provided, it reads each sentence / document from stdin.
 
 
 ## Citation
