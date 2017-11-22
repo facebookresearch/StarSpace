@@ -107,6 +107,9 @@ query_nn: $(OBJS)
 print_ngrams: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/print_ngrams.cpp -o print_ngrams
 
+embed_doc: $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/embed_doc.cpp -o embed_doc
+
 test: $(TESTS)
 
 clean:
