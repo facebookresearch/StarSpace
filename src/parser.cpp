@@ -152,6 +152,15 @@ bool DataParser::parse(
 
   for (auto &token: tokens) {
     auto t = token;
+    float weight = 1.0;
+    if (args_->useWeight) {
+      std::size_t pos = token.find(":");
+      if (pos != std::string::npos) {
+        t = token.substr(0, pos);
+        weight = atof(token.substr(pos + 1).c_str());
+      }
+    }
+
     if (args_->normalizeText) {
       normalize_text(t);
     }
@@ -162,7 +171,7 @@ bool DataParser::parse(
 
     entry_type type = dict_->getType(wid);
     if (type == entry_type::word) {
-      rslts.push_back(make_pair(wid, 1.0));
+      rslts.push_back(make_pair(wid, weight));
     }
   }
 

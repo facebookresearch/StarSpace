@@ -199,7 +199,7 @@ void StarSpace::parseDoc(
 Matrix<Real> StarSpace::getDocVector(const string& line, const string& sep) {
   vector<Base> ids;
   parseDoc(line, ids, sep);
-  return model_->projectRHS(ids);
+  return model_->projectLHS(ids);
 }
 
 MatrixRow StarSpace::getNgramVector(const string& phrase) {
