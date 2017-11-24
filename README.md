@@ -281,6 +281,7 @@ and achieved 96.56% accuracy on an average of 5 runs.
       -ws              only used in trainMode 5, the size of the context window for word level training. [5]
       -dropoutLHS      dropout probability for LHS features. [0]
       -dropoutRHS      dropout probability for RHS features. [0]
+      -initRandSd      initial values of embeddings are randomly generated from normal distribution with mean=0, standard deviation=initRandSd. [0.001]
 
     The following arguments for test are optional:
       -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.
