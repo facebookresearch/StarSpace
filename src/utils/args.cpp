@@ -259,6 +259,7 @@ void Args::printHelp() {
        << "  -ws              only used in trainMode 5, the size of the context window for word level training. [" << ws << "]\n"
        << "  -dropoutLHS      dropout probability for LHS features. [" << dropoutLHS << "]\n"
        << "  -dropoutRHS      dropout probability for RHS features. [" << dropoutRHS << "]\n"
+       << "  -initRandSd      initial value of embeddings are generated from normal distribution with mean 0 and standard deviation speicified by initRandSd. [" << initRandSd << "]\n"
        << "\nThe following arguments for test are optional:\n"
        << "  -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.\n"
        << "                   In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.\n"
