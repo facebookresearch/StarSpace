@@ -33,8 +33,8 @@ int main(int argc, char** argv) {
       sp.init();
     }
     sp.train();
-    sp.saveModel();
-    sp.saveModelTsv();
+    sp.saveModel(args->model);
+    sp.saveModelTsv(args->model + ".tsv");
   } else {
     if (boost::algorithm::ends_with(args->model, ".tsv")) {
       sp.initFromTsv(args->model);

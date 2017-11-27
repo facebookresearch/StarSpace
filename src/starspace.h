@@ -43,8 +43,8 @@ class StarSpace {
 
     void nearestNeighbor(const std::string& line, int k);
 
-    void saveModel();
-    void saveModelTsv();
+    void saveModel(const std::string& filename);
+    void saveModelTsv(const std::string& filename);
     void printDoc(std::ofstream& ofs, const std::vector<Base>& tokens);
 
     const std::string kMagic = "STARSPACE-2017-2";
