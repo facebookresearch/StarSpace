@@ -247,7 +247,7 @@ void Args::printHelp() {
        << "  -trainMode       takes value in [0, 1, 2, 3, 4, 5], see Training Mode Section. [" << trainMode << "]\n"
        << "  -fileFormat      currently support 'fastText' and 'labelDoc', see File Format Section. [" << fileFormat << "]\n"
        << "  -saveEveryEpoch  save intermediate models after each epoch [" << saveEveryEpoch << "]\n"
-       << "  -saveTempModel   save intermediate models after each epoch with a unique name [" << saveTempModel << "]\n"
+       << "  -saveTempModel   save intermediate models after each epoch with an unique name including epoch number [" << saveTempModel << "]\n"
        << "  -lr              learning rate [" << lr << "]\n"
        << "  -dim             size of embedding vectors [" << dim << "]\n"
        << "  -epoch           number of epochs [" << epoch << "]\n"
