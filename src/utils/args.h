@@ -56,6 +56,7 @@ class Args {
     bool isTrain;
     bool normalizeText;
     bool saveEveryEpoch;
+    bool saveTempModel;
     bool shareEmb;
     bool useWeight;
 
