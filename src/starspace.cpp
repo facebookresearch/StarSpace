@@ -334,6 +334,12 @@ void StarSpace::printDoc(ofstream& ofs, const vector<Base>& tokens) {
 }
 
 void StarSpace::evaluate() {
+  // check that it is not in trainMode 5
+  if (args_->trainMode == 5) {
+    std::cerr << "Test is undefined in trainMode 5. Please use other trainMode for testing.\n";
+    exit(EXIT_FAILURE);
+  }
+
   // set dropout probability to 0 in test case
   args_->dropoutLHS = 0.0;
   args_->dropoutRHS = 0.0;
