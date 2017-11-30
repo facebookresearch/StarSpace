@@ -50,6 +50,7 @@ echo "Start to train on wikipedia data (small training set example version, not 
   -fileFormat labelDoc \
   -similarity "cosine" \
   -minCount 5 \
+  -normalizeText true \
   -verbose true
 
 echo "Start to evaluate trained model:"
@@ -60,4 +61,5 @@ echo "Start to evaluate trained model:"
   -model "${MODELDIR}"/wikipedia_article_search \
   -thread 20 \
   -trainMode 2 \
+  -normalizeText true \
   -verbose true

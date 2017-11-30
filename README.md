@@ -292,7 +292,7 @@ and achieved 96.56% accuracy on an average of 5 runs.
       -K               if -predictionFile is not empty, top K predictions for each example will be saved.
 
     The following arguments are optional:
-      -normalizeText   whether to run basic text preprocess for input files [1]
+      -normalizeText   whether to run basic text preprocess for input files [0]
       -useWeight       whether input file contains weights [0]
       -verbose         verbosity level [0]
       -debug           whether it's in debug mode [0]
