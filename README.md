@@ -266,6 +266,8 @@ and achieved 96.56% accuracy on an average of 5 runs.
       -initModel       if not empty, it loads a previously trained model in -initModel and carry on training.
       -trainMode       takes value in [0, 1, 2, 3, 4, 5], see Training Mode Section. [0]
       -fileFormat      currently support 'fastText' and 'labelDoc', see File Format Section. [fastText]
+      -saveEveryEpoch  save intermediate models after each epoch [false]
+      -saveTempModel   save intermediate models after each epoch with an unique name including epoch number [false]
       -lr              learning rate [0.01]
       -dim             size of embedding vectors [10]
       -epoch           number of epochs [5]
@@ -281,6 +283,7 @@ and achieved 96.56% accuracy on an average of 5 runs.
       -ws              only used in trainMode 5, the size of the context window for word level training. [5]
       -dropoutLHS      dropout probability for LHS features. [0]
       -dropoutRHS      dropout probability for RHS features. [0]
+      -initRandSd      initial values of embeddings are randomly generated from normal distribution with mean=0, standard deviation=initRandSd. [0.001]
 
     The following arguments for test are optional:
       -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.

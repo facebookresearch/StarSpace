@@ -17,8 +17,8 @@ convert_data() {
     do
         read HEAD_ENTITY RELATION_TYPE TAIL_ENTITY <<< $line
         REVERSE_RELATION='reverse'$RELATION_TYPE
-        echo -e ''$HEAD_ENTITY'\t'$RELATION_TYPE'\t'$TAIL_ENTITY''
-        echo -e ''$TAIL_ENTITY'\t'$REVERSE_RELATION'\t'$HEAD_ENTITY''
+        echo -e ''$HEAD_ENTITY'\t'$RELATION_TYPE'\t__label__'$TAIL_ENTITY''
+        echo -e ''$TAIL_ENTITY'\t'$REVERSE_RELATION'\t__label__'$HEAD_ENTITY''
     done < "$1"  
 }
 
@@ -46,13 +46,12 @@ make
   -model ${MODELDIR}/fb15k \
   -adagrad false \
   -margin 0.05 \
-  -lr 0.05 \
-  -epoch 20 \
+  -lr 0.1 \
+  -epoch 100 \
   -thread 40 \
   -dim 50 \
-  -negSearchLimit 100 \
-  -trainMode 4 \
-  -label "/m/" \
+  -maxNegSamples 50 \
+  -negSearchLimit 50 \
   -similarity "dot" \
   -verbose true
 
@@ -61,7 +60,5 @@ make
   -model ${MODELDIR}/fb15k \
   -thread 40 \
   -dim 50 \
-  -trainMode 4 \
-  -label "/m/" \
   -similarity "dot" \
   -verbose true

@@ -161,8 +161,12 @@ void StarSpace::train() {
   auto t_start = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < args_->epoch; i++) {
     if (args_->saveEveryEpoch && i > 0) {
-      saveModel();
-      saveModelTsv();
+      auto filename = args_->model;
+      if (args_->saveTempModel) {
+        filename = filename + "_epoch" + std::to_string(i);
+      }
+      saveModel(filename);
+      saveModelTsv(filename + ".tsv");
     }
     cout << "Training epoch " << i << ": " << rate << ' ' << decrPerEpoch << endl;
     auto err = model_->train(trainData_, args_->thread,
@@ -330,6 +334,12 @@ void StarSpace::printDoc(ofstream& ofs, const vector<Base>& tokens) {
 }
 
 void StarSpace::evaluate() {
+  // check that it is not in trainMode 5
+  if (args_->trainMode == 5) {
+    std::cerr << "Test is undefined in trainMode 5. Please use other trainMode for testing.\n";
+    exit(EXIT_FAILURE);
+  }
+
   // set dropout probability to 0 in test case
   args_->dropoutLHS = 0.0;
   args_->dropoutRHS = 0.0;
@@ -398,9 +408,8 @@ void StarSpace::evaluate() {
   }
 }
 
-void StarSpace::saveModel() {
-  cout << "Saving model to file : " << args_->model << endl;
-  std::string filename(args_->model);
+void StarSpace::saveModel(const string& filename) {
+  cout << "Saving model to file : " << filename << endl;
   std::ofstream ofs(filename, std::ofstream::binary);
   if (!ofs.is_open()) {
     std::cerr << "Model file cannot be opened for saving!" << std::endl;
@@ -415,9 +424,9 @@ void StarSpace::saveModel() {
   ofs.close();
 }
 
-void StarSpace::saveModelTsv() {
-  cout << "Saving model in tsv format : " << args_->model + ".tsv" << endl;
-  ofstream fout(args_->model + ".tsv");
+void StarSpace::saveModelTsv(const string& filename) {
+  cout << "Saving model in tsv format : " << filename << endl;
+  ofstream fout(filename);
   model_->saveTsv(fout, '\t');
   fout.close();
 }

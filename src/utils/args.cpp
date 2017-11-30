@@ -52,6 +52,7 @@ Args::Args() {
   isTrain = false;
   shareEmb = true;
   saveEveryEpoch = false;
+  saveTempModel = false;
   useWeight = false;
 }
 
@@ -174,6 +175,8 @@ void Args::parseArgs(int argc, char** argv) {
       normalizeText = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-saveEveryEpoch") == 0) {
       saveEveryEpoch = isTrue(string(argv[i + 1]));
+    } else if (strcmp(argv[i], "-saveTempModel") == 0) {
+      saveTempModel = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-useWeight") == 0) {
       useWeight = isTrue(string(argv[i + 1]));
     } else {
@@ -244,6 +247,7 @@ void Args::printHelp() {
        << "  -trainMode       takes value in [0, 1, 2, 3, 4, 5], see Training Mode Section. [" << trainMode << "]\n"
        << "  -fileFormat      currently support 'fastText' and 'labelDoc', see File Format Section. [" << fileFormat << "]\n"
        << "  -saveEveryEpoch  save intermediate models after each epoch [" << saveEveryEpoch << "]\n"
+       << "  -saveTempModel   save intermediate models after each epoch with an unique name including epoch number [" << saveTempModel << "]\n"
        << "  -lr              learning rate [" << lr << "]\n"
        << "  -dim             size of embedding vectors [" << dim << "]\n"
        << "  -epoch           number of epochs [" << epoch << "]\n"
@@ -259,6 +263,7 @@ void Args::printHelp() {
        << "  -ws              only used in trainMode 5, the size of the context window for word level training. [" << ws << "]\n"
        << "  -dropoutLHS      dropout probability for LHS features. [" << dropoutLHS << "]\n"
        << "  -dropoutRHS      dropout probability for RHS features. [" << dropoutRHS << "]\n"
+       << "  -initRandSd      initial values of embeddings are randomly generated from normal distribution with mean=0, standard deviation=initRandSd. [" << initRandSd << "]\n"
        << "\nThe following arguments for test are optional:\n"
        << "  -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.\n"
        << "                   In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.\n"
