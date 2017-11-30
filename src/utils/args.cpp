@@ -41,7 +41,7 @@ Args::Args() {
   verbose = false;
   debug = false;
   adagrad = true;
-  normalizeText = true;
+  normalizeText = false;
   trainMode = 0;
   fileFormat = "fastText";
   label = "__label__";

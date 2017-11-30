@@ -47,6 +47,7 @@ echo "Start to train on wikipedia data (meant to replicate experiment from paper
   -fileFormat labelDoc \
   -similarity "cosine" \
   -minCount 5 \
+  -normalizeText true \
   -verbose true
 
 if [ ! -f "${DATADIR}/${DATASET[i]}_test10k.txt" ]
@@ -65,4 +66,5 @@ echo "Start to evaluate trained model:"
   -model "${MODELDIR}"/wikipedia_sentence_matching_full \
   -thread 20 \
   -trainMode 3 \
+  -normalizeText true \
   -verbose true
