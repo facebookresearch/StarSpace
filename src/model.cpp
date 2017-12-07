@@ -646,7 +646,7 @@ void EmbedModel::loadTsvLine(string& line, int lineNum,
   }
   auto idx = dict_->getId(pieces[0]);
   if (idx == -1) {
-    cerr << "Failed to insert record at line " << lineNum << "\n";
+    cerr << "Failed to insert record: " << line << "\n";
     return;
   }
   auto row = LHSEmbeddings_->row(idx);
