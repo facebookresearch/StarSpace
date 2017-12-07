@@ -305,9 +305,20 @@ Note: We use the same implementation of word n-grams for words as in <a href="ht
 ## Utility Functions
 
 We also provide a few utility functions for StarSpace:
+### Show Predictions for Queries
+
+A simple way to check the quality of a trained embedding model is to inspect the predictions when typing in an input. To build and use this utility function, run the following commands:
+
+    make query_predict
+    ./query_predict <model> k [basedocs]
+    
+where "\<model\>" specifies a trained StarSpace model and the optional K specifies how many of the top predictions to show (top ranked first). "basedocs" points to the file of documents to rank, see also the argument of the same name in the starspace main above. If "basedocs" is not provided, the labels in the dictionary are used instead.
+
+After loading the model, it reads a line of entities (can be either a single word or a sentence / document), and outputs the predictions.
+
 ### Nearest Neighbor Queries
 
-A simple way to check the quality of a trained embedding model is to inspect nearest neighbors of entities. To build and use this utility function, run the following commands:
+Another simple way to check the quality of a trained embedding model is to inspect nearest neighbors of entities. To build and use this utility function, run the following commands:
 
     make query_nn
     ./query_nn <model> [k]
