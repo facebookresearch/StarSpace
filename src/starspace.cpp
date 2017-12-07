@@ -139,7 +139,7 @@ void StarSpace::initFromTsv(const string& filename) {
     exit(EXIT_FAILURE);
   }
   // Test dimension of first line, adjust args appropriately
-  // (this is also so we can load a TSV file without even specifying the dim.
+  // (This is also so we can load a TSV file without even specifying the dim.)
   string line;
   getline(in, line);
   vector<string> pieces;
