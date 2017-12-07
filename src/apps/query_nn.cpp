@@ -30,7 +30,11 @@ int main(int argc, char** argv) {
     k = atoi(argv[2]);
   }
   StarSpace sp(args);
-  sp.initFromSavedModel(args->model);
+  if (boost::algorithm::ends_with(args->model, ".tsv")) {
+    sp.initFromTsv(args->model);
+  } else {
+    sp.initFromSavedModel(args->model);
+  }
   cout << "------Loaded model args:\n";
   args->printArgs();
 

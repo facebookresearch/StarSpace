@@ -138,6 +138,17 @@ void StarSpace::initFromTsv(const string& filename) {
     std::cerr << "Model file cannot be opened for loading!" << std::endl;
     exit(EXIT_FAILURE);
   }
+  // Test dimension of first line, adjust args appropriately
+  // (this is also so we can load a TSV file without even specifying the dim.
+  string line;
+  getline(in, line);
+  vector<string> pieces;
+  boost::split(pieces, line, boost::is_any_of("\t "));
+  int dim = pieces.size() - 1;
+  if (args_->dim != dim) {
+    args_->dim = dim;
+    cout << "Setting dim from Tsv file to: " << dim << endl;
+  }
   in.close();
 
   // build dict
