@@ -138,6 +138,17 @@ void StarSpace::initFromTsv(const string& filename) {
     std::cerr << "Model file cannot be opened for loading!" << std::endl;
     exit(EXIT_FAILURE);
   }
+  // Test dimension of first line, adjust args appropriately
+  // (This is also so we can load a TSV file without even specifying the dim.)
+  string line;
+  getline(in, line);
+  vector<string> pieces;
+  boost::split(pieces, line, boost::is_any_of("\t "));
+  int dim = pieces.size() - 1;
+  if (args_->dim != dim) {
+    args_->dim = dim;
+    cout << "Setting dim from Tsv file to: " << dim << endl;
+  }
   in.close();
 
   // build dict
@@ -251,6 +262,7 @@ void StarSpace::loadBaseDocs() {
           model_->projectRHS({ make_pair(i + dict_->nwords(), 1.0) })
       );
     }
+    cout << "Predictions use " <<  dict_->nlabels() << " known labels." << endl;
   } else {
     cout << "Loading base docs from file : " << args_->basedoc << endl;
     ifstream fin(args_->basedoc);
@@ -271,7 +283,25 @@ void StarSpace::loadBaseDocs() {
       std::cerr << "ERROR: basedoc file '" << args_->basedoc << "' is empty." << std::endl;
       exit(EXIT_FAILURE);
     }
-    cout << "Finished loading base docs.\n";
+    cout << "Finished loading " << baseDocVectors_.size() << " base docs.\n";
+  }
+}
+
+void StarSpace::predictOne(
+    const vector<Base>& input,
+    vector<Predictions>& pred) {
+  auto lhsM = model_->projectLHS(input);
+  std::priority_queue<Predictions> heap;
+  for (int i = 0; i < baseDocVectors_.size(); i++) {
+    auto cur_score = model_->similarity(lhsM, baseDocVectors_[i]);
+    heap.push({ cur_score, i });
+  }
+  // get the first K predictions
+  int i = 0;
+  while (i < args_->K && heap.size() > 0) {
+    pred.push_back(heap.top());
+    heap.pop();
+    i++;
   }
 }
 
@@ -323,7 +353,7 @@ Metrics StarSpace::evaluateOne(
   return s;
 }
 
-void StarSpace::printDoc(ofstream& ofs, const vector<Base>& tokens) {
+void StarSpace::printDoc(ostream& ofs, const vector<Base>& tokens) {
   for (auto t : tokens) {
     // skip ngram tokens
     if (t.first < dict_->size()) {

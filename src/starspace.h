@@ -45,22 +45,27 @@ class StarSpace {
 
     void saveModel(const std::string& filename);
     void saveModelTsv(const std::string& filename);
-    void printDoc(std::ofstream& ofs, const std::vector<Base>& tokens);
+    void printDoc(std::ostream& ofs, const std::vector<Base>& tokens);
 
     const std::string kMagic = "STARSPACE-2017-2";
 
+    void loadBaseDocs();
+    
+    void predictOne(
+        const std::vector<Base>& input,
+        std::vector<Predictions>& pred);
+
+    std::shared_ptr<Args> args_;
+    std::vector<std::vector<Base>> baseDocs_;
   private:
     void initParser();
     void initDataHandler();
     std::shared_ptr<InternDataHandler> initData();
-    void loadBaseDocs();
-
     Metrics evaluateOne(
         const std::vector<Base>& lhs,
         const std::vector<Base>& rhs,
         std::vector<Predictions>& pred);
 
-    std::shared_ptr<Args> args_;
     std::shared_ptr<Dictionary> dict_;
     std::shared_ptr<DataParser> parser_;
     std::shared_ptr<InternDataHandler> trainData_;
@@ -68,7 +73,6 @@ class StarSpace {
     std::shared_ptr<InternDataHandler> testData_;
     std::shared_ptr<EmbedModel> model_;
 
-    std::vector<std::vector<Base>> baseDocs_;
     std::vector<Matrix<Real>> baseDocVectors_;
 };
 
