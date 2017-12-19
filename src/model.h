@@ -54,17 +54,26 @@ public:
 		       0.0, 0.0, false);
   }
 
+  float trainOneExample(
+      std::shared_ptr<InternDataHandler> data,
+      const ParseResults& s,
+      int negSearchLimit,
+      Real rate,
+      bool trainWord = false);
+
   float trainOne(std::shared_ptr<InternDataHandler> data,
                  const std::vector<Base>& items,
                  const std::vector<Base>& labels,
                  size_t maxNegSamples,
-                 Real rate);
+                 Real rate,
+                 bool trainWord = false);
 
   float trainNLL(std::shared_ptr<InternDataHandler> data,
                  const std::vector<Base>& items,
                  const std::vector<Base>& labels,
                  int32_t negSearchLimit,
-                 Real rate);
+                 Real rate,
+                 bool trainWord = false);
 
   void backward(const std::vector<Base>& items,
                 const std::vector<Base>& labels,

@@ -59,6 +59,7 @@ class Args {
     bool saveTempModel;
     bool shareEmb;
     bool useWeight;
+    bool trainWord;
 
     void parseArgs(int, char**);
     void printHelp();

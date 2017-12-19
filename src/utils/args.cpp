@@ -54,6 +54,7 @@ Args::Args() {
   saveEveryEpoch = false;
   saveTempModel = false;
   useWeight = false;
+  trainWord = false;
 }
 
 bool Args::isTrue(string arg) {
@@ -179,6 +180,8 @@ void Args::parseArgs(int argc, char** argv) {
       saveTempModel = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-useWeight") == 0) {
       useWeight = isTrue(string(argv[i + 1]));
+    } else if (strcmp(argv[i], "-trainWord") == 0) {
+      trainWord = isTrue(string(argv[i + 1]));
     } else {
       cerr << "Unknown argument: " << argv[i] << std::endl;
       printHelp();

@@ -125,6 +125,47 @@ void EmbedModel::projectRHS(const std::vector<Base>& ws, Matrix<Real>& retval) {
   }
 }
 
+Real EmbedModel::trainOneExample(
+    shared_ptr<InternDataHandler> data,
+    const ParseResults& s,
+    int negSearchLimit,
+    Real rate,
+    bool trainWord) {
+
+  if (s.RHSTokens.size() == 0 || s.LHSTokens.size() == 0) {
+    return 0.0;
+  }
+
+  if (args_->debug) {
+    auto printVec = [&](const vector<Base>& vec) {
+      cout << "vec : ";
+      for (auto v : vec) {cout << v.first << ':' << v.second << ' ';}
+      cout << endl;
+    };
+
+    printVec(s.LHSTokens);
+    printVec(s.RHSTokens);
+    cout << endl;
+  }
+
+  if (args_->loss == "softmax") {
+    return trainNLL(
+      data,
+      s.LHSTokens, s.RHSTokens,
+      negSearchLimit, rate,
+      trainWord
+    );
+  } else {
+    // default is hinge loss
+    return trainOne(
+      data,
+      s.LHSTokens, s.RHSTokens,
+      negSearchLimit, rate,
+      trainWord
+    );
+  }
+}
+
 Real EmbedModel::train(shared_ptr<InternDataHandler> data,
                        int numThreads,
 		       std::chrono::time_point<std::chrono::high_resolution_clock> t_start,
@@ -167,48 +208,20 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
     auto t_epoch_start = std::chrono::high_resolution_clock::now();
     losses[idx] = 0.0;
     counts[idx] = 0;
+    float thisLoss = 0.0;
     for (auto ip = start; ip < end; ip++) {
       auto i = *ip;
-      vector<ParseResults> exs;
-      if (args_->trainMode == 5) {
+      if (args_->trainMode == 5 || args_->trainWord) {
+        vector<ParseResults> exs;
         data->getWordExamples(i, exs);
-      } else {
+        for (auto ex : exs) {
+          thisLoss += trainOneExample(data, ex, negSearchLimit, rate, true);
+        }
+      }
+      if (args_->trainMode != 5) {
         ParseResults ex;
         data->getExampleById(i, ex);
-        exs.emplace_back(ex);
-      }
-      float thisLoss = 0.0;
-      for (auto& s : exs) {
-        if (s.RHSTokens.size() == 0 || s.LHSTokens.size() == 0) {
-          continue;
-        }
-
-        if (amMaster && args_->debug) {
-          auto printVec = [&](const vector<Base>& vec) {
-            cout << "vec : ";
-            for (auto v : vec) {cout << v.first << ':' << v.second << ' ';}
-            cout << endl;
-          };
-
-          printVec(s.LHSTokens);
-          printVec(s.RHSTokens);
-          cout << endl;
-        }
-
-        if (args_->loss == "softmax") {
-          thisLoss += trainNLL(
-            data,
-            s.LHSTokens, s.RHSTokens,
-            negSearchLimit, rate
-          );
-        } else {
-          // default is hinge loss
-          thisLoss += trainOne(
-            data,
-            s.LHSTokens, s.RHSTokens,
-            negSearchLimit, rate
-          );
-        }
+        thisLoss += trainOneExample(data, ex, negSearchLimit, rate, false);
       }
 
       assert(thisLoss >= 0.0);
@@ -318,7 +331,8 @@ float EmbedModel::trainOne(shared_ptr<InternDataHandler> data,
                            const vector<Base>& items,
                            const vector<Base>& labels,
                            size_t negSearchLimit,
-                           Real rate0) {
+                           Real rate0,
+                           bool trainWord) {
   if (items.size() == 0) return 0.0; // nothing to learn.
 
   using namespace boost::numeric::ublas;
@@ -364,7 +378,7 @@ float EmbedModel::trainOne(shared_ptr<InternDataHandler> data,
 
     std::vector<Base> negLabels;
     do {
-      data->getRandomRHS(negLabels);
+      data->getRandomRHS(negLabels, trainWord);
     } while (negLabels == labels);
 
     projectRHS(negLabels, rhsN);
@@ -421,7 +435,8 @@ float EmbedModel::trainNLL(shared_ptr<InternDataHandler> data,
                            const vector<Base>& items,
                            const vector<Base>& labels,
                            int32_t negSearchLimit,
-                           Real rate0) {
+                           Real rate0,
+                           bool trainWord) {
   if (items.size() == 0) return 0.0; // nothing to learn.
   Matrix<Real> lhs, rhsP, rhsN;
 
@@ -445,7 +460,7 @@ float EmbedModel::trainNLL(shared_ptr<InternDataHandler> data,
   for (int i = 1; i < numClass; i++) {
     std::vector<Base> negLabels;
     do {
-      data->getRandomRHS(negLabels);
+      data->getRandomRHS(negLabels, trainWord);
     } while (negLabels == labels);
     projectRHS(negLabels, rhsN);
     check(rhsN);
