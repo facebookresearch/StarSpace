@@ -209,25 +209,28 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
     auto t_epoch_start = std::chrono::high_resolution_clock::now();
     losses[idx] = 0.0;
     counts[idx] = 0;
-    float thisLoss = 0.0;
     for (auto ip = start; ip < end; ip++) {
       auto i = *ip;
+      float thisLoss = 0.0;
       if (args_->trainMode == 5 || args_->trainWord) {
         vector<ParseResults> exs;
         data->getWordExamples(i, exs);
         for (auto ex : exs) {
-          thisLoss += trainOneExample(data, ex, negSearchLimit, rate, true);
+          thisLoss = trainOneExample(data, ex, negSearchLimit, rate, true);
+          assert(thisLoss >= 0.0);
+          counts[idx]++;
+          losses[idx] += thisLoss;
         }
       }
       if (args_->trainMode != 5) {
         ParseResults ex;
         data->getExampleById(i, ex);
-        thisLoss += trainOneExample(data, ex, negSearchLimit, rate, false);
+        thisLoss = trainOneExample(data, ex, negSearchLimit, rate, false);
+        assert(thisLoss >= 0.0);
+        counts[idx]++;
+        losses[idx] += thisLoss;
       }
 
-      assert(thisLoss >= 0.0);
-      counts[idx]++;
-      losses[idx] += thisLoss;
       // update rate racily.
       if ((i % kDecrStep) == (kDecrStep - 1)) {
         rate -= decrPerKSample;

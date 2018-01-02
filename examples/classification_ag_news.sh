@@ -73,3 +73,4 @@ echo "Start to evaluate trained model:"
   -similarity "dot" \
   -trainMode 0 \
   -verbose true
+
