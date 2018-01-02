@@ -74,6 +74,7 @@ void InternDataHandler::convert(
     const ParseResults& example,
     ParseResults& rslt) const {
 
+  rslt.weight = example.weight;
   rslt.LHSTokens.clear();
   rslt.RHSTokens.clear();
 
@@ -146,6 +147,7 @@ void InternDataHandler::getWordExamples(
         rslt.LHSTokens.push_back(doc[i]);
       }
     }
+    rslt.weight = args_->wordWeight;
     rslts.emplace_back(rslt);
   }
 }

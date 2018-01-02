@@ -104,6 +104,7 @@ void LayerDataHandler::convert(
     const ParseResults& example,
     ParseResults& rslt) const {
 
+  rslt.weight = example.weight;
   rslt.LHSTokens.clear();
   rslt.RHSTokens.clear();
 

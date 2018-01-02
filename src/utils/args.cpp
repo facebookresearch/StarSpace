@@ -24,6 +24,7 @@ Args::Args() {
   termLr = 1e-9;
   norm = 1.0;
   margin = 0.05;
+  wordWeight = 0.5;
   initRandSd = 0.001;
   dropoutLHS = 0.0;
   dropoutRHS = 0.0;
@@ -138,6 +139,8 @@ void Args::parseArgs(int argc, char** argv) {
       dropoutLHS = atof(argv[i + 1]);
     } else if (strcmp(argv[i], "-dropoutRHS") == 0) {
       dropoutRHS = atof(argv[i + 1]);
+    } else if (strcmp(argv[i], "-wordWeight") == 0) {
+      wordWeight = atof(argv[i + 1]);
     } else if (strcmp(argv[i], "-dim") == 0) {
       dim = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-epoch") == 0) {

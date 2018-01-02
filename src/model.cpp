@@ -148,11 +148,12 @@ Real EmbedModel::trainOneExample(
     cout << endl;
   }
 
+  Real wRate = s.weight * rate;
   if (args_->loss == "softmax") {
     return trainNLL(
       data,
       s.LHSTokens, s.RHSTokens,
-      negSearchLimit, rate,
+      negSearchLimit, wRate,
       trainWord
     );
   } else {
@@ -160,7 +161,7 @@ Real EmbedModel::trainOneExample(
     return trainOne(
       data,
       s.LHSTokens, s.RHSTokens,
-      negSearchLimit, rate,
+      negSearchLimit, wRate,
       trainWord
     );
   }

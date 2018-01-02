@@ -59,8 +59,7 @@ echo "Start to train on ag_news data:"
   -trainMode 0 \
   -label "__label__" \
   -similarity "dot" \
-  -verbose true \
-  -trainWord true
+  -verbose true
 
 echo "Start to evaluate trained model:"
 

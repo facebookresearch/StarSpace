@@ -38,7 +38,9 @@
 namespace starspace {
 
 typedef std::pair<int32_t, float> Base;
+
 struct ParseResults {
+  float weight = 1.0;
   std::vector<Base> LHSTokens;
   std::vector<Base> RHSTokens;
   std::vector<std::vector<Base>> RHSFeatures;
