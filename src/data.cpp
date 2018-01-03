@@ -74,6 +74,7 @@ void InternDataHandler::convert(
     const ParseResults& example,
     ParseResults& rslt) const {
 
+  rslt.weight = example.weight;
   rslt.LHSTokens.clear();
   rslt.RHSTokens.clear();
 
@@ -146,6 +147,7 @@ void InternDataHandler::getWordExamples(
         rslt.LHSTokens.push_back(doc[i]);
       }
     }
+    rslt.weight = args_->wordWeight;
     rslts.emplace_back(rslt);
   }
 }
@@ -206,11 +208,11 @@ void InternDataHandler::getNextKExamples(int K, vector<ParseResults>& c) {
 
 // Randomly sample one example and randomly sample a label from this example
 // The result is usually used as negative samples in training
-void InternDataHandler::getRandomRHS(vector<Base>& results) const {
+void InternDataHandler::getRandomRHS(vector<Base>& results, bool trainWord) const {
   assert(size_ > 0);
   results.clear();
   auto& ex = examples_[rand() % size_];
-  if (args_->trainMode == 5) {
+  if (args_->trainMode == 5 || trainWord) {
     int r = rand() % ex.LHSTokens.size();
     results.push_back(ex.LHSTokens[r]);
   } else {

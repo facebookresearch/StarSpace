@@ -26,7 +26,8 @@ public:
 
   virtual void convert(const ParseResults& example, ParseResults& rslt) const;
 
-  virtual void getRandomRHS(std::vector<Base>& results) const;
+  virtual void getRandomRHS(std::vector<Base>& results, bool trainWord = false)
+    const;
 
   virtual void save(std::ostream& out);
 

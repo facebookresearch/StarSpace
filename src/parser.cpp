@@ -66,7 +66,9 @@ void DataParser::parseForDict(
     if (args_->normalizeText) {
       normalize_text(token);
     }
-    tokens.push_back(token);
+    if (token.find("__weight__") == std::string::npos) {
+      tokens.push_back(token);
+    }
   }
 }
 
@@ -113,6 +115,13 @@ bool DataParser::parse(
     ParseResults& rslts) {
 
   for (auto &token: tokens) {
+    if (token.find("__weight__") != std::string::npos) {
+      std::size_t pos = token.find(":");
+      if (pos != std::string::npos) {
+        rslts.weight = atof(token.substr(pos + 1).c_str());
+      }
+      continue;
+    }
     string t = token;
     float weight = 1.0;
     if (args_->useWeight) {
@@ -143,6 +152,7 @@ bool DataParser::parse(
   if (args_->ngrams > 1) {
     addNgrams(tokens, rslts.LHSTokens, args_->ngrams);
   }
+
   return check(rslts);
 }
 

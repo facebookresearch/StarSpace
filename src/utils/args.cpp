@@ -24,6 +24,7 @@ Args::Args() {
   termLr = 1e-9;
   norm = 1.0;
   margin = 0.05;
+  wordWeight = 0.5;
   initRandSd = 0.001;
   dropoutLHS = 0.0;
   dropoutRHS = 0.0;
@@ -54,6 +55,7 @@ Args::Args() {
   saveEveryEpoch = false;
   saveTempModel = false;
   useWeight = false;
+  trainWord = false;
 }
 
 bool Args::isTrue(string arg) {
@@ -137,6 +139,8 @@ void Args::parseArgs(int argc, char** argv) {
       dropoutLHS = atof(argv[i + 1]);
     } else if (strcmp(argv[i], "-dropoutRHS") == 0) {
       dropoutRHS = atof(argv[i + 1]);
+    } else if (strcmp(argv[i], "-wordWeight") == 0) {
+      wordWeight = atof(argv[i + 1]);
     } else if (strcmp(argv[i], "-dim") == 0) {
       dim = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-epoch") == 0) {
@@ -179,6 +183,8 @@ void Args::parseArgs(int argc, char** argv) {
       saveTempModel = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-useWeight") == 0) {
       useWeight = isTrue(string(argv[i + 1]));
+    } else if (strcmp(argv[i], "-trainWord") == 0) {
+      trainWord = isTrue(string(argv[i + 1]));
     } else {
       cerr << "Unknown argument: " << argv[i] << std::endl;
       printHelp();
@@ -264,6 +270,8 @@ void Args::printHelp() {
        << "  -dropoutLHS      dropout probability for LHS features. [" << dropoutLHS << "]\n"
        << "  -dropoutRHS      dropout probability for RHS features. [" << dropoutRHS << "]\n"
        << "  -initRandSd      initial values of embeddings are randomly generated from normal distribution with mean=0, standard deviation=initRandSd. [" << initRandSd << "]\n"
+       << "  -trainWord       whether to train word level together with other tasks (for multi-tasking). [" << trainWord << "]\n"
+       << "  -wordWeight      if trainWord is true, wordWeight specifies example weight for word level training examples. [" << wordWeight << "]\n"
        << "\nThe following arguments for test are optional:\n"
        << "  -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.\n"
        << "                   In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.\n"

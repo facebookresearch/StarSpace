@@ -68,10 +68,19 @@ bool LayerDataParser::parse(
   vector<string> parts;
   boost::split(parts, line, boost::is_any_of("\t"));
   int start_idx = 0;
+
+  if (parts[0].find("__weight__") != std::string::npos) {
+    std::size_t pos = parts[0].find(":");
+    if (pos != std::string::npos) {
+      rslt.weight = atof(parts[0].substr(pos + 1).c_str());
+    }
+    start_idx = 1;
+  }
+
   if (args_->trainMode == 0) {
     // the first part is input features
-    parse(parts[0], rslt.LHSTokens);
-    start_idx = 1;
+    parse(parts[start_idx], rslt.LHSTokens);
+    start_idx += 1;
   }
   for (int i = start_idx; i < parts.size(); i++) {
     vector<Base> feats;

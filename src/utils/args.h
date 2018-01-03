@@ -37,6 +37,7 @@ class Args {
     double p;
     double dropoutLHS;
     double dropoutRHS;
+    double wordWeight;
     size_t dim;
     int epoch;
     int ws;
@@ -59,6 +60,7 @@ class Args {
     bool saveTempModel;
     bool shareEmb;
     bool useWeight;
+    bool trainWord;
 
     void parseArgs(int, char**);
     void printHelp();

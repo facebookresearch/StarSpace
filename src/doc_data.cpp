@@ -104,6 +104,7 @@ void LayerDataHandler::convert(
     const ParseResults& example,
     ParseResults& rslt) const {
 
+  rslt.weight = example.weight;
   rslt.LHSTokens.clear();
   rslt.RHSTokens.clear();
 
@@ -156,24 +157,23 @@ void LayerDataHandler::convert(
   }
 }
 
-void LayerDataHandler::getRandomRHS(vector<Base>& result) const {
+void LayerDataHandler::getRandomRHS(vector<Base>& result, bool trainWord) const {
   assert(size_ > 0);
   auto& ex = examples_[rand() % size_];
   int r = rand() % ex.RHSFeatures.size();
 
   result.clear();
-  if (args_->trainMode == 2) {
+  if (args_->trainMode == 5 || trainWord) {
+    // pick random word
+    int wid = rand() % ex.RHSFeatures[r].size();
+    result.push_back(ex.RHSFeatures[r][wid]);
+  } else if (args_->trainMode == 2) {
     // pick one random, the rest is rhs features
     for (int i = 0; i < ex.RHSFeatures.size(); i++) {
       if (i != r) {
         insert(result, ex.RHSFeatures[i], args_->dropoutRHS);
       }
     }
-  } else
-  if (args_->trainMode == 5) {
-    // pick random word
-    int wid = rand() % ex.RHSFeatures[r].size();
-    result.push_back(ex.RHSFeatures[r][wid]);
   } else {
     insert(result, ex.RHSFeatures[r], args_->dropoutRHS);
   }
