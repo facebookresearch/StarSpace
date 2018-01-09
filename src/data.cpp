@@ -26,6 +26,15 @@ InternDataHandler::InternDataHandler(shared_ptr<Args> args) {
   args_= args;
 }
 
+void InternDataHandler::errorOnZeroExample(const string& fileName) {
+  std::cerr << "ERROR: File '" << fileName
+            << "' does not contain any valid example.\n"
+            << "Please check: is the file empty? "
+            << "Do the examples contain proper feature and label according to the trainMode? "
+            << "If your examples are unlabeled, try to set trainMode=5.\n";
+  exit(EXIT_FAILURE);
+}
+
 void InternDataHandler::loadFromFile(
   const string& fileName,
   shared_ptr<DataParser> parser) {
@@ -62,8 +71,7 @@ void InternDataHandler::loadFromFile(
   cout << "Total number of examples loaded : " << examples_.size() << endl;
   size_ = examples_.size();
   if (size_ == 0) {
-    std::cerr << "ERROR: File '" << fileName << "' is empty." << std::endl;
-    exit(EXIT_FAILURE);
+    errorOnZeroExample(fileName);
   }
 }
 

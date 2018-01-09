@@ -51,6 +51,8 @@ public:
 
   size_t getSize() const { return size_; };
 
+  void errorOnZeroExample(const std::string& fileName);
+
 
 protected:
   static const int32_t MAX_VOCAB_SIZE = 10000000;
