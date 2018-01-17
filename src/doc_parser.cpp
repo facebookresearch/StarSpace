@@ -33,14 +33,24 @@ bool LayerDataParser::parse(
   vector<string> tokens;
   boost::split(tokens, s, boost::is_any_of(string(sep)));
 
-  for (auto token : tokens) {
-    string t = token;
+  int start_idx = 0;
+  float ex_weight = 1.0;
+  if (tokens[0].find("__weight__") != std::string::npos) {
+    std::size_t pos = tokens[0].find(":");
+    if (pos != std::string::npos) {
+        ex_weight = atof(tokens[0].substr(pos + 1).c_str());
+    }
+    start_idx = 1;
+  }
+
+  for (int i = start_idx; i < tokens.size(); i++) {
+    string t = tokens[i];
     float weight = 1.0;
     if (args_->useWeight) {
-      std::size_t pos = token.find(":");
+      std::size_t pos = tokens[i].find(":");
       if (pos != std::string::npos) {
-        t = token.substr(0, pos);
-        weight = atof(token.substr(pos + 1).c_str());
+        t = tokens[i].substr(0, pos);
+        weight = atof(tokens[i].substr(pos + 1).c_str());
       }
     }
 
@@ -49,7 +59,7 @@ bool LayerDataParser::parse(
     }
     int32_t wid = dict_->getId(t);
     if (wid != -1)  {
-      feats.push_back(make_pair(wid, weight));
+      feats.push_back(make_pair(wid, weight * ex_weight));
     }
   }
 
@@ -68,14 +78,6 @@ bool LayerDataParser::parse(
   vector<string> parts;
   boost::split(parts, line, boost::is_any_of("\t"));
   int start_idx = 0;
-
-  if (parts[0].find("__weight__") != std::string::npos) {
-    std::size_t pos = parts[0].find(":");
-    if (pos != std::string::npos) {
-      rslt.weight = atof(parts[0].substr(pos + 1).c_str());
-    }
-    start_idx = 1;
-  }
 
   if (args_->trainMode == 0) {
     // the first part is input features
