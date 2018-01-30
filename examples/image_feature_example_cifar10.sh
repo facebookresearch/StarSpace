@@ -33,15 +33,15 @@ echo "Start to train on cifar-10 data:"
   -trainFile "${DATADIR}"/"${DATASET}"_resnext.train \
   -model "${MODELDIR}"/cifar10_example \
   -useWeight true \
-  -initRandSd 0.01 \
+  -initRandSd 0.1 \
   -adagrad false \
-  -lr 0.0001 \
-  -epoch 50 \
+  -lr 0.001 \
+  -epoch 5 \
   -thread 40 \
-  -dim 20 \
-  -negSearchLimit 10 \
+  -dim 100 \
+  -negSearchLimit 5 \
   -thread 40 \
-  -dim 20 \
+  -dim 100 \
   -verbose true
 
 echo "Start to evaluate trained model:"
