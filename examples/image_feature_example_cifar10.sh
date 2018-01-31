@@ -42,6 +42,7 @@ echo "Start to train on cifar-10 data:"
   -negSearchLimit 5 \
   -thread 40 \
   -dim 100 \
+  -similarity "dot" \
   -verbose true
 
 echo "Start to evaluate trained model:"
@@ -50,4 +51,5 @@ echo "Start to evaluate trained model:"
   -testFile "${DATADIR}"/"${DATASET}"_resnext.test \
   -model "${MODELDIR}"/cifar10_example \
   -thread 20 \
+  -similarity "dot" \
   -verbose true
