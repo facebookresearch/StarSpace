@@ -241,7 +241,7 @@ After converting train and test examples of CIFAR-10 to the above format, we ran
 
     $bash examples/image_feature_example_cifar10.sh
 
-and achieved 96.56% accuracy on an average of 5 runs.
+and achieved 96.40% accuracy on an average of 5 runs.
 
 # Full Documentation of Parameters
     
