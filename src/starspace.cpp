@@ -394,6 +394,8 @@ void StarSpace::evaluate() {
     exit(EXIT_FAILURE);
   }
 
+  testData_ = initData();
+  testData_->loadFromFile(args_->testFile, parser_);
   // set dropout probability to 0 in test case
   args_->dropoutLHS = 0.0;
   args_->dropoutRHS = 0.0;

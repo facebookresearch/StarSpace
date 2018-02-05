@@ -31,9 +31,11 @@ echo "Start to train on cifar-10 data:"
 
 ./starspace train \
   -trainFile "${DATADIR}"/"${DATASET}"_resnext.train \
+  -testFile "${DATADIR}"/"${DATASET}"_resnext.test \
   -model "${MODELDIR}"/cifar10_example \
   -useWeight true \
   -initRandSd 0.1 \
+  -margin 0.05 \
   -adagrad false \
   -lr 0.001 \
   -epoch 5 \

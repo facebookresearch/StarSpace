@@ -77,6 +77,7 @@ entry_type Dictionary::getType(const string& w) const {
 }
 
 void Dictionary::insert(const string& symbol) {
+  if (symbol.size() < 2) return;
   int32_t h = find(symbol);
   ntokens_++;
   if (hashToIndex_[h] == -1) {
