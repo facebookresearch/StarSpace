@@ -278,6 +278,7 @@ and achieved 96.40% accuracy on an average of 5 runs.
       -margin          margin parameter in hinge loss. It's only effective if hinge loss is used. [0.05]
       -similarity      takes value in [cosine, dot]. Whether to use cosine or dot product as similarity function in  hinge loss.
                        It's only effective if hinge loss is used. [cosine]
+      -p               normalization parameter: we normalize sum of embeddings by deviding Size^p, when p=1, it's equivalent to taking average of embeddings; when p=0, it's equivalent to taking sum of embeddings. [0.5]
       -adagrad         whether to use adagrad in training [1]
       -shareEmb        whether to use the same embedding matrix for LHS and RHS. [1]
       -ws              only used in trainMode 5, the size of the context window for word level training. [5]
