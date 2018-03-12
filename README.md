@@ -285,6 +285,8 @@ and achieved 96.40% accuracy on an average of 5 runs.
       -dropoutLHS      dropout probability for LHS features. [0]
       -dropoutRHS      dropout probability for RHS features. [0]
       -initRandSd      initial values of embeddings are randomly generated from normal distribution with mean=0, standard deviation=initRandSd. [0.001]
+      -trainWord       whether to train word level together with other tasks (for multi-tasking). [0]
+      -wordWeight      if trainWord is true, wordWeight specifies example weight for word level training examples. [0.5]
 
     The following arguments for test are optional:
       -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.
