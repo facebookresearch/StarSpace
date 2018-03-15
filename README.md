@@ -269,7 +269,7 @@ and achieved 96.40% accuracy on an average of 5 runs.
       -saveEveryEpoch  save intermediate models after each epoch [false]
       -saveTempModel   save intermediate models after each epoch with an unique name including epoch number [false]
       -lr              learning rate [0.01]
-      -dim             size of embedding vectors [10]
+      -dim             size of embedding vectors [100]
       -epoch           number of epochs [5]
       -maxTrainTime    max train time (secs) [8640000]
       -negSearchLimit  number of negatives sampled [50]
