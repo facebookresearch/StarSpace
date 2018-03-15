@@ -29,7 +29,7 @@ Args::Args() {
   dropoutLHS = 0.0;
   dropoutRHS = 0.0;
   p = 0.5;
-  dim = 10;
+  dim = 100;
   epoch = 5;
   ws = 5;
   maxTrainTime = 60*60*24*100;
