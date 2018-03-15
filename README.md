@@ -79,11 +79,12 @@ e.g.,
 
     dog:0.1 cat:0.5 ...
     
-The default weight is 1 for any word / label that does not contain weights.
+The default weight is 1 for any word / label that does not contain weights. 
 
 ## Training Mode
 
-StarSpace supports the following training modes (the default is the first one):
+To explain how it works in different train modes, we call the input of a particular example as "LHS" (stands for left-hand-side) and the label as "RHS" (stands for right-hand-side). StarSpace supports the following training modes (the default is the first one): 
+
 * trainMode = 0:
     * Each example contains both input and labels.
     * If fileFormat is 'fastText' then the labels are individuals features/words specified (e.g. with a prefix __label__, see file format above).
@@ -91,19 +92,19 @@ StarSpace supports the following training modes (the default is the first one):
     * If fileFormat is 'labelDoc' then the labels are bags of features, and one of those bags is selected (see file format, above).
     * **Use case:**  retrieval/search tasks, each example consists of a query followed by a set of relevant documents.
 * trainMode = 1:
-    * Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the label, and the rest of the labels in the collection become the input.
+    * Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the RHS, and the rest of the labels in the collection become the LHS.
     * **Use case:**  content-based or collaborative filtering-based recommendation, see _pagespace_ example below.
 * trainMode = 2:
-    * Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the input, and the rest of the labels in the collection become the label.
+    * Each example contains a collection of labels. At training time, one label from the collection is randomly picked as the LHS, and the rest of the labels in the collection become the RHS.
     * **Use case:** learning a mapping from an object to a set of objects of which it is a part, e.g. sentence (from within document) to document.
 * trainMode = 3:
-    * Each example contains a collection of labels. At training time, two labels from the collection are randomly picked as the input and label.
+    * Each example contains a collection of labels. At training time, two labels from the collection are randomly picked as the LHS and RHS.
     * **Use case:** learn pairwise similarity from collections of similar objects, e.g. sentence similiarity.
 * trainMode = 4:
-    * Each example contains two labels. At training time, the first label from the collection will be picked as input and the second label will be picked as the label.
+    * Each example contains two labels. At training time, the first label from the collection will be picked as the LHS and the second label will be picked as the RHS.
     * **Use case:** learning from multi-relational graphs.
 * trainMode = 5:
-    * Each example contains only input. At training time, it generates multiple training examples: each feature from input is picked as label, and other features surronding it (up to distance ws) are picked as input features.
+    * Each example contains only input. At training time, it generates multiple training examples: each feature from input is picked as the RHS, and other features surronding it (up to distance ws) are picked as the LHS.
     * **Use case:** learn word embeddings in unsupervised way.
 
 # Example use cases
