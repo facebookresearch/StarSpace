@@ -151,6 +151,11 @@ At training time, at each step for each example (user), one random page is selec
 
     $./starspace train -trainFile input.txt -model pagespace -label 'page' -trainMode 1
 
+### Example scripts:
+To provide an example script, we choose the Last.FM (http://www.lastfm.com)
+ dataset from <a href="https://grouplens.org/datasets/hetrec-2011/">HectRec 2011</a> and model it similarly as in the PageSpace setting: user is represented by the bag-of-artitsts listened by the user. 
+ 
+     $bash examples/recomm_user_artists.sh
 
 ## DocSpace document recommendation
 
