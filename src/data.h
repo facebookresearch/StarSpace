@@ -26,7 +26,7 @@ public:
 
   virtual void convert(const ParseResults& example, ParseResults& rslt) const;
 
-  virtual void getRandomRHS(std::vector<Base>& results, bool trainWord = false)
+  virtual void getRandomRHS(std::vector<Base>& results)
     const;
 
   virtual void save(std::ostream& out);
@@ -53,15 +53,24 @@ public:
 
   void errorOnZeroExample(const std::string& fileName);
 
+  void initWordNegatives();
+  void getRandomWord(std::vector<Base>& result);
+
 
 protected:
+  virtual Base genRandomWord() const;
+
   static const int32_t MAX_VOCAB_SIZE = 10000000;
+  static const int32_t MAX_WORD_NEGATIVES_SIZE = 10000000;
 
   std::shared_ptr<Args> args_;
   std::vector<ParseResults> examples_;
 
   int32_t idx_ = -1;
   int32_t size_ = 0;
+
+  int32_t word_iter_;
+  std::vector<Base> word_negatives_;
 };
 
 }
