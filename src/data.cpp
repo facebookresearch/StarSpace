@@ -214,26 +214,45 @@ void InternDataHandler::getNextKExamples(int K, vector<ParseResults>& c) {
   }
 }
 
+void InternDataHandler::getRandomWord(vector<Base>& result) {
+  result.push_back(word_negatives_[word_iter_]);
+  word_iter_++;
+  if (word_iter_ >= word_negatives_.size()) {
+    word_iter_ = 0;
+  }
+}
+
+void InternDataHandler::initWordNegatives() {
+  word_iter_ = 0;
+  word_negatives_.clear();
+  assert(size_ > 0);
+  for (int i = 0; i < MAX_WORD_NEGATIVES_SIZE; i++) {
+    word_negatives_.emplace_back(genRandomWord());
+  }
+}
+
+Base InternDataHandler::genRandomWord() const {
+  assert(size_ > 0);
+  auto& ex = examples_[rand() % size_];
+  int r = rand() % ex.LHSTokens.size();
+  return ex.LHSTokens[r];
+}
+
 // Randomly sample one example and randomly sample a label from this example
 // The result is usually used as negative samples in training
-void InternDataHandler::getRandomRHS(vector<Base>& results, bool trainWord) const {
+void InternDataHandler::getRandomRHS(vector<Base>& results) const {
   assert(size_ > 0);
   results.clear();
   auto& ex = examples_[rand() % size_];
-  if (args_->trainMode == 5 || trainWord) {
-    int r = rand() % ex.LHSTokens.size();
-    results.push_back(ex.LHSTokens[r]);
-  } else {
-    int r = rand() % ex.RHSTokens.size();
-    if (args_->trainMode == 2) {
-      for (int i = 0; i < ex.RHSTokens.size(); i++) {
-        if (i != r) {
-          results.push_back(ex.RHSTokens[i]);
-        }
+  int r = rand() % ex.RHSTokens.size();
+  if (args_->trainMode == 2) {
+    for (int i = 0; i < ex.RHSTokens.size(); i++) {
+      if (i != r) {
+        results.push_back(ex.RHSTokens[i]);
       }
-    } else {
-      results.push_back(ex.RHSTokens[r]);
     }
+  } else {
+    results.push_back(ex.RHSTokens[r]);
   }
 }
 
