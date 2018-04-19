@@ -145,12 +145,13 @@ void InternDataHandler::getWordExamples(
 
   rslts.clear();
   for (int widx = 0; widx < doc.size(); widx++) {
+    int bc = rand() % args_->ws + 1;
     ParseResults rslt;
     rslt.LHSTokens.clear();
     rslt.RHSTokens.clear();
     rslt.RHSTokens.push_back(doc[widx]);
-    for (int i = max(widx - args_->ws, 0);
-         i < min(size_t(widx + args_->ws), doc.size()); i++) {
+    for (int i = max(widx - bc, 0);
+         i < min(size_t(widx + bc), doc.size()); i++) {
       if (i != widx) {
         rslt.LHSTokens.push_back(doc[i]);
       }
