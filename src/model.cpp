@@ -185,6 +185,10 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
     for (auto& idx: indices) idx = i++;
   }
   std::random_shuffle(indices.begin(), indices.end());
+
+  // Compute word negatives
+  data->initWordNegatives();
+
   // If we decrement after *every* sample, precision causes us to lose the
   // update.
   const int kDecrStep = 1000;
@@ -382,7 +386,11 @@ float EmbedModel::trainOne(shared_ptr<InternDataHandler> data,
 
     std::vector<Base> negLabels;
     do {
-      data->getRandomRHS(negLabels, trainWord);
+      if (trainWord) {
+        data->getRandomWord(negLabels);
+      } else {
+        data->getRandomRHS(negLabels);
+      }
     } while (negLabels == labels);
 
     projectRHS(negLabels, rhsN);
@@ -464,7 +472,11 @@ float EmbedModel::trainNLL(shared_ptr<InternDataHandler> data,
   for (int i = 1; i < numClass; i++) {
     std::vector<Base> negLabels;
     do {
-      data->getRandomRHS(negLabels, trainWord);
+      if (trainWord) {
+        data->getRandomWord(negLabels);
+      } else {
+        data->getRandomRHS(negLabels);
+      }
     } while (negLabels == labels);
     projectRHS(negLabels, rhsN);
     check(rhsN);

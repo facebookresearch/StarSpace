@@ -156,17 +156,22 @@ void LayerDataHandler::convert(
   }
 }
 
-void LayerDataHandler::getRandomRHS(vector<Base>& result, bool trainWord) const {
+// generate a random word from examples
+Base LayerDataHandler::genRandomWord() const {
+  assert(size_ > 0);
+  auto& ex = examples_[rand() % size_];
+  int r = rand() % ex.RHSFeatures.size();
+  int wid = rand() % ex.RHSFeatures[r].size();
+  return ex.RHSFeatures[r][wid];
+}
+
+void LayerDataHandler::getRandomRHS(vector<Base>& result) const {
   assert(size_ > 0);
   auto& ex = examples_[rand() % size_];
   int r = rand() % ex.RHSFeatures.size();
 
   result.clear();
-  if (args_->trainMode == 5 || trainWord) {
-    // pick random word
-    int wid = rand() % ex.RHSFeatures[r].size();
-    result.push_back(ex.RHSFeatures[r][wid]);
-  } else if (args_->trainMode == 2) {
+  if (args_->trainMode == 2) {
     // pick one random, the rest is rhs features
     for (int i = 0; i < ex.RHSFeatures.size(); i++) {
       if (i != r) {
