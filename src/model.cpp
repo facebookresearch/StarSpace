@@ -187,7 +187,9 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
   std::random_shuffle(indices.begin(), indices.end());
 
   // Compute word negatives
-  data->initWordNegatives();
+  if (args_->trainMode == 5 || args_->trainWord) {
+    data->initWordNegatives();
+  }
 
   // If we decrement after *every* sample, precision causes us to lose the
   // update.
