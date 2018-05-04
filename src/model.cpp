@@ -204,8 +204,8 @@ Real EmbedModel::trainOneExample(
 
 Real EmbedModel::train(shared_ptr<InternDataHandler> data,
                        int numThreads,
-		       std::chrono::time_point<std::chrono::high_resolution_clock> t_start,
-		       int epochs_done,
+           std::chrono::time_point<std::chrono::high_resolution_clock> t_start,
+           int epochs_done,
                        Real rate,
                        Real finishRate,
                        bool verbose) {
@@ -585,25 +585,29 @@ void EmbedModel::backward(
   typedef
     std::function<void(MatrixRow&, const MatrixRow&, Real, Real, std::vector<Real>&, int32_t)>
     UpdateFn;
-  auto updatePlain   = [&] (MatrixRow& dest, const MatrixRow& src,
-                            Real rate,
-                            Real weight,
-                            std::vector<Real>& adagradWeight,
-                            int32_t idx) {
+  std::function<void(MatrixRow&, const MatrixRow&, Real, Real, std::vector<Real>&, int32_t)>  updatePlain = 
+    [&] (MatrixRow& dest,
+         const MatrixRow& src,
+         Real rate,
+         Real weight,
+         std::vector<Real>& adagradWeight,
+         int32_t idx) {
     dest -= (rate * src);
   };
-  auto updateAdagrad = [&] (MatrixRow& dest, const MatrixRow& src,
-                            Real rate,
-                            Real weight,
-                            std::vector<Real>& adagradWeight,
-                            int32_t idx) {
+  std::function<void(MatrixRow&, const MatrixRow&, Real, Real, std::vector<Real>&, int32_t)> updateAdagrad =
+    [&] (MatrixRow& dest,
+         const MatrixRow& src,
+         Real rate,
+         Real weight,
+         std::vector<Real>& adagradWeight,
+         int32_t idx) {
     assert(idx < adagradWeight.size());
     adagradWeight[idx] += weight / cols;
     rate /= sqrt(adagradWeight[idx] + 1e-6);
     updatePlain(dest, src, rate, weight, adagradWeight, idx);
   };
 
-  auto * update = args_->adagrad ?
+  UpdateFn* update = args_->adagrad ?
     (UpdateFn*)(&updateAdagrad) : (UpdateFn*)(&updatePlain);
 
   Real n1 = 0, n2 = 0;
