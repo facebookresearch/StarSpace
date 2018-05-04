@@ -73,7 +73,7 @@ struct Metrics {
 
 
 namespace detail {
-extern __thread int id;
+extern thread_local int id;
 }
 
 namespace {

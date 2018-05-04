@@ -25,7 +25,7 @@
 namespace starspace {
 
 typedef float Real;
-typedef boost::numeric::ublas::matrix_row<typeof(Matrix<Real>::matrix)>
+typedef boost::numeric::ublas::matrix_row<decltype(Matrix<Real>::matrix)>
   MatrixRow;
 typedef boost::numeric::ublas::vector<Real> Vector;
 

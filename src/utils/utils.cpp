@@ -12,7 +12,7 @@
 namespace starspace {
 
 namespace detail {
-__thread int id;
+thread_local int id;
 }
 
 }
