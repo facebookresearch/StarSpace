@@ -347,7 +347,7 @@ Metrics StarSpace::evaluateOne(
     heap.pop();
 
     bool keep = true;
-    if(excludeLHS) {
+    if(excludeLHS && (args_->basedoc.empty())) {
       int nwords = dict_->nwords();
       auto it = std::find_if( lhs.begin(), lhs.end(),
                              [&heap_top, &nwords](const Base& el){ return (el.first - nwords + 1) == heap_top.second;} );
