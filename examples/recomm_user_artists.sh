@@ -87,4 +87,6 @@ echo "Start to evaluate trained model:"
   -label "A" \
   -thread 40 \
   -trainMode 1 \
-  -verbose true
+  -K 10 \
+  -verbose true \
+  -predictionFile artist_recs
