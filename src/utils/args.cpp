@@ -56,6 +56,7 @@ Args::Args() {
   saveTempModel = false;
   useWeight = false;
   trainWord = false;
+  excludeLHS = false;
 }
 
 bool Args::isTrue(string arg) {
@@ -185,6 +186,8 @@ void Args::parseArgs(int argc, char** argv) {
       useWeight = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-trainWord") == 0) {
       trainWord = isTrue(string(argv[i + 1]));
+    } else if (strcmp(argv[i], "-excludeLHS") == 0) {
+      excludeLHS = isTrue(string(argv[i + 1]));
     } else {
       cerr << "Unknown argument: " << argv[i] << std::endl;
       printHelp();
@@ -277,6 +280,7 @@ void Args::printHelp() {
        << "                   In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.\n"
        << "  -predictionFile  file path for save predictions. If not empty, top K predictions for each example will be saved.\n"
        << "  -K               if -predictionFile is not empty, top K predictions for each example will be saved.\n"
+       << "  -excludeLHS      exclude elements in the LHS from predictions\n"
        <<  "\nThe following arguments are optional:\n"
        << "  -normalizeText   whether to run basic text preprocess for input files [" << normalizeText << "]\n"
        << "  -useWeight       whether input file contains weights [" << useWeight << "]\n"

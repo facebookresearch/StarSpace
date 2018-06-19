@@ -64,7 +64,8 @@ class StarSpace {
     Metrics evaluateOne(
         const std::vector<Base>& lhs,
         const std::vector<Base>& rhs,
-        std::vector<Predictions>& pred);
+        std::vector<Predictions>& pred,
+        bool excludeLHS);
 
     std::shared_ptr<Dictionary> dict_;
     std::shared_ptr<DataParser> parser_;
