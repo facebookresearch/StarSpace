@@ -171,6 +171,8 @@ void StarSpace::train() {
 
   auto t_start = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < args_->epoch; i++) {
+    int negSearchLimit = (int)((float)(args_->negSearchLimit) / args_->epoch * (i + 1) + 0.5);
+    //int negSearchLimit = args_->negSearchLimit;
     if (args_->saveEveryEpoch && i > 0) {
       auto filename = args_->model;
       if (args_->saveTempModel) {
@@ -179,15 +181,17 @@ void StarSpace::train() {
       saveModel(filename);
       saveModelTsv(filename + ".tsv");
     }
-    cout << "Training epoch " << i << ": " << rate << ' ' << decrPerEpoch << endl;
+    cout << "Training epoch " << i << ": " << rate << ' ' << decrPerEpoch
+         << " K: " << negSearchLimit << endl;
     auto err = model_->train(trainData_, args_->thread,
+           negSearchLimit,
 			     t_start,  i,
 			     rate, rate - decrPerEpoch);
     printf("\n ---+++ %20s %4d Train error : %3.8f +++--- %c%c%c\n",
            "Epoch", i, err,
            0xe2, 0x98, 0x83);
     if (validData_ != nullptr) {
-      auto valid_err = model_->test(validData_, args_->thread);
+      auto valid_err = model_->test(validData_, args_->thread, negSearchLimit);
       cout << "Validation error: " << valid_err << endl;
     }
     rate -= decrPerEpoch;

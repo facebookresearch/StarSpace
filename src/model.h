@@ -42,14 +42,17 @@ public:
   typedef std::vector<ParseResults> Corpus;
   float train(std::shared_ptr<InternDataHandler> data,
               int numThreads,
+              int negSearchLimit,
               std::chrono::time_point<std::chrono::high_resolution_clock> t_start,
 	      int epochs_done,
               Real startRate,
 	      Real endRate,
               bool verbose = true);
 
-  float test(std::shared_ptr<InternDataHandler> data, int numThreads) {
-    return this->train(data, numThreads,
+  float test(std::shared_ptr<InternDataHandler> data,
+             int numThreads,
+             int negSearchLimit) {
+    return this->train(data, numThreads, negSearchLimit,
 		       std::chrono::high_resolution_clock::now(), 0,
 		       0.0, 0.0, false);
   }

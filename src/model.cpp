@@ -169,6 +169,7 @@ Real EmbedModel::trainOneExample(
 
 Real EmbedModel::train(shared_ptr<InternDataHandler> data,
                        int numThreads,
+                       int negSearchLimit,
 		       std::chrono::time_point<std::chrono::high_resolution_clock> t_start,
 		       int epochs_done,
                        Real rate,
@@ -195,8 +196,9 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
   // update.
   const int kDecrStep = 1000;
   auto decrPerKSample = (rate - finishRate) / (numSamples / kDecrStep);
-  const Real negSearchLimit = std::min(numSamples,
-                                       size_t(args_->negSearchLimit));
+  if (negSearchLimit > numSamples) {
+    negSearchLimit = numSamples;
+  }
 
   numThreads = std::max(numThreads, 2);
   numThreads -= 1; // Withold one thread for the norm thread.

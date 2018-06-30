@@ -41,13 +41,13 @@ echo "Compiling StarSpace"
 
 make
 
-./starspace train \
+time ./starspace train \
   -trainFile ${DATADIR}/${DATASET}/fb15k.train \
   -model ${MODELDIR}/fb15k \
   -adagrad false \
   -margin 0.05 \
   -lr 0.1 \
-  -epoch 100 \
+  -epoch 120 \
   -thread 40 \
   -dim 50 \
   -maxNegSamples 50 \
