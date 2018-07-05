@@ -266,6 +266,7 @@ void Args::printHelp() {
        << "  -dim             size of embedding vectors [" << dim << "]\n"
        << "  -epoch           number of epochs [" << epoch << "]\n"
        << "  -maxTrainTime    max train time (secs) [" << maxTrainTime << "]\n"
+       << "  -validationPatience    number of iterations of validation where does not improve before we stop training [" << validationPatience << "]\n"
        << "  -negSearchLimit  number of negatives sampled [" << negSearchLimit << "]\n"
        << "  -maxNegSamples   max number of negatives in a batch update [" << maxNegSamples << "]\n"
        << "  -loss            loss function {hinge, softmax} [hinge]\n"
