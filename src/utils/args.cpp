@@ -36,6 +36,7 @@ Args::Args() {
   thread = 10;
   maxNegSamples = 10;
   negSearchLimit = 50;
+  increaseKOverTime = false;
   minCount = 1;
   minCountLabel = 1;
   K = 5;
@@ -56,6 +57,7 @@ Args::Args() {
   saveTempModel = false;
   useWeight = false;
   trainWord = false;
+  excludeLHS = false;
 }
 
 bool Args::isTrue(string arg) {
@@ -155,6 +157,8 @@ void Args::parseArgs(int argc, char** argv) {
       maxNegSamples = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-negSearchLimit") == 0) {
       negSearchLimit = atoi(argv[i + 1]);
+    } else if (strcmp(argv[i], "-increaseKOverTime") == 0) {
+      increaseKOverTime = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-minCount") == 0) {
       minCount = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-minCountLabel") == 0) {
@@ -185,6 +189,8 @@ void Args::parseArgs(int argc, char** argv) {
       useWeight = isTrue(string(argv[i + 1]));
     } else if (strcmp(argv[i], "-trainWord") == 0) {
       trainWord = isTrue(string(argv[i + 1]));
+    } else if (strcmp(argv[i], "-excludeLHS") == 0) {
+      excludeLHS = isTrue(string(argv[i + 1]));
     } else {
       cerr << "Unknown argument: " << argv[i] << std::endl;
       printHelp();
@@ -259,6 +265,7 @@ void Args::printHelp() {
        << "  -epoch           number of epochs [" << epoch << "]\n"
        << "  -maxTrainTime    max train time (secs) [" << maxTrainTime << "]\n"
        << "  -negSearchLimit  number of negatives sampled [" << negSearchLimit << "]\n"
+       << "  -increaseKOverTime  each epoch increases number of negatives sampled. Starting from 0 to negSearchLimit. [" << increaseKOverTime << "]\n"
        << "  -maxNegSamples   max number of negatives in a batch update [" << maxNegSamples << "]\n"
        << "  -loss            loss function {hinge, softmax} [hinge]\n"
        << "  -margin          margin parameter in hinge loss. It's only effective if hinge loss is used. [" << margin << "]\n"
@@ -277,6 +284,7 @@ void Args::printHelp() {
        << "                   In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.\n"
        << "  -predictionFile  file path for save predictions. If not empty, top K predictions for each example will be saved.\n"
        << "  -K               if -predictionFile is not empty, top K predictions for each example will be saved.\n"
+       << "  -excludeLHS      exclude elements in the LHS from predictions\n"
        <<  "\nThe following arguments are optional:\n"
        << "  -normalizeText   whether to run basic text preprocess for input files [" << normalizeText << "]\n"
        << "  -useWeight       whether input file contains weights [" << useWeight << "]\n"
@@ -298,6 +306,7 @@ void Args::printArgs() {
        << "similarity: " << similarity << endl
        << "maxNegSamples: " << maxNegSamples << endl
        << "negSearchLimit: " << negSearchLimit << endl
+       << "increaseKOverTime: " << increaseKOverTime << endl
        << "thread: " << thread << endl
        << "minCount: " << minCount << endl
        << "minCountLabel: " << minCountLabel << endl

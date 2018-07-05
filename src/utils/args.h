@@ -61,6 +61,8 @@ class Args {
     bool shareEmb;
     bool useWeight;
     bool trainWord;
+    bool excludeLHS;
+    bool increaseKOverTime;
 
     void parseArgs(int, char**);
     void printHelp();
