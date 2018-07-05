@@ -42,6 +42,7 @@ class Args {
     int epoch;
     int ws;
     int maxTrainTime;
+    int validationPatience;
     int thread;
     int maxNegSamples;
     int negSearchLimit;
