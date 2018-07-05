@@ -46,6 +46,7 @@ echo "Start to train on ag_news data:"
 
 ./starspace train \
   -trainFile "${DATADIR}"/ag_news.train \
+  -validationFile "${DATADIR}"/ag_news.test \
   -model "${MODELDIR}"/ag_news \
   -initRandSd 0.01 \
   -adagrad false \

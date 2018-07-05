@@ -169,6 +169,8 @@ void StarSpace::train() {
   float rate = args_->lr;
   float decrPerEpoch = (rate - 1e-9) / args_->epoch;
 
+  int impatience = 0;
+  float best_valid_err = 1e9;
   auto t_start = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < args_->epoch; i++) {
     if (args_->saveEveryEpoch && i > 0) {
@@ -188,7 +190,16 @@ void StarSpace::train() {
            0xe2, 0x98, 0x83);
     if (validData_ != nullptr) {
       auto valid_err = model_->test(validData_, args_->thread);
-      cout << "Validation error: " << valid_err << endl;
+      cout << "\nValidation error: " << valid_err << endl;
+      if (valid_err > best_valid_err) {
+        impatience += 1;
+        if (impatience > args_->validationPatience) {
+          cout << "Ran out of Patience! Early stopping based on validation set." << endl;
+          break;
+        }
+      } else {
+        best_valid_err = valid_err;
+      }
     }
     rate -= decrPerEpoch;
 

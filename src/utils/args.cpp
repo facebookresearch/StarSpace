@@ -33,6 +33,7 @@ Args::Args() {
   epoch = 5;
   ws = 5;
   maxTrainTime = 60*60*24*100;
+  validationPatience = 10;
   thread = 10;
   maxNegSamples = 10;
   negSearchLimit = 50;
@@ -150,6 +151,8 @@ void Args::parseArgs(int argc, char** argv) {
       ws = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-maxTrainTime") == 0) {
       maxTrainTime = atoi(argv[i + 1]);
+    } else if (strcmp(argv[i], "-validationPatience") == 0) {
+      validationPatience = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-thread") == 0) {
       thread = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-maxNegSamples") == 0) {
@@ -261,6 +264,7 @@ void Args::printHelp() {
        << "  -dim             size of embedding vectors [" << dim << "]\n"
        << "  -epoch           number of epochs [" << epoch << "]\n"
        << "  -maxTrainTime    max train time (secs) [" << maxTrainTime << "]\n"
+       << "  -validationPatience    number of iterations of validation where does not improve before we stop training [" << validationPatience << "]\n"
        << "  -negSearchLimit  number of negatives sampled [" << negSearchLimit << "]\n"
        << "  -maxNegSamples   max number of negatives in a batch update [" << maxNegSamples << "]\n"
        << "  -loss            loss function {hinge, softmax} [hinge]\n"
@@ -296,6 +300,7 @@ void Args::printArgs() {
        << "dim: " << dim << endl
        << "epoch: " << epoch << endl
        << "maxTrainTime: " << maxTrainTime << endl
+       << "validationPatience: " << validationPatience << endl
        << "saveEveryEpoch: " << saveEveryEpoch << endl
        << "loss: " << loss << endl
        << "margin: " << margin << endl
