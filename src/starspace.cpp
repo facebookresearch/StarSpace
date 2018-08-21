@@ -308,7 +308,8 @@ void StarSpace::predictOne(
 Metrics StarSpace::evaluateOne(
     const vector<Base>& lhs,
     const vector<Base>& rhs,
-    vector<Predictions>& pred) {
+    vector<Predictions>& pred,
+    bool excludeLHS) {
 
   std::priority_queue<Predictions> heap;
 
@@ -342,9 +343,21 @@ Metrics StarSpace::evaluateOne(
   // get the first K predictions
   int i = 0;
   while (i < args_->K && heap.size() > 0) {
-    pred.push_back(heap.top());
+    Predictions heap_top = heap.top();
     heap.pop();
-    i++;
+
+    bool keep = true;
+    if(excludeLHS && (args_->basedoc.empty())) {
+      int nwords = dict_->nwords();
+      auto it = std::find_if( lhs.begin(), lhs.end(),
+                             [&heap_top, &nwords](const Base& el){ return (el.first - nwords + 1) == heap_top.second;} );
+      keep = it == lhs.end();
+    }
+
+    if(keep) {
+      pred.push_back(heap_top);
+      i++;
+    }
   }
 
   Metrics s;
@@ -390,7 +403,7 @@ void StarSpace::evaluate() {
   auto evalThread = [&] (int idx, int start, int end) {
     metrics[idx].clear();
     for (int i = start; i < end; i++) {
-      auto s = evaluateOne(examples[i].LHSTokens, examples[i].RHSTokens, predictions[i]);
+      auto s = evaluateOne(examples[i].LHSTokens, examples[i].RHSTokens, predictions[i], args_->excludeLHS);
       metrics[idx].add(s);
     }
   };
