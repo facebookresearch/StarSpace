@@ -204,8 +204,8 @@ Real EmbedModel::trainOneExample(
 
 Real EmbedModel::train(shared_ptr<InternDataHandler> data,
                        int numThreads,
-           std::chrono::time_point<std::chrono::high_resolution_clock> t_start,
-           int epochs_done,
+                      std::chrono::time_point<std::chrono::high_resolution_clock> t_start,
+                      int epochs_done,
                        Real rate,
                        Real finishRate,
                        bool verbose) {
@@ -585,7 +585,7 @@ void EmbedModel::backward(
   typedef
     std::function<void(MatrixRow&, const MatrixRow&, Real, Real, std::vector<Real>&, int32_t)>
     UpdateFn;
-  std::function<void(MatrixRow&, const MatrixRow&, Real, Real, std::vector<Real>&, int32_t)>  updatePlain = 
+  std::function<void(MatrixRow&, const MatrixRow&, Real, Real, std::vector<Real>&, int32_t)> updatePlain = 
     [&] (MatrixRow& dest,
          const MatrixRow& src,
          Real rate,
