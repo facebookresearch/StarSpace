@@ -272,6 +272,8 @@ and achieved 96.40% accuracy on an average of 5 runs.
       -initModel       if not empty, it loads a previously trained model in -initModel and carry on training.
       -trainMode       takes value in [0, 1, 2, 3, 4, 5], see Training Mode Section. [0]
       -fileFormat      currently support 'fastText' and 'labelDoc', see File Format Section. [fastText]
+      -validationFile  validation file path
+      -validationPatience    number of iterations of validation where does not improve before we stop training [10]
       -saveEveryEpoch  save intermediate models after each epoch [false]
       -saveTempModel   save intermediate models after each epoch with an unique name including epoch number [false]
       -lr              learning rate [0.01]

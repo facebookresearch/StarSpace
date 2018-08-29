@@ -33,6 +33,7 @@ Args::Args() {
   epoch = 5;
   ws = 5;
   maxTrainTime = 60*60*24*100;
+  validationPatience = 10;
   thread = 10;
   maxNegSamples = 10;
   negSearchLimit = 50;
@@ -150,6 +151,8 @@ void Args::parseArgs(int argc, char** argv) {
       ws = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-maxTrainTime") == 0) {
       maxTrainTime = atoi(argv[i + 1]);
+    } else if (strcmp(argv[i], "-validationPatience") == 0) {
+      validationPatience = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-thread") == 0) {
       thread = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-maxNegSamples") == 0) {
@@ -255,6 +258,8 @@ void Args::printHelp() {
        << "  -initModel       if not empty, it loads a previously trained model in -initModel and carry on training.\n"
        << "  -trainMode       takes value in [0, 1, 2, 3, 4, 5], see Training Mode Section. [" << trainMode << "]\n"
        << "  -fileFormat      currently support 'fastText' and 'labelDoc', see File Format Section. [" << fileFormat << "]\n"
+       << "  -validationFile  validation file path\n"
+       << "  -validationPatience    number of iterations of validation where does not improve before we stop training [" << validationPatience << "]\n"
        << "  -saveEveryEpoch  save intermediate models after each epoch [" << saveEveryEpoch << "]\n"
        << "  -saveTempModel   save intermediate models after each epoch with an unique name including epoch number [" << saveTempModel << "]\n"
        << "  -lr              learning rate [" << lr << "]\n"
@@ -296,6 +301,7 @@ void Args::printArgs() {
        << "dim: " << dim << endl
        << "epoch: " << epoch << endl
        << "maxTrainTime: " << maxTrainTime << endl
+       << "validationPatience: " << validationPatience << endl
        << "saveEveryEpoch: " << saveEveryEpoch << endl
        << "loss: " << loss << endl
        << "margin: " << margin << endl
