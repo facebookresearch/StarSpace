@@ -14,6 +14,8 @@
 #include <vector>
 #include <fstream>
 #include <assert.h>
+#include <numeric>
+#include <stdlib.h> 
 
 using namespace std;
 
@@ -46,7 +48,7 @@ void LayerDataHandler::loadFromFile(
       }
     },
     args_->thread
-  );
+    );
   // Glue corpora together.
   auto totalSize = std::accumulate(corpora.begin(), corpora.end(), size_t(0),
                      [](size_t l, Corpus& r) { return l + r.size(); });
@@ -74,8 +76,21 @@ void LayerDataHandler::insert(
   } else {
     // dropout enabled
     auto rnd = [&] {
-      static __thread unsigned int rState;
-      return rand_r(&rState);
+      static thread_local unsigned int rState;
+
+#ifdef _WIN32
+      static thread_local bool first_time = true;
+      if (first_time) {
+        srand(rState);
+        first_time = false;
+      }
+#endif
+      return
+#ifdef _WIN32
+        rand();
+#else
+        rand_r(&rState);
+#endif
     };
     for (const auto& it : ex) {
       auto p = (double)(rnd()) / RAND_MAX;
@@ -100,8 +115,8 @@ void LayerDataHandler::getWordExamples(
 }
 
 void LayerDataHandler::convert(
-    const ParseResults& example,
-    ParseResults& rslt) const {
+  const ParseResults& example,
+  ParseResults& rslt) const {
 
   rslt.weight = example.weight;
   rslt.LHSTokens.clear();

@@ -41,3 +41,12 @@ TEST(Proj, empty) {
     EXPECT_EQ(f, 0.0);
   });
 }
+
+/**
+* @brief  Main entry-point for this application, for the case of
+*  running this test project standalone.
+*/
+int main(int argc, char* argv[]) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}

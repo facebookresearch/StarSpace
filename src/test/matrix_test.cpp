@@ -15,8 +15,8 @@ using namespace starspace;
 TEST(Matrix, init) {
   srand(12);
   Matrix<float> mtx {
-    { { 0.01, 2.23, 3.34 },
-      { 1.11, -0.4, 0.2 } } };
+    { { 0.01f, 2.23f, 3.34f },
+      { 1.11f, -0.4f, 0.2f } } };
   EXPECT_EQ(mtx.numCols(), 3);
   EXPECT_EQ(mtx.numRows(), 2);
   float tot = 0.0;
@@ -81,4 +81,13 @@ TEST(Matrix, mulRand) {
   C.forEachCell([&](double d, int i, int j) {
     EXPECT_FLOAT_EQ(expectedC[i][j], d);
   });
+}
+
+/**
+* @brief  Main entry-point for this application, for the case of
+*  running this test project standalone.
+*/
+int main(int argc, char* argv[]) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

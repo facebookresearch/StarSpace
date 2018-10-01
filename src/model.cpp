@@ -22,6 +22,41 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <numeric>
+
+
+#ifdef _WIN32
+#include <windows.h>
+#elif MACOS
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#else
+#include <unistd.h>
+#endif
+
+int getNumberOfCores() {
+#ifdef WIN32
+  SYSTEM_INFO sysinfo;
+  GetSystemInfo(&sysinfo);
+  return sysinfo.dwNumberOfProcessors;
+#elif MACOS
+  int nm[2];
+  size_t len = 4;
+  uint32_t count;
+
+  nm[0] = CTL_HW; nm[1] = HW_AVAILCPU;
+  sysctl(nm, 2, &count, &len, NULL, 0);
+
+  if (count < 1) {
+    nm[1] = HW_NCPU;
+    sysctl(nm, 2, &count, &len, NULL, 0);
+    if (count < 1) { count = 1; }
+  }
+  return count;
+#else
+  return sysconf(_SC_NPROCESSORS_ONLN);
+#endif
+}
 
 namespace starspace {
 
@@ -81,7 +116,7 @@ Real dot(Matrix<Real>::Row a, Matrix<Real>::Row b) {
 
 Real norm2(Matrix<Real>::Row a) {
   auto retval = norm_2(a);
-  return std::max(std::numeric_limits<Real>::epsilon(), retval);
+  return (std::max)(std::numeric_limits<Real>::epsilon(), retval);
 }
 
 // consistent accessor methods for straight indices and index-weight pairs
@@ -169,8 +204,8 @@ Real EmbedModel::trainOneExample(
 
 Real EmbedModel::train(shared_ptr<InternDataHandler> data,
                        int numThreads,
-		       std::chrono::time_point<std::chrono::high_resolution_clock> t_start,
-		       int epochs_done,
+                      std::chrono::time_point<std::chrono::high_resolution_clock> t_start,
+                      int epochs_done,
                        Real rate,
                        Real finishRate,
                        bool verbose) {
@@ -195,12 +230,12 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
   // update.
   const int kDecrStep = 1000;
   auto decrPerKSample = (rate - finishRate) / (numSamples / kDecrStep);
-  const Real negSearchLimit = std::min(numSamples,
+  const Real negSearchLimit = (std::min)(numSamples,
                                        size_t(args_->negSearchLimit));
 
-  numThreads = std::max(numThreads, 2);
+  numThreads = (std::max)(numThreads, 2);
   numThreads -= 1; // Withold one thread for the norm thread.
-  numThreads = std::min(numThreads, int(numSamples));
+  numThreads = (std::min)(numThreads, int(numSamples));
   vector<Real> losses(numThreads);
   vector<long> counts(numThreads);
 
@@ -289,7 +324,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
   assert(numPerThread > 0);
   for (size_t i = 0; i < numThreads; i++) {
     auto start = i * numPerThread;
-    auto end = std::min(start + numPerThread, numSamples);
+    auto end = (std::min)(start + numPerThread, numSamples);
     assert(end >= start);
     assert(end <= numSamples);
     auto b = indices.begin() + start;
@@ -359,7 +394,7 @@ float EmbedModel::trainOne(shared_ptr<InternDataHandler> data,
   check(rhsP);
 
   const auto posSim = similarity(lhs, rhsP);
-  Real negSim = std::numeric_limits<Real>::min();
+  Real negSim = (std::numeric_limits<Real>::min)();
 
   // Some simple helpers to characterize the current triple we're
   // considering.
@@ -372,7 +407,7 @@ float EmbedModel::trainOne(shared_ptr<InternDataHandler> data,
     // We want the max representable loss to have some wiggle room to
     // compute with.
     const auto kMaxLoss = 10e7;
-    auto retval = std::max(std::min(val, kMaxLoss), 0.0);
+    auto retval = (std::max)((std::min)(val, kMaxLoss), 0.0);
     return retval;
   };
 
@@ -486,7 +521,7 @@ float EmbedModel::trainNLL(shared_ptr<InternDataHandler> data,
     negLabelsBatch.push_back(negLabels);
 
     prob[i] = dot(lhs, rhsN);
-    max = std::max(prob[i], max);
+    max = (std::max)(prob[i], max);
   }
 
   Real base = 0;
@@ -550,26 +585,30 @@ void EmbedModel::backward(
   typedef
     std::function<void(MatrixRow&, const MatrixRow&, Real, Real, std::vector<Real>&, int32_t)>
     UpdateFn;
-  auto updatePlain   = [&] (MatrixRow& dest, const MatrixRow& src,
-                            Real rate,
-                            Real weight,
-                            std::vector<Real>& adagradWeight,
-                            int32_t idx) {
+  std::function<void(MatrixRow&, const MatrixRow&, Real, Real, std::vector<Real>&, int32_t)> updatePlain = 
+    [&] (MatrixRow& dest,
+         const MatrixRow& src,
+         Real rate,
+         Real weight,
+         std::vector<Real>& adagradWeight,
+         int32_t idx) {
     dest -= (rate * src);
   };
-  auto updateAdagrad = [&] (MatrixRow& dest, const MatrixRow& src,
-                            Real rate,
-                            Real weight,
-                            std::vector<Real>& adagradWeight,
-                            int32_t idx) {
+  std::function<void(MatrixRow&, const MatrixRow&, Real, Real, std::vector<Real>&, int32_t)> updateAdagrad =
+    [&] (MatrixRow& dest,
+         const MatrixRow& src,
+         Real rate,
+         Real weight,
+         std::vector<Real>& adagradWeight,
+         int32_t idx) {
     assert(idx < adagradWeight.size());
     adagradWeight[idx] += weight / cols;
     rate /= sqrt(adagradWeight[idx] + 1e-6);
     updatePlain(dest, src, rate, weight, adagradWeight, idx);
   };
 
-  auto update = args_->adagrad ?
-    UpdateFn(updateAdagrad) : UpdateFn(updatePlain);
+  UpdateFn* update = args_->adagrad ?
+    (UpdateFn*)(&updateAdagrad) : (UpdateFn*)(&updatePlain);
 
   Real n1 = 0, n2 = 0;
   if (args_->adagrad) {
@@ -580,20 +619,20 @@ void EmbedModel::backward(
   // Update input items.
   for (auto w : items) {
     auto row = LHSEmbeddings_->row(index(w));
-    update(row, gradW, rate_lhs * weight(w), n1, LHSUpdates_, index(w));
+    (*update)(row, gradW, rate_lhs * weight(w), n1, LHSUpdates_, index(w));
   }
 
   // Update positive example.
   for (auto la : labels) {
     auto row = RHSEmbeddings_->row(index(la));
-    update(row, lhs, rate_rhsP * weight(la), n2, RHSUpdates_, index(la));
+    (*update)(row, lhs, rate_rhsP * weight(la), n2, RHSUpdates_, index(la));
   }
 
   // Update negative example.
   for (size_t i = 0; i < negLabels.size(); i++) {
     for (auto la : negLabels[i]) {
       auto row = RHSEmbeddings_->row(index(la));
-      update(row, lhs, rate_rhsN[i] * weight(la), n2, RHSUpdates_, index(la));
+      (*update)(row, lhs, rate_rhsN[i] * weight(la), n2, RHSUpdates_, index(la));
     }
   }
 }
@@ -621,7 +660,7 @@ EmbedModel::kNN(shared_ptr<SparseLinear<Real>> lookup,
     typedef pair<int32_t, Real> Cand;
     int  maxn = dict_->nwords() + dict_->nlabels();
 
-    vector<Cand> mostSimilar(std::min(numSim, maxn));
+    vector<Cand> mostSimilar((std::min)(numSim, maxn));
     for (auto& s: mostSimilar) {
       s = { -1, -1.0 };
     }
@@ -704,7 +743,7 @@ void EmbedModel::loadTsv(const char* fname, const string sep) {
   };
 
   auto len = filelen(ifs);
-  auto numThreads = sysconf(_SC_NPROCESSORS_ONLN);
+  auto numThreads = getNumberOfCores();
   vector<off_t> partitions(numThreads + 1);
   partitions[0] = 0;
   partitions[numThreads] = len;
