@@ -180,9 +180,7 @@ bool DataParser::parse(
     }
 
     entry_type type = dict_->getType(wid);
-    if (type == entry_type::word) {
-      rslts.push_back(make_pair(wid, weight));
-    }
+    rslts.push_back(make_pair(wid, weight));
   }
 
   if (args_->ngrams > 1) {
