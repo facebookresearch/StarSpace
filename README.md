@@ -23,9 +23,9 @@ See the [paper](https://arxiv.org/abs/1709.03856) for more details on how it wor
 
 # Requirements
 
-StarSpace builds on modern Mac OS and Linux distributions. Since it uses C++11 features, it requires a compiler with good C++11 support. These include :
+StarSpace builds on modern Mac OS, Windows, and Linux distributions. Since it uses C++11 features, it requires a compiler with good C++11 support. These include :
 
-* (gcc-4.6.3 or newer) or (clang-3.3 or newer)
+* (gcc-4.6.3 or newer), (Visual Studio 2015), or (clang-3.3 or newer) 
 
 Compilation is carried out using a Makefile, so you will need to have a working **make**.
 
@@ -39,11 +39,15 @@ Optional: if one wishes to run the unit tests in src directory, <a href=https://
 
 # Building StarSpace
 
-In order to build StarSpace, use the following:
+In order to build StarSpace on Mac OS or Linux, use the following:
 
     git clone https://github.com/facebookresearch/Starspace.git
     cd Starspace
     make
+
+In order to build StarSpace on Windows, open the following in Visual Studio:
+
+    MVS\StarSpace.sln
 
 # File Format
 
