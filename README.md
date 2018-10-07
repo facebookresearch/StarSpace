@@ -266,8 +266,8 @@ and achieved 96.40% accuracy on an average of 5 runs.
       -model           model file path
 
     The following arguments for the dictionary are optional:
-      -minCount        minimal number of word occurences [1]
-      -minCountLabel   minimal number of label occurences [1]
+      -minCount        minimal number of word occurrences [1]
+      -minCountLabel   minimal number of label occurrences [1]
       -ngrams          max length of word ngram [1]
       -bucket          number of buckets [2000000]
       -label           labels prefix [__label__]. See file format section.
