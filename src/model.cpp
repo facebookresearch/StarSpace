@@ -245,7 +245,6 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
     assert(end >= start);
     assert(end <= indices.end());
     bool amMaster = idx == 0;
-    //int64_t elapsed;
     auto t_epoch_start = std::chrono::high_resolution_clock::now();
     losses[idx] = 0.0;
     counts[idx] = 0;
@@ -297,7 +296,6 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
         }
         int etah = eta / 3600;
         int etam = (eta - etah * 3600) / 60;
-        //int etas = (eta - etah * 3600 - etam * 60);
         int toth = int(tot_spent) / 3600;
         int totm = (tot_spent - toth * 3600) / 60;
         int tots = (tot_spent - toth * 3600 - totm * 60);
