@@ -40,6 +40,7 @@ Args::Args() {
   minCount = 1;
   minCountLabel = 1;
   K = 5;
+  batchSize = 5;
   verbose = false;
   debug = false;
   adagrad = true;
@@ -169,6 +170,8 @@ void Args::parseArgs(int argc, char** argv) {
       ngrams = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-K") == 0) {
       K = atoi(argv[i + 1]);
+    } else if (strcmp(argv[i], "-batchSize") == 0) {
+      batchSize = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-trainMode") == 0) {
       trainMode = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-verbose") == 0) {
@@ -308,6 +311,7 @@ void Args::printArgs() {
        << "similarity: " << similarity << endl
        << "maxNegSamples: " << maxNegSamples << endl
        << "negSearchLimit: " << negSearchLimit << endl
+       << "batchSize: " << batchSize << endl
        << "thread: " << thread << endl
        << "minCount: " << minCount << endl
        << "minCountLabel: " << minCountLabel << endl

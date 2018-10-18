@@ -55,7 +55,6 @@ echo "Start to train on ag_news data:"
   -thread 20 \
   -dim 10 \
   -negSearchLimit 5 \
-  -maxNegSamples 3 \
   -trainMode 0 \
   -label "__label__" \
   -similarity "dot" \
