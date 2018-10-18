@@ -108,8 +108,7 @@ void EmbedModel::initModelWeights() {
 }
 
 Real dot(Matrix<Real>::Row a, Matrix<Real>::Row b) {
-  const auto dim = a.size();
-  assert(dim > 0);
+  assert(a.size() > 0);
   assert(a.size() == b.size());
   return ublas::inner_prod(a, b);
 }
@@ -246,7 +245,6 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
     assert(end >= start);
     assert(end <= indices.end());
     bool amMaster = idx == 0;
-    int64_t elapsed;
     auto t_epoch_start = std::chrono::high_resolution_clock::now();
     losses[idx] = 0.0;
     counts[idx] = 0;
@@ -298,7 +296,6 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
         }
         int etah = eta / 3600;
         int etam = (eta - etah * 3600) / 60;
-        int etas = (eta - etah * 3600 - etam * 60);
         int toth = int(tot_spent) / 3600;
         int totm = (tot_spent - toth * 3600) / 60;
         int tots = (tot_spent - toth * 3600 - totm * 60);
@@ -322,7 +319,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
   bool doneTraining = false;
   size_t numPerThread = ceil(numSamples / numThreads);
   assert(numPerThread > 0);
-  for (size_t i = 0; i < numThreads; i++) {
+  for (size_t i = 0; i < (size_t)numThreads; i++) {
     auto start = i * numPerThread;
     auto end = (std::min)(start + numPerThread, numSamples);
     assert(end >= start);
@@ -394,7 +391,7 @@ float EmbedModel::trainOne(shared_ptr<InternDataHandler> data,
   check(rhsP);
 
   const auto posSim = similarity(lhs, rhsP);
-  Real negSim = (std::numeric_limits<Real>::min)();
+  //Real negSim = (std::numeric_limits<Real>::min)();
 
   // Some simple helpers to characterize the current triple we're
   // considering.
@@ -418,8 +415,8 @@ float EmbedModel::trainOne(shared_ptr<InternDataHandler> data,
   Matrix<Real> negMean;
   negMean.matrix = zero_matrix<Real>(1, cols);
 
-  for (int i = 0; i < negSearchLimit &&
-                  negs.size() < args_->maxNegSamples; i++) {
+  for (unsigned int i = 0; i < negSearchLimit &&
+                  negs.size() < (unsigned int)(args_->maxNegSamples); i++) {
 
     std::vector<Base> negLabels;
     do {
@@ -558,7 +555,7 @@ float EmbedModel::trainNLL(shared_ptr<InternDataHandler> data,
   }
 
   std::vector<Real> negRate(numClass - 1);
-  for (int i = 0; i < negRate.size(); i++) {
+  for (unsigned int i = 0; i < negRate.size(); i++) {
     negRate[i] = prob[i + 1] * rate0;
   }
 
@@ -696,7 +693,7 @@ void EmbedModel::loadTsvLine(string& line, int lineNum,
     line.resize(line.size() - 1);
   }
   boost::split(pieces, line, boost::is_any_of(sep));
-  if (pieces.size() > cols + 1) {
+  if (pieces.size() > (unsigned int)(cols + 1)) {
     cout << "Hmm, truncating long (" << pieces.size() <<
         ") record at line " << lineNum;
     if (true) {
@@ -707,12 +704,12 @@ void EmbedModel::loadTsvLine(string& line, int lineNum,
     }
     pieces.resize(cols + 1);
   }
-  if (pieces.size() == cols) {
+  if (pieces.size() == (unsigned int)cols) {
     cout << "Missing record at line " << lineNum <<
       "; assuming empty string";
     pieces.insert(pieces.begin(), "");
   }
-  while (pieces.size() < cols + 1) {
+  while (pieces.size() < (unsigned int)(cols + 1)) {
     cout << "Zero-padding short record at line " << lineNum;
     pieces.push_back(zero);
   }
@@ -795,7 +792,7 @@ void EmbedModel::loadTsv(istream& in, const string sep) {
 void EmbedModel::saveTsv(ostream& out, const char sep) const {
   auto dumpOne = [&](shared_ptr<SparseLinear<Real>> emb) {
     auto size =  dict_->nwords() + dict_->nlabels();
-    for (size_t i = 0; i < size; i++) {
+    for (size_t i = 0; i < (size_t)size; i++) {
       // Skip invalid IDs.
       string symbol = dict_->getSymbol(i);
       out << symbol;
