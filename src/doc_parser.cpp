@@ -43,7 +43,7 @@ bool LayerDataParser::parse(
     start_idx = 1;
   }
 
-  for (int i = start_idx; i < tokens.size(); i++) {
+  for (unsigned int i = start_idx; i < tokens.size(); i++) {
     string t = tokens[i];
     float weight = 1.0;
     if (args_->useWeight) {
@@ -84,7 +84,7 @@ bool LayerDataParser::parse(
     parse(parts[start_idx], rslt.LHSTokens);
     start_idx += 1;
   }
-  for (int i = start_idx; i < parts.size(); i++) {
+  for (unsigned int i = start_idx; i < parts.size(); i++) {
     vector<Base> feats;
     if (parse(parts[i], feats)) {
       rslt.RHSFeatures.push_back(feats);

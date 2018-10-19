@@ -145,7 +145,7 @@ void StarSpace::initFromTsv(const string& filename) {
   vector<string> pieces;
   boost::split(pieces, line, boost::is_any_of("\t "));
   int dim = pieces.size() - 1;
-  if (args_->dim != dim) {
+  if ((int)(args_->dim) != dim) {
     args_->dim = dim;
     cout << "Setting dim from Tsv file to: " << dim << endl;
   }
@@ -231,7 +231,7 @@ Matrix<Real> StarSpace::getDocVector(const string& line, const string& sep) {
 MatrixRow StarSpace::getNgramVector(const string& phrase) {
   vector<string> tokens;
   boost::split(tokens, phrase, boost::is_any_of(string(" ")));
-  if (tokens.size() > args_->ngrams) {
+  if (tokens.size() > (unsigned int)(args_->ngrams)) {
     std::cerr << "Error! Input ngrams size is greater than model ngrams size.\n";
     exit(EXIT_FAILURE);
   }
@@ -303,7 +303,7 @@ void StarSpace::predictOne(
     vector<Predictions>& pred) {
   auto lhsM = model_->projectLHS(input);
   std::priority_queue<Predictions> heap;
-  for (int i = 0; i < baseDocVectors_.size(); i++) {
+  for (unsigned int i = 0; i < baseDocVectors_.size(); i++) {
     auto cur_score = model_->similarity(lhsM, baseDocVectors_[i]);
     heap.push({ cur_score, i });
   }
@@ -333,7 +333,7 @@ Metrics StarSpace::evaluateOne(
   int rank = 1;
   heap.push({ score, 0 });
 
-  for (int i = 0; i < baseDocVectors_.size(); i++) {
+  for (unsigned int i = 0; i < baseDocVectors_.size(); i++) {
     // in the case basedoc labels are not provided, all labels become basedoc,
     // and we skip the correct label for comparison.
     if ((args_->basedoc.empty()) && (i == rhs[0].first - dict_->nwords())) {

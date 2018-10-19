@@ -108,8 +108,7 @@ void EmbedModel::initModelWeights() {
 }
 
 Real dot(Matrix<Real>::Row a, Matrix<Real>::Row b) {
-  const auto dim = a.size();
-  assert(dim > 0);
+  assert(a.size() > 0);
   assert(a.size() == b.size());
   return ublas::inner_prod(a, b);
 }
@@ -204,7 +203,6 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
     assert(end >= start);
     assert(end <= indices.end());
     bool amMaster = idx == 0;
-    int64_t elapsed;
     auto t_epoch_start = std::chrono::high_resolution_clock::now();
     losses[idx] = 0.0;
     counts[idx] = 0;
@@ -283,7 +281,6 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
         }
         int etah = eta / 3600;
         int etam = (eta - etah * 3600) / 60;
-        int etas = (eta - etah * 3600 - etam * 60);
         int toth = int(tot_spent) / 3600;
         int totm = (tot_spent - toth * 3600) / 60;
         int tots = (tot_spent - toth * 3600 - totm * 60);
@@ -307,7 +304,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
   bool doneTraining = false;
   size_t numPerThread = ceil(numSamples / numThreads);
   assert(numPerThread > 0);
-  for (size_t i = 0; i < numThreads; i++) {
+  for (size_t i = 0; i < (size_t)numThreads; i++) {
     auto start = i * numPerThread;
     auto end = (std::min)(start + numPerThread, numSamples);
     assert(end >= start);
@@ -384,6 +381,7 @@ float EmbedModel::trainOneBatch(shared_ptr<InternDataHandler> data,
     posSim[i] = similarity(lhs[i], rhsP[i]);
   }
 
+  const auto posSim = similarity(lhs, rhsP);
   Real negSim = (std::numeric_limits<Real>::min)();
 
   // Some simple helpers to characterize the current triple we're
@@ -587,8 +585,6 @@ float EmbedModel::trainNLLBatch(
 
   auto cols = args_->dim;
 
-  //cout << "======= train NLL =======\n";
-
   for (int i = 0; i < batch_sz; i++) {
     const auto& items = batch_exs[i].LHSTokens;
     const auto& labels = batch_exs[i].RHSTokens;
@@ -598,8 +594,6 @@ float EmbedModel::trainNLLBatch(
     projectRHS(labels, rhsP[i]);
     check(rhsP[i]);
   }
-
-  //cout << "step 1\n";
 
   std::vector<std::vector<Real>> prob(batch_sz);
   std::vector<std::vector<Base>> batch_negLabels;
@@ -625,8 +619,6 @@ float EmbedModel::trainNLLBatch(
     batch_negLabels.push_back(negLabels);
   }
 
-  //cout << "step 2 \n";
-
   for (int i = 0; i < batch_sz; i++) {
     nRate[i].resize(negSearchLimit);
     std::vector<int> index;
@@ -636,8 +628,6 @@ float EmbedModel::trainNLLBatch(
     prob[i].clear();
     prob[i].push_back(dot(lhs[i], rhsP[i]));
     Real max = prob[i][0];
-
-    //cout << "step 2.1 \n";
 
     for (int j = 0; j < negSearchLimit; j++) {
       nRate[i][j] = 0.0;
@@ -650,8 +640,6 @@ float EmbedModel::trainNLLBatch(
       cls_cnt += 1;
     }
     loss[i] = 0.0;
-
-    //cout << "step 2.2 \n";
 
     // skip, failed to find any negatives
     if (cls_cnt == 1) {
@@ -676,19 +664,14 @@ float EmbedModel::trainNLLBatch(
     gradW[i] = rhsP[i];
     gradW[i].matrix *= (prob[i][0] - 1);
 
-    //cout << "step 2.3 \n";
-
     for (int j = 1; j < cls_cnt; j++) {
       auto inj = index[j - 1];
       gradW[i].add(rhsN[inj], prob[i][j]);
       nRate[i][inj] = prob[i][j] * rate0;
     }
     labelRate[i] = (prob[i][0] - 1) * rate0;
-
-    //cout << "step 2.4 \n";
   }
 
-  //cout << "before backward \n";
   backward(
       batch_exs, batch_negLabels,
       gradW, lhs, num_negs,
@@ -756,7 +739,7 @@ void EmbedModel::loadTsvLine(string& line, int lineNum,
     line.resize(line.size() - 1);
   }
   boost::split(pieces, line, boost::is_any_of(sep));
-  if (pieces.size() > cols + 1) {
+  if (pieces.size() > (unsigned int)(cols + 1)) {
     cout << "Hmm, truncating long (" << pieces.size() <<
         ") record at line " << lineNum;
     if (true) {
@@ -767,12 +750,12 @@ void EmbedModel::loadTsvLine(string& line, int lineNum,
     }
     pieces.resize(cols + 1);
   }
-  if (pieces.size() == cols) {
+  if (pieces.size() == (unsigned int)cols) {
     cout << "Missing record at line " << lineNum <<
       "; assuming empty string";
     pieces.insert(pieces.begin(), "");
   }
-  while (pieces.size() < cols + 1) {
+  while (pieces.size() < (unsigned int)(cols + 1)) {
     cout << "Zero-padding short record at line " << lineNum;
     pieces.push_back(zero);
   }
@@ -855,7 +838,7 @@ void EmbedModel::loadTsv(istream& in, const string sep) {
 void EmbedModel::saveTsv(ostream& out, const char sep) const {
   auto dumpOne = [&](shared_ptr<SparseLinear<Real>> emb) {
     auto size =  dict_->nwords() + dict_->nlabels();
-    for (size_t i = 0; i < size; i++) {
+    for (size_t i = 0; i < (size_t)size; i++) {
       // Skip invalid IDs.
       string symbol = dict_->getSymbol(i);
       out << symbol;
