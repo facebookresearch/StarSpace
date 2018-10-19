@@ -55,7 +55,7 @@ void DataParser::parseForDict(
   chomp(line);
   vector<string> toks;
   boost::split(toks, line, boost::is_any_of(string(sep)));
-  for (int i = 0; i < toks.size(); i++) {
+  for (unsigned int i = 0; i < toks.size(); i++) {
     string token = toks[i];
     if (args_->useWeight) {
       std::size_t pos = toks[i].find(":");
@@ -100,9 +100,9 @@ void DataParser::addNgrams(
     }
   }
 
-  for (int32_t i = 0; i < hashes.size(); i++) {
+  for (int32_t i = 0; i < (int32_t)(hashes.size()); i++) {
     uint64_t h = hashes[i];
-    for (int32_t j = i + 1; j < hashes.size() && j < i + n; j++) {
+    for (int32_t j = i + 1; j < (int32_t)(hashes.size()) && j < i + n; j++) {
       h = h * Dictionary::HASH_C + hashes[j];
       int64_t id = h % args_->bucket;
       line.push_back(make_pair(dict_->nwords() + dict_->nlabels() + id, 1.0));
@@ -179,7 +179,7 @@ bool DataParser::parse(
       continue;
     }
 
-    entry_type type = dict_->getType(wid);
+    //entry_type type = dict_->getType(wid);
     rslts.push_back(make_pair(wid, weight));
   }
 

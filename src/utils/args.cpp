@@ -283,6 +283,7 @@ void Args::printHelp() {
        << "  -initRandSd      initial values of embeddings are randomly generated from normal distribution with mean=0, standard deviation=initRandSd. [" << initRandSd << "]\n"
        << "  -trainWord       whether to train word level together with other tasks (for multi-tasking). [" << trainWord << "]\n"
        << "  -wordWeight      if trainWord is true, wordWeight specifies example weight for word level training examples. [" << wordWeight << "]\n"
+       << "  -batchSize       size of mini batch in training. [" << batchSize << "]\n"
        << "\nThe following arguments for test are optional:\n"
        << "  -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.\n"
        << "                   In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.\n"
@@ -345,6 +346,7 @@ void Args::save(std::ostream& out) {
   size = similarity.size();
   out.write((char*) &(size), sizeof(size_t));
   out.write((char*) &(similarity[0]), size);
+  out.write((char*) &(batchSize), sizeof(int));
 }
 
 void Args::load(std::istream& in) {
@@ -367,6 +369,7 @@ void Args::load(std::istream& in) {
   in.read((char*) &(size), sizeof(size_t));
   similarity.resize(size);
   in.read((char*) &(similarity[0]), size);
+  in.read((char*) &(batchSize), sizeof(int));
 }
 
 }

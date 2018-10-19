@@ -133,7 +133,7 @@ void LayerDataHandler::convert(
     if (args_->trainMode == 1) {
       // pick one random rhs as label, the rest becomes lhs features
       auto idx = rand() % example.RHSFeatures.size();
-      for (int i = 0; i < example.RHSFeatures.size(); i++) {
+      for (unsigned int i = 0; i < example.RHSFeatures.size(); i++) {
         if (i == idx) {
           insert(rslt.RHSTokens, example.RHSFeatures[i], args_->dropoutRHS);
         } else {
@@ -144,7 +144,7 @@ void LayerDataHandler::convert(
     if (args_->trainMode == 2) {
       // pick one random rhs as lhs, the rest becomes rhs features
       auto idx = rand() % example.RHSFeatures.size();
-      for (int i = 0; i < example.RHSFeatures.size(); i++) {
+      for (unsigned int i = 0; i < example.RHSFeatures.size(); i++) {
         if (i == idx) {
           insert(rslt.LHSTokens, example.RHSFeatures[i], args_->dropoutLHS);
         } else {
@@ -157,7 +157,7 @@ void LayerDataHandler::convert(
       auto idx = rand() % example.RHSFeatures.size();
       insert(rslt.LHSTokens, example.RHSFeatures[idx], args_->dropoutLHS);
       // pick another random rhs as label
-      int idx2;
+      unsigned int idx2;
       do {
         idx2 = rand() % example.RHSFeatures.size();
       } while (idx == idx2);
@@ -183,12 +183,12 @@ Base LayerDataHandler::genRandomWord() const {
 void LayerDataHandler::getRandomRHS(vector<Base>& result) const {
   assert(size_ > 0);
   auto& ex = examples_[rand() % size_];
-  int r = rand() % ex.RHSFeatures.size();
+  unsigned int r = rand() % ex.RHSFeatures.size();
 
   result.clear();
   if (args_->trainMode == 2) {
     // pick one random, the rest is rhs features
-    for (int i = 0; i < ex.RHSFeatures.size(); i++) {
+    for (unsigned int i = 0; i < ex.RHSFeatures.size(); i++) {
       if (i != r) {
         insert(result, ex.RHSFeatures[i], args_->dropoutRHS);
       }

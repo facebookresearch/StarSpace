@@ -105,7 +105,6 @@ void foreach_line(const String& fname,
   using namespace std;
 
   auto filelen = [&](ifstream& f) {
-    auto pos = tellg(f);
     f.seekg(0, ios_base::end);
     return tellg(f);
   };

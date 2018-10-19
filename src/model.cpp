@@ -108,8 +108,7 @@ void EmbedModel::initModelWeights() {
 }
 
 Real dot(Matrix<Real>::Row a, Matrix<Real>::Row b) {
-  const auto dim = a.size();
-  assert(dim > 0);
+  assert(a.size() > 0);
   assert(a.size() == b.size());
   return ublas::inner_prod(a, b);
 }
@@ -204,14 +203,11 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
     assert(end >= start);
     assert(end <= indices.end());
     bool amMaster = idx == 0;
-    int64_t elapsed;
     auto t_epoch_start = std::chrono::high_resolution_clock::now();
     losses[idx] = 0.0;
     counts[idx] = 0;
 
     int batch_sz = args_->batchSize;
-    //vector<vector<Base>> batched_items;
-    //vector<vector<Base>> batched_labels;
     vector<ParseResults> examples;
     for (auto ip = start; ip < end; ip++) {
       auto i = *ip;
@@ -238,7 +234,6 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
       if (args_->trainMode != 5) {
         ParseResults ex;
         data->getExampleById(i, ex);
-        //thisLoss = trainOneExample(data, ex, negSearchLimit, rate, false);
         if (ex.LHSTokens.size() == 0 or ex.RHSTokens.size() == 0) {
           continue;
         }
@@ -283,7 +278,6 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
         }
         int etah = eta / 3600;
         int etam = (eta - etah * 3600) / 60;
-        int etas = (eta - etah * 3600 - etam * 60);
         int toth = int(tot_spent) / 3600;
         int totm = (tot_spent - toth * 3600) / 60;
         int tots = (tot_spent - toth * 3600 - totm * 60);
@@ -307,7 +301,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
   bool doneTraining = false;
   size_t numPerThread = ceil(numSamples / numThreads);
   assert(numPerThread > 0);
-  for (size_t i = 0; i < numThreads; i++) {
+  for (size_t i = 0; i < (size_t)numThreads; i++) {
     auto start = i * numPerThread;
     auto end = (std::min)(start + numPerThread, numSamples);
     assert(end >= start);
@@ -384,8 +378,6 @@ float EmbedModel::trainOneBatch(shared_ptr<InternDataHandler> data,
     posSim[i] = similarity(lhs[i], rhsP[i]);
   }
 
-  Real negSim = (std::numeric_limits<Real>::min)();
-
   // Some simple helpers to characterize the current triple we're
   // considering.
   auto tripleLoss = [&] (Real posSim, Real negSim) {
@@ -401,7 +393,7 @@ float EmbedModel::trainOneBatch(shared_ptr<InternDataHandler> data,
     return retval;
   };
 
-  // get a random batch of negativesi
+  // Get a random batch of negatives
   std::vector<Matrix<Real>> rhsN(negSearchLimit);
   std::vector<std::vector<Base>> batch_negLabels;
 
@@ -446,6 +438,9 @@ float EmbedModel::trainOneBatch(shared_ptr<InternDataHandler> data,
         negMean[i].add(rhsN[j]);
         assert(loss[i] >= 0.0);
         update_flag[i][j] = true;
+        if (num_negs[i] == args_->maxNegSamples) {
+          continue;
+        }
       }
     }
     if (num_negs[i] == 0) {
@@ -481,9 +476,6 @@ float EmbedModel::trainOneBatch(shared_ptr<InternDataHandler> data,
   //     dE / dt- = w
   //     dE / dt+ = -w
   //
-  // This is the innermost loop, so cache misses count. Please do some perf
-  // testing if you end up modifying it.
-
   // gradW = \sum_i t_i- - t+. We're done with negMean, so reuse it.
 
   backward(batch_exs, batch_negLabels,
@@ -534,8 +526,6 @@ void EmbedModel::backward(
   UpdateFn* update = args_->adagrad ?
     (UpdateFn*)(&updateAdagrad) : (UpdateFn*)(&updatePlain);
 
-
-  //cout << "backward.\n";
   auto batch_sz = batch_exs.size();
   std::vector<Real> n1(batch_sz, 0.0);
   std::vector<Real> n2(batch_sz, 0.0);
@@ -562,9 +552,7 @@ void EmbedModel::backward(
 
   // Update negative example
   for (int j = 0; j < batch_negLabels.size(); j++) {
-    //if (neg_updates[j].size() > 0) {
     for (int i = 0; i < batch_sz; i++) if (fabs(nRate[i][j]) > 1e-8) {
-    //for (auto i : neg_updates[j]) {
       for (auto la : batch_negLabels[j]) {
         auto row = RHSEmbeddings_->row(index(la));
         (*update)(row, lhs[i], nRate[i][j] * weight(la), n2[i], RHSUpdates_, index(la));
@@ -587,8 +575,6 @@ float EmbedModel::trainNLLBatch(
 
   auto cols = args_->dim;
 
-  //cout << "======= train NLL =======\n";
-
   for (int i = 0; i < batch_sz; i++) {
     const auto& items = batch_exs[i].LHSTokens;
     const auto& labels = batch_exs[i].RHSTokens;
@@ -599,8 +585,6 @@ float EmbedModel::trainNLLBatch(
     check(rhsP[i]);
   }
 
-  //cout << "step 1\n";
-
   std::vector<std::vector<Real>> prob(batch_sz);
   std::vector<std::vector<Base>> batch_negLabels;
   std::vector<Matrix<Real>> gradW(batch_sz);
@@ -609,7 +593,6 @@ float EmbedModel::trainNLLBatch(
   std::vector<std::vector<Real>> nRate(batch_sz);
   std::vector<int> num_negs(batch_sz, 0);
   std::vector<Real> labelRate(batch_sz);
-
 
   Real total_loss = 0.0;
 
@@ -625,8 +608,6 @@ float EmbedModel::trainNLLBatch(
     batch_negLabels.push_back(negLabels);
   }
 
-  //cout << "step 2 \n";
-
   for (int i = 0; i < batch_sz; i++) {
     nRate[i].resize(negSearchLimit);
     std::vector<int> index;
@@ -636,8 +617,6 @@ float EmbedModel::trainNLLBatch(
     prob[i].clear();
     prob[i].push_back(dot(lhs[i], rhsP[i]));
     Real max = prob[i][0];
-
-    //cout << "step 2.1 \n";
 
     for (int j = 0; j < negSearchLimit; j++) {
       nRate[i][j] = 0.0;
@@ -650,8 +629,6 @@ float EmbedModel::trainNLLBatch(
       cls_cnt += 1;
     }
     loss[i] = 0.0;
-
-    //cout << "step 2.2 \n";
 
     // skip, failed to find any negatives
     if (cls_cnt == 1) {
@@ -673,10 +650,24 @@ float EmbedModel::trainNLLBatch(
     loss[i] = -log(prob[i][0]);
     total_loss += loss[i];
 
+    // Let w be the average of the words in the post, t+ be the
+    // positive example (the tag the post has) and t- be the average
+    // of the negative examples (the tags we searched for with submarginal
+    // separation above).
+    // Our error E is:
+    //
+    //    E = - log P(t+)
+    //
+    // Where P(t) = exp(dot(w, t)) / (\sum_{t'} exp(dot(w, t')))
+    //
+    // Differentiating term-by-term we get:
+    //
+    //    dE / dw = t+ (P(t+) - 1)
+    //    dE / dt+ = w (P(t+) - 1)
+    //    dE / dt- = w P(t-)
+
     gradW[i] = rhsP[i];
     gradW[i].matrix *= (prob[i][0] - 1);
-
-    //cout << "step 2.3 \n";
 
     for (int j = 1; j < cls_cnt; j++) {
       auto inj = index[j - 1];
@@ -684,11 +675,8 @@ float EmbedModel::trainNLLBatch(
       nRate[i][inj] = prob[i][j] * rate0;
     }
     labelRate[i] = (prob[i][0] - 1) * rate0;
-
-    //cout << "step 2.4 \n";
   }
 
-  //cout << "before backward \n";
   backward(
       batch_exs, batch_negLabels,
       gradW, lhs, num_negs,
@@ -756,7 +744,7 @@ void EmbedModel::loadTsvLine(string& line, int lineNum,
     line.resize(line.size() - 1);
   }
   boost::split(pieces, line, boost::is_any_of(sep));
-  if (pieces.size() > cols + 1) {
+  if (pieces.size() > (unsigned int)(cols + 1)) {
     cout << "Hmm, truncating long (" << pieces.size() <<
         ") record at line " << lineNum;
     if (true) {
@@ -767,12 +755,12 @@ void EmbedModel::loadTsvLine(string& line, int lineNum,
     }
     pieces.resize(cols + 1);
   }
-  if (pieces.size() == cols) {
+  if (pieces.size() == (unsigned int)cols) {
     cout << "Missing record at line " << lineNum <<
       "; assuming empty string";
     pieces.insert(pieces.begin(), "");
   }
-  while (pieces.size() < cols + 1) {
+  while (pieces.size() < (unsigned int)(cols + 1)) {
     cout << "Zero-padding short record at line " << lineNum;
     pieces.push_back(zero);
   }
@@ -855,7 +843,7 @@ void EmbedModel::loadTsv(istream& in, const string sep) {
 void EmbedModel::saveTsv(ostream& out, const char sep) const {
   auto dumpOne = [&](shared_ptr<SparseLinear<Real>> emb) {
     auto size =  dict_->nwords() + dict_->nlabels();
-    for (size_t i = 0; i < size; i++) {
+    for (size_t i = 0; i < (size_t)size; i++) {
       // Skip invalid IDs.
       string symbol = dict_->getSymbol(i);
       out << symbol;

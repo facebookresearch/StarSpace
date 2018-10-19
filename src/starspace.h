@@ -47,10 +47,10 @@ class StarSpace {
     void saveModelTsv(const std::string& filename);
     void printDoc(std::ostream& ofs, const std::vector<Base>& tokens);
 
-    const std::string kMagic = "STARSPACE-2017-2";
+    const std::string kMagic = "STARSPACE-2018-1";
 
     void loadBaseDocs();
-    
+
     void predictOne(
         const std::vector<Base>& input,
         std::vector<Predictions>& pred);

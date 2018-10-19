@@ -15,6 +15,8 @@ DATASET=(
 MODELDIR=/tmp/starspace/models
 DATADIR=/tmp/starspace/data
 
+DATADIR=/mnt/vol/gfsai-flash-east/ai-group/users/ledell/data
+
 mkdir -p "${MODELDIR}"
 mkdir -p "${DATADIR}"
 
