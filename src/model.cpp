@@ -274,8 +274,13 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
       if ((i % kDecrStep) == (kDecrStep - 1)) {
         rate -= decrPerKSample;
       }
+      auto t_end = std::chrono::high_resolution_clock::now();
+      auto tot_spent = std::chrono::duration<double>(t_end-t_start).count();
+      if (tot_spent > args_->maxTrainTime) {
+        break;
+      }
       if (amMaster && ((ip - indices.begin()) % 100 == 99 || (ip + 1) == end)) {
-        auto t_end = std::chrono::high_resolution_clock::now();
+
         auto t_epoch_spent =
           std::chrono::duration<double>(t_end-t_epoch_start).count();
         double ex_done_this_epoch = ip - indices.begin();
@@ -284,10 +289,6 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
         double ex_done = epochs_done * (end - start) + ex_done_this_epoch;
         double time_per_ex = double(t_epoch_spent) / ex_done_this_epoch;
         int eta = int(time_per_ex * double(ex_left));
-        auto tot_spent = std::chrono::duration<double>(t_end-t_start).count();
-        if (tot_spent > args_->maxTrainTime) {
-          break;
-        }
         double epoch_progress = ex_done_this_epoch / (end - start);
         double progress = ex_done / (ex_done + ex_left);
         if (eta > args_->maxTrainTime - tot_spent) {
