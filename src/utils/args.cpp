@@ -40,6 +40,7 @@ Args::Args() {
   minCount = 1;
   minCountLabel = 1;
   K = 5;
+  batchSize = 5;
   verbose = false;
   debug = false;
   adagrad = true;
@@ -169,6 +170,8 @@ void Args::parseArgs(int argc, char** argv) {
       ngrams = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-K") == 0) {
       K = atoi(argv[i + 1]);
+    } else if (strcmp(argv[i], "-batchSize") == 0) {
+      batchSize = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-trainMode") == 0) {
       trainMode = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-verbose") == 0) {
@@ -280,6 +283,7 @@ void Args::printHelp() {
        << "  -initRandSd      initial values of embeddings are randomly generated from normal distribution with mean=0, standard deviation=initRandSd. [" << initRandSd << "]\n"
        << "  -trainWord       whether to train word level together with other tasks (for multi-tasking). [" << trainWord << "]\n"
        << "  -wordWeight      if trainWord is true, wordWeight specifies example weight for word level training examples. [" << wordWeight << "]\n"
+       << "  -batchSize       size of mini batch in training. [" << batchSize << "]\n"
        << "\nThe following arguments for test are optional:\n"
        << "  -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.\n"
        << "                   In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.\n"
@@ -308,6 +312,7 @@ void Args::printArgs() {
        << "similarity: " << similarity << endl
        << "maxNegSamples: " << maxNegSamples << endl
        << "negSearchLimit: " << negSearchLimit << endl
+       << "batchSize: " << batchSize << endl
        << "thread: " << thread << endl
        << "minCount: " << minCount << endl
        << "minCountLabel: " << minCountLabel << endl
@@ -341,6 +346,7 @@ void Args::save(std::ostream& out) {
   size = similarity.size();
   out.write((char*) &(size), sizeof(size_t));
   out.write((char*) &(similarity[0]), size);
+  out.write((char*) &(batchSize), sizeof(int));
 }
 
 void Args::load(std::istream& in) {
@@ -363,6 +369,7 @@ void Args::load(std::istream& in) {
   in.read((char*) &(size), sizeof(size_t));
   similarity.resize(size);
   in.read((char*) &(similarity[0]), size);
+  in.read((char*) &(batchSize), sizeof(int));
 }
 
 }
