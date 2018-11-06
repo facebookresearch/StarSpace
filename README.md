@@ -9,7 +9,7 @@ StarSpace is a general-purpose neural model for efficient learning of entity emb
 - Metric/similarity learning, e.g. learning sentence or document similarity.
 - Content-based or Collaborative filtering-based Recommendation, e.g. recommending music or videos.
 - Embedding graphs, e.g. multi-relational graphs such as Freebase.
-- <img width="5%" src="examples/new2.gif" /> Image classification, ranking or retrieval (e.g. by using existing ResNet features).
+- Image classification, ranking or retrieval (e.g. by using existing ResNet features).
 
 In the general case, it learns to represent objects of different types into a common vectorial embedding space,
 hence the star ('*', wildcard) and space in the name, and in that space compares them against each other.
@@ -18,6 +18,7 @@ It learns to rank a set of entities/documents or objects given a query entity/do
 See the [paper](https://arxiv.org/abs/1709.03856) for more details on how it works.
 
 # News
+- <img width="5%" src="examples/new2.gif" /> StarSpace training is much faster now with mini batch training (setting batch size by "-batchSize" argument). Details in [#190](https://github.com/facebookresearch/StarSpace/pull/190).
 - New license and patents: now StarSpace is under BSD license. Checkout <a href="https://github.com/facebookresearch/StarSpace/blob/master/LICENSE.md">LICENSE</a> and <a href="https://github.com/facebookresearch/StarSpace/blob/master/PATENTS">PATENTS</a> for details.
 - We added support for real-valued input and label weights: checkout the <a href="https://github.com/facebookresearch/StarSpace/#file-format">File Format</a> and <a href="https://github.com/facebookresearch/StarSpace/#imagespace-learning-image-and-label-embeddings">ImageSpace</a> section for more details on how to use weights in input and label.
 
@@ -255,8 +256,8 @@ and achieved 96.40% accuracy on an average of 5 runs.
 
 # Full Documentation of Parameters
     
-    Run "starspace train ..." or "starspace test ..."
-    
+    Run "starspace train ..."  or "starspace test ..."
+
     The following arguments are mandatory for train: 
       -trainFile       training file path
       -model           output model file path
@@ -266,8 +267,8 @@ and achieved 96.40% accuracy on an average of 5 runs.
       -model           model file path
 
     The following arguments for the dictionary are optional:
-      -minCount        minimal number of word occurrences [1]
-      -minCountLabel   minimal number of label occurrences [1]
+      -minCount        minimal number of word occurences [1]
+      -minCountLabel   minimal number of label occurences [1]
       -ngrams          max length of word ngram [1]
       -bucket          number of buckets [2000000]
       -label           labels prefix [__label__]. See file format section.
@@ -299,12 +300,14 @@ and achieved 96.40% accuracy on an average of 5 runs.
       -initRandSd      initial values of embeddings are randomly generated from normal distribution with mean=0, standard deviation=initRandSd. [0.001]
       -trainWord       whether to train word level together with other tasks (for multi-tasking). [0]
       -wordWeight      if trainWord is true, wordWeight specifies example weight for word level training examples. [0.5]
+      -batchSize       size of mini batch in training. [5]
 
     The following arguments for test are optional:
       -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.
                        In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.
       -predictionFile  file path for save predictions. If not empty, top K predictions for each example will be saved.
       -K               if -predictionFile is not empty, top K predictions for each example will be saved.
+      -excludeLHS      exclude elements in the LHS from predictions
 
     The following arguments are optional:
       -normalizeText   whether to run basic text preprocess for input files [0]
