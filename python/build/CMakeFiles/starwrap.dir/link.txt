@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC  -std=c++14 -fvisibility=hidden -flto -O3 -DNDEBUG  -shared -Wl,-soname,starwrap.so -o starwrap.so CMakeFiles/starwrap.dir/starspace_pybind.cc.o  -L/home/iamjbn/works/pystarspace/clone/StarSpace/python/build/../lib -Wl,-rpath,/home/iamjbn/works/pystarspace/clone/StarSpace/python/build/../lib -lstarspace 
