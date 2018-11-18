@@ -1,0 +1,3 @@
+/home/iamjbn/works/pystarspace/clone/StarSpace/python/build/CMakeFiles/rebuild_cache.dir
+/home/iamjbn/works/pystarspace/clone/StarSpace/python/build/CMakeFiles/starwrap.dir
+/home/iamjbn/works/pystarspace/clone/StarSpace/python/build/CMakeFiles/edit_cache.dir

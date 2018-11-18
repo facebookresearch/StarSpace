@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(fasttext)
+project(starspace)
 
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-include_directories(SYSTEM ${CONAN_INCLUDE_DIRS} ../../../src)
+include_directories(SYSTEM ${CONAN_INCLUDE_DIRS} ../src ../src/utils /usr/local/bin/boost_1_63_0/)
 link_directories(${CMAKE_BINARY_DIR}/../lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
@@ -74,37 +74,37 @@ include_directories(${PYTHON_INCLUDE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/pybind11/include)
 
 # Create the binding library
-add_library(fastwrap SHARED
-  fasttext_pybind.cc
+add_library(starwrap SHARED
+  starspace_pybind.cc
   # ... extra files go here ...
 )
 
 # Don't add a 'lib' prefix to the shared library
-set_target_properties(fastwrap PROPERTIES PREFIX "")
+set_target_properties(starwrap PROPERTIES PREFIX "")
 
 # Link against the Python shared library
-target_link_libraries(fastwrap fasttext)
+target_link_libraries(starwrap starspace)
 
 if (WIN32)
   if (MSVC)
     # /bigobj is needed for bigger binding projects due to the limit to 64k
     # addressable sections. /MP enables multithreaded builds (relevant when
     # there are many files).
-    set_target_properties(fastwrap PROPERTIES COMPILE_FLAGS "/MP /bigobj ")
+    set_target_properties(starwrap PROPERTIES COMPILE_FLAGS "/MP /bigobj ")
 
     if (NOT ${U_CMAKE_BUILD_TYPE} MATCHES DEBUG)
       # Enforce size-based optimization and link time code generation on MSVC
       # (~30% smaller binaries in experiments).
-      set_target_properties(fastwrap APPEND_STRING PROPERTY COMPILE_FLAGS "/Os /GL ")
-      set_target_properties(fastwrap APPEND_STRING PROPERTY LINK_FLAGS "/LTCG ")
+      set_target_properties(starwrap APPEND_STRING PROPERTY COMPILE_FLAGS "/Os /GL ")
+      set_target_properties(starwrap APPEND_STRING PROPERTY LINK_FLAGS "/LTCG ")
     endif()
   endif()
 
   # .PYD file extension on Windows
-  set_target_properties(fastwrap PROPERTIES SUFFIX ".pyd")
+  set_target_properties(starwrap PROPERTIES SUFFIX ".pyd")
 
   # Link against the Python shared library
-  target_link_libraries(fastwrap ${PYTHON_LIBRARY})
+  target_link_libraries(starwrap ${PYTHON_LIBRARY})
 elseif (UNIX)
   # It's quite common to have multiple copies of the same Python version
   # installed on one's system. E.g.: one copy from the OS and another copy
@@ -121,18 +121,18 @@ elseif (UNIX)
   # import time.
 
   # .SO file extension on Linux/Mac OS
-  set_target_properties(fastwrap PROPERTIES SUFFIX ".so")
+  set_target_properties(starwrap PROPERTIES SUFFIX ".so")
 
   # Strip unnecessary sections of the binary on Linux/Mac OS
   if(APPLE)
-    set_target_properties(fastwrap PROPERTIES MACOSX_RPATH ".")
-    set_target_properties(fastwrap PROPERTIES LINK_FLAGS "-undefined dynamic_lookup ")
+    set_target_properties(starwrap PROPERTIES MACOSX_RPATH ".")
+    set_target_properties(starwrap PROPERTIES LINK_FLAGS "-undefined dynamic_lookup ")
     if (NOT ${U_CMAKE_BUILD_TYPE} MATCHES DEBUG)
-      add_custom_command(TARGET fastwrap POST_BUILD COMMAND strip -u -r ${PROJECT_BINARY_DIR}/fastwrap.so)
+      add_custom_command(TARGET starwrap POST_BUILD COMMAND strip -u -r ${PROJECT_BINARY_DIR}/starwrap.so)
     endif()
   else()
     if (NOT ${U_CMAKE_BUILD_TYPE} MATCHES DEBUG)
-      add_custom_command(TARGET fastwrap POST_BUILD COMMAND strip ${PROJECT_BINARY_DIR}/fastwrap.so)
+      add_custom_command(TARGET starwrap POST_BUILD COMMAND strip ${PROJECT_BINARY_DIR}/starwrap.so)
     endif()
   endif()
 endif()

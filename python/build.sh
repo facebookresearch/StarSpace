@@ -3,10 +3,10 @@ rm -r build
 rm -r lib
 
 # build starspace lib
-cd ..
-make clean
-make
-cd -
+# cd ..
+# make clean
+# make
+# cd -
 
 # build wrapper
 mkdir lib
