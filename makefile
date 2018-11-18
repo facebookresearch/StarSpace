@@ -17,11 +17,11 @@ OBJS = normalize.o dict.o args.o proj.o parser.o data.o model.o starspace.o doc_
 TESTS = matrix_test proj_test
 INCLUDES = -I$(BOOST_DIR)
 
-opt: CXXFLAGS += -O3 -funroll-loops
-opt: starspace
+opt: CXXFLAGS += -O3 -fPIC -funroll-loops
+opt: libstarspace.so
 
-debug: CXXFLAGS += -g -O0 -fno-inline
-debug: starspace
+debug: CXXFLAGS += -g -O0 -fPIC -fno-inline
+debug: libstarspace.so
 
 
 TEST_INCLUDES = -I$(GTEST_DIR)/include
@@ -98,8 +98,11 @@ doc_parser.o: dict.o src/doc_parser.cpp src/doc_parser.h
 starspace.o: src/starspace.cpp src/starspace.h
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c src/starspace.cpp
 
-starspace: $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/main.cpp -o starspace
+libstarspace.so: $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -o libstarspace.so -shared
+
+starspace:
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -g src/main.cpp -L. -lstarspace -o starspace
 
 query_nn: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/query_nn.cpp -o query_nn
