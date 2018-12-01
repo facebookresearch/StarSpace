@@ -207,7 +207,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
     losses[idx] = 0.0;
     counts[idx] = 0;
 
-    int batch_sz = args_->batchSize;
+    unsigned int batch_sz = args_->batchSize;
     vector<ParseResults> examples;
     for (auto ip = start; ip < end; ip++) {
       auto i = *ip;
@@ -216,7 +216,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
         vector<ParseResults> exs;
         data->getWordExamples(i, exs);
         vector<ParseResults> word_exs;
-        for (int i = 0; i < exs.size(); i++) {
+        for (unsigned int i = 0; i < exs.size(); i++) {
           word_exs.push_back(exs[i]);
           if (word_exs.size() >= batch_sz || i == exs.size() - 1) {
             if (args_->loss == "softmax") {
@@ -398,7 +398,7 @@ float EmbedModel::trainOneBatch(shared_ptr<InternDataHandler> data,
   std::vector<Matrix<Real>> rhsN(negSearchLimit);
   std::vector<std::vector<Base>> batch_negLabels;
 
-  for (int i = 0; i < negSearchLimit; i++) {
+  for (unsigned int i = 0; i < negSearchLimit; i++) {
     std::vector<Base> negLabels;
     if (trainWord) {
       data->getRandomWord(negLabels);
@@ -427,7 +427,7 @@ float EmbedModel::trainOneBatch(shared_ptr<InternDataHandler> data,
     update_flag[i].resize(negSearchLimit, false);
     nRate[i].resize(negSearchLimit, 0);
 
-    for (int j = 0; j < negSearchLimit; j++) {
+    for (unsigned int j = 0; j < negSearchLimit; j++) {
       nRate[i][j] = 0.0;
       if (batch_exs[i].RHSTokens == batch_negLabels[j]) {
         continue;
@@ -452,7 +452,7 @@ float EmbedModel::trainOneBatch(shared_ptr<InternDataHandler> data,
     total_loss += loss[i];
     // gradW for i
     negMean[i].add(rhsP[i], -1);
-    for (int j = 0; j < negSearchLimit; j++) {
+    for (unsigned int j = 0; j < negSearchLimit; j++) {
       if (update_flag[i][j]) {
         nRate[i][j] = rate0 / num_negs[i];
       }
@@ -531,14 +531,14 @@ void EmbedModel::backward(
   std::vector<Real> n1(batch_sz, 0.0);
   std::vector<Real> n2(batch_sz, 0.0);
   if (args_->adagrad) {
-    for (int i = 0; i < batch_sz; i++) if (num_negs[i] > 0) {
+    for (unsigned int i = 0; i < batch_sz; i++) if (num_negs[i] > 0) {
       n1[i] = dot(gradW[i], gradW[i]);
       n2[i] = dot(lhs[i], lhs[i]);
     }
   }
   // Update input items.
   // Update positive example.
-  for (int i = 0; i < batch_sz; i++) if (num_negs[i] > 0) {
+  for (unsigned int i = 0; i < batch_sz; i++) if (num_negs[i] > 0) {
     const auto& items = batch_exs[i].LHSTokens;
     const auto& labels = batch_exs[i].RHSTokens;
     for (auto w : items) {
@@ -552,8 +552,8 @@ void EmbedModel::backward(
   }
 
   // Update negative example
-  for (int j = 0; j < batch_negLabels.size(); j++) {
-    for (int i = 0; i < batch_sz; i++) if (fabs(nRate[i][j]) > 1e-8) {
+  for (unsigned int j = 0; j < batch_negLabels.size(); j++) {
+    for (unsigned int i = 0; i < batch_sz; i++) if (fabs(nRate[i][j]) > 1e-8) {
       for (auto la : batch_negLabels[j]) {
         auto row = RHSEmbeddings_->row(index(la));
         (*update)(row, lhs[i], nRate[i][j] * weight(la), n2[i], RHSUpdates_, index(la));
@@ -573,8 +573,6 @@ float EmbedModel::trainNLLBatch(
   std::vector<Matrix<Real>> lhs(batch_sz), rhsP(batch_sz), rhsN(negSearchLimit);
 
   using namespace boost::numeric::ublas;
-
-  auto cols = args_->dim;
 
   for (int i = 0; i < batch_sz; i++) {
     const auto& items = batch_exs[i].LHSTokens;
