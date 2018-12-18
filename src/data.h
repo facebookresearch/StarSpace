@@ -1,6 +1,7 @@
-// Copyright 2004-, Facebook, Inc. All Rights Reserved.
-
-/* This is the basic class of internal data handler.
+/* Copyright (c) 2016-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This is the basic class of internal data handler.
  * It loads data from file and stores it in internal format for easy access
  * at training/testing time.
  *
