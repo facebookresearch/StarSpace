@@ -52,12 +52,11 @@ gtest.a : gtest-all.o
 gtest_main.a : gtest-all.o gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
-
 normalize.o: src/utils/normalize.cpp src/utils/normalize.h
 	$(CXX) $(CXXFLAGS) -g -c src/utils/normalize.cpp
 
-dict.o: src/dict.cpp src/dict.h src/utils/args.h
-	$(CXX) $(CXXFLAGS) -g -c src/dict.cpp
+dict.o: src/dict.cpp src/dict.h src/utils/args.h 3rdparty/zlib.cpp 3rdparty/gzip.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c -L/usr/local/lib -lz src/dict.cpp -o dict.o
 
 args.o: src/utils/args.cpp src/utils/args.h
 	$(CXX) $(CXXFLAGS) -g -c src/utils/args.cpp
@@ -80,14 +79,14 @@ proj_test.o: src/test/proj_test.cpp src/proj.h $(GTEST_HEADERS)
 proj_test: proj.o proj_test.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
-data.o: parser.o src/data.cpp src/data.h
-	$(CXX) $(CXXFLAGS) -g -c src/data.cpp -o data.o
+data.o: parser.o utils.o src/data.cpp src/data.h 3rdparty/zlib.cpp 3rdparty/gzip.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c -L/usr/local/lib -lz src/data.cpp -o data.o
 
 utils.o: src/utils/utils.cpp src/utils/utils.h
-	$(CXX) $(CXXFLAGS) -g -c src/utils/utils.cpp -o utils.o
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c src/utils/utils.cpp -o utils.o
 
 doc_data.o: doc_parser.o data.o src/doc_data.cpp src/doc_data.h
-	$(CXX) $(CXXFLAGS) -g -c src/doc_data.cpp -o doc_data.o
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c src/doc_data.cpp -o doc_data.o
 
 parser.o: dict.o src/parser.cpp src/parser.h
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c src/parser.cpp -o parser.o
@@ -98,8 +97,8 @@ doc_parser.o: dict.o src/doc_parser.cpp src/doc_parser.h
 starspace.o: src/starspace.cpp src/starspace.h
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c src/starspace.cpp
 
-starspace: $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/main.cpp -o starspace
+starspace: $(OBJS) 3rdparty/zlib.cpp 3rdparty/gzip.cpp
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g -L/usr/local/lib -lz src/main.cpp 3rdparty/zlib.cpp 3rdparty/gzip.cpp -o starspace
 
 query_nn: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/query_nn.cpp -o query_nn

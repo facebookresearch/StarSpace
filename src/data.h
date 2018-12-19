@@ -12,6 +12,7 @@
 
 #include "dict.h"
 #include "parser.h"
+#include "utils/utils.h"
 #include <string>
 #include <vector>
 #include <fstream>

@@ -120,6 +120,8 @@ void Args::parseArgs(int argc, char** argv) {
       initModel = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-fileFormat") == 0) {
       fileFormat = string(argv[i + 1]);
+    } else if (strcmp(argv[i], "-compressFile") == 0) {
+      compressFile = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-label") == 0) {
       label = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-loss") == 0) {

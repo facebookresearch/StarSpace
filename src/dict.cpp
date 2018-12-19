@@ -18,6 +18,7 @@
 #include <sstream>
 
 using namespace std;
+using namespace boost::iostreams;
 
 namespace starspace {
 
@@ -136,30 +137,45 @@ void Dictionary::readFromFile(
     shared_ptr<DataParser> parser) {
 
   cout << "Build dict from input file : " << file << endl;
-  ifstream fin(file);
-  if (!fin.is_open()) {
-    cerr << "Input file cannot be opened!" << endl;
-    exit(EXIT_FAILURE);
-  }
   int64_t minThreshold = 1;
   size_t lines_read = 0;
-  std::string line;
-  while (getline(fin, line)) {
-    vector<string> tokens;
-    parser->parseForDict(line, tokens);
-    lines_read++;
-    for (auto token : tokens) {
-      insert(token);
-      if ((ntokens_ % 1000000 == 0) && args_->verbose) {
-        std::cerr << "\rRead " << ntokens_  / 1000000 << "M words" << std::flush;
-      }
-      if (size_ > 0.75 * MAX_VOCAB_SIZE) {
-        minThreshold++;
-        threshold(minThreshold, minThreshold);
+
+  auto readFromInputStream = [&](std::istream& in) {
+    string line;
+    while (getline(in, line, '\n')) {
+      vector<string> tokens;
+      parser->parseForDict(line, tokens);
+      lines_read++;
+      for (auto token : tokens) {
+        insert(token);
+        if ((ntokens_ % 1000000 == 0) && args_->verbose) {
+          std::cerr << "\rRead " << ntokens_  / 1000000 << "M words" << std::flush;
+        }
+        if (size_ > 0.75 * MAX_VOCAB_SIZE) {
+          minThreshold++;
+          threshold(minThreshold, minThreshold);
+        }
       }
     }
+  };
+
+  if (args_->compressFile == "gz") {
+    for (int i = 0; i < args_->thread; i++) {
+      filtering_istream in;
+      ifstream ifs(file + std::to_string(i) + ".gz");
+      in.push(gzip_decompressor());
+      in.push(ifs);
+      readFromInputStream(in);
+    }
+  } else {
+    ifstream fin(file);
+    if (!fin.is_open()) {
+      cerr << "Input file cannot be opened!" << endl;
+      exit(EXIT_FAILURE);
+    }
+    readFromInputStream(fin);
+    fin.close();
   }
-  fin.close();
 
   threshold(args_->minCount, args_->minCountLabel);
 

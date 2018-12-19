@@ -9,7 +9,6 @@
 
 
 #include "data.h"
-#include "utils/utils.h"
 #include <string>
 #include <vector>
 #include <fstream>
@@ -49,17 +48,31 @@ void InternDataHandler::loadFromFile(
 
   cout << "Loading data from file : " << fileName << endl;
   vector<Corpus> corpora(args_->thread);
-  foreach_line(
-    fileName,
-    [&](std::string& line) {
-      auto& corpus = corpora[getThreadID()];
-      ParseResults example;
-      if (parser->parse(line, example)) {
-        corpus.push_back(example);
-      }
-    },
-    args_->thread
-  );
+  if (args_->compressFile == "gz") {
+    foreach_line_gz(
+      fileName,
+      [&](std::string& line) {
+        auto& corpus = corpora[getThreadID()];
+        ParseResults example;
+        if (parser->parse(line, example)) {
+          corpus.push_back(example);
+        }
+      },
+      args_->thread
+    );
+  } else {
+    foreach_line(
+      fileName,
+      [&](std::string& line) {
+        auto& corpus = corpora[getThreadID()];
+        ParseResults example;
+        if (parser->parse(line, example)) {
+          corpus.push_back(example);
+        }
+      },
+      args_->thread
+    );
+  }
   // Glue corpora together.
   auto totalSize = std::accumulate(corpora.begin(), corpora.end(), size_t(0),
                      [](size_t l, Corpus& r) { return l + r.size(); });

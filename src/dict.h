@@ -21,6 +21,9 @@
 #include <iostream>
 #include <random>
 #include <memory>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filter/zlib.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
 
 namespace starspace {
 

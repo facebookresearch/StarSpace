@@ -14,6 +14,8 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
 
 namespace starspace {
 
@@ -141,6 +143,42 @@ void foreach_line(const String& fname,
       ifs2.seekg(partitions[i]);
       string line;
       while (tellg(ifs2) < partitions[i + 1] && getline(ifs2, line)) {
+        // We don't know the line number. Super-bummer.
+        f(line);
+      }
+    });
+  }
+  for (auto &t: threads) {
+    t.join();
+  }
+}
+
+template<typename String=std::string,
+         typename Lambda>
+void foreach_line_gz(
+    const String& fname,
+    Lambda f,
+    int numThreads = 1) {
+
+  using namespace std;
+  using namespace boost::iostreams;
+
+  vector<thread> threads;
+  for (int i = 0; i < numThreads; i++) {
+    threads.emplace_back([i, f, &fname] {
+      detail::id = i;
+      auto fname_t = fname + std::to_string(i) + ".gz";
+      ifstream ifs2(fname_t);
+      if (!ifs2.good()) {
+        throw runtime_error(string("error opening ") + fname_t);
+      }
+
+      cout << "reading file from " << fname_t << endl;
+      filtering_istream in;
+      in.push(gzip_decompressor());
+      in.push(ifs2);
+      std::string line;
+      while (getline(in, line, '\n')) {
         // We don't know the line number. Super-bummer.
         f(line);
       }
