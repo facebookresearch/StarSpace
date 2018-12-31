@@ -29,6 +29,7 @@ class Args {
     std::string loss;
     std::string similarity;
 
+    char weightSep;
     double lr;
     double termLr;
     double norm;

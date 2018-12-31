@@ -36,7 +36,7 @@ bool LayerDataParser::parse(
   int start_idx = 0;
   float ex_weight = 1.0;
   if (tokens[0].find("__weight__") != std::string::npos) {
-    std::size_t pos = tokens[0].find(":");
+    std::size_t pos = tokens[0].find(args_->weightSep);
     if (pos != std::string::npos) {
         ex_weight = atof(tokens[0].substr(pos + 1).c_str());
     }
@@ -47,7 +47,7 @@ bool LayerDataParser::parse(
     string t = tokens[i];
     float weight = 1.0;
     if (args_->useWeight) {
-      std::size_t pos = tokens[i].find(":");
+      std::size_t pos = tokens[i].find(args_->weightSep);
       if (pos != std::string::npos) {
         t = tokens[i].substr(0, pos);
         weight = atof(tokens[i].substr(pos + 1).c_str());
