@@ -1,5 +1,6 @@
 #include <starspace.h>
 #include <matrix.h>
+#include <model.h>
 #include <iostream>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -57,18 +58,19 @@ PYBIND11_MODULE(starwrap, m) {
 		.def_readwrite("excludeLHS", &starspace::Args::excludeLHS)
 		;
 
-	py::class_<starspace::Matrix>(m, "Matrix", py::buffer_protocol())
-		.def_buffer([](Matrix &m) -> py::buffer_info {
+	py::class_<starspace::Matrix <starspace::Real>>(m, "Matrix", py::buffer_protocol())
+		.def_buffer([](starspace::Matrix <starspace::Real> &m) -> py::buffer_info {
 			return py::buffer_info(
-				m.data(),							    			/* Pointer to buffer */
+				m.matrix.data().begin(),							/* Pointer to buffer */
 				sizeof(starspace::Real),							/* Size of one scalar */
 				py::format_descriptor<starspace::Real>::format(), 	/* Python struct-style format descriptor */
 				2,									    			/* Number of dimensions */
-				{ matrix.size1(), matrix.size2() },				    /* Buffer dimensions */
-				{ sizeof(starspace::Real) * matrix.size1(),			/* Strides (in bytes) for each index */
-				  sizeof(starspace::Real) * (int64_t)1}
+				{ m.numRows(), m.numCols() },				        /* Buffer dimensions */
+				{ sizeof(starspace::Real) * m.numCols(),			/* Strides (in bytes) for each index */
+				  sizeof(starspace::Real) * (int64_t)1 }
 			);
-	});
+		}
+	);
 
 	py::class_<starspace::StarSpace>(m, "starSpace")
 		.def(py::init<std::shared_ptr<starspace::Args>>())
@@ -81,5 +83,6 @@ PYBIND11_MODULE(starwrap, m) {
 		.def("initFromSavedModel", &starspace::StarSpace::initFromSavedModel)
 		.def("nearestNeighbor", &starspace::StarSpace::nearestNeighbor)
 		.def("loadBaseDocs", &starspace::StarSpace::loadBaseDocs)
+		.def("getDocVector", &starspace::StarSpace::getDocVector)
 		;
 }
