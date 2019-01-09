@@ -569,7 +569,7 @@ float EmbedModel::trainNLLBatch(
     Real rate0,
     bool trainWord) {
 
-  auto batch_sz = args_->batchSize;
+  auto batch_sz = batch_exs.size();
   std::vector<Matrix<Real>> lhs(batch_sz), rhsP(batch_sz), rhsN(negSearchLimit);
 
   using namespace boost::numeric::ublas;
