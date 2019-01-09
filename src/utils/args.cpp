@@ -57,6 +57,7 @@ Args::Args() {
   useWeight = false;
   trainWord = false;
   excludeLHS = false;
+  weightSep = ':';
 }
 
 bool Args::isTrue(string arg) {
@@ -120,6 +121,8 @@ void Args::parseArgs(int argc, char** argv) {
       fileFormat = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-label") == 0) {
       label = string(argv[i + 1]);
+    } else if (strcmp(argv[i], "-weightSep") == 0) {
+      weightSep = argv[i + 1][0];
     } else if (strcmp(argv[i], "-loss") == 0) {
       loss = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-similarity") == 0) {
@@ -291,6 +294,7 @@ void Args::printHelp() {
        <<  "\nThe following arguments are optional:\n"
        << "  -normalizeText   whether to run basic text preprocess for input files [" << normalizeText << "]\n"
        << "  -useWeight       whether input file contains weights [" << useWeight << "]\n"
+       << "  -weightSep       separator for word and weights [" << weightSep << "]\n"
        << "  -verbose         verbosity level [" << verbose << "]\n"
        << "  -debug           whether it's in debug mode [" << debug << "]\n"
        << "  -thread          number of threads [" << thread << "]\n"
@@ -315,6 +319,7 @@ void Args::printArgs() {
        << "minCount: " << minCount << endl
        << "minCountLabel: " << minCountLabel << endl
        << "label: " << label << endl
+       << "label: " << label << endl
        << "ngrams: " << ngrams << endl
        << "bucket: " << bucket << endl
        << "adagrad: " << adagrad << endl
@@ -322,7 +327,9 @@ void Args::printArgs() {
        << "fileFormat: " << fileFormat << endl
        << "normalizeText: " << normalizeText << endl
        << "dropoutLHS: " << dropoutLHS << endl
-       << "dropoutRHS: " << dropoutRHS << endl;
+       << "dropoutRHS: " << dropoutRHS << endl
+       << "useWeight: " << useWeight << endl
+       << "weightSep: " << weightSep << endl;
 }
 
 void Args::save(std::ostream& out) {
@@ -338,6 +345,7 @@ void Args::save(std::ostream& out) {
   out.write((char*) &(trainMode), sizeof(int));
   out.write((char*) &(shareEmb), sizeof(bool));
   out.write((char*) &(useWeight), sizeof(bool));
+  out.write((char*) &(weightSep), sizeof(char));
   size_t size = fileFormat.size();
   out.write((char*) &(size), sizeof(size_t));
   out.write((char*) &(fileFormat[0]), size);
@@ -360,6 +368,7 @@ void Args::load(std::istream& in) {
   in.read((char*) &(trainMode), sizeof(int));
   in.read((char*) &(shareEmb), sizeof(bool));
   in.read((char*) &(useWeight), sizeof(bool));
+  in.read((char*) &(weightSep), sizeof(char));
   size_t size;
   in.read((char*) &(size), sizeof(size_t));
   fileFormat.resize(size);
