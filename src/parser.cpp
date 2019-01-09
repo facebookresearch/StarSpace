@@ -58,7 +58,7 @@ void DataParser::parseForDict(
   for (unsigned int i = 0; i < toks.size(); i++) {
     string token = toks[i];
     if (args_->useWeight) {
-      std::size_t pos = toks[i].find(":");
+      std::size_t pos = toks[i].find(args_->weightSep);
       if (pos != std::string::npos) {
         token = toks[i].substr(0, pos);
       }
@@ -116,7 +116,7 @@ bool DataParser::parse(
 
   for (auto &token: tokens) {
     if (token.find("__weight__") != std::string::npos) {
-      std::size_t pos = token.find(":");
+      std::size_t pos = token.find(args_->weightSep);
       if (pos != std::string::npos) {
         rslts.weight = atof(token.substr(pos + 1).c_str());
       }
@@ -125,7 +125,7 @@ bool DataParser::parse(
     string t = token;
     float weight = 1.0;
     if (args_->useWeight) {
-      std::size_t pos = token.find(":");
+      std::size_t pos = token.find(args_->weightSep);
       if (pos != std::string::npos) {
         t = token.substr(0, pos);
         weight = atof(token.substr(pos + 1).c_str());
@@ -164,7 +164,7 @@ bool DataParser::parse(
     auto t = token;
     float weight = 1.0;
     if (args_->useWeight) {
-      std::size_t pos = token.find(":");
+      std::size_t pos = token.find(args_->weightSep);
       if (pos != std::string::npos) {
         t = token.substr(0, pos);
         weight = atof(token.substr(pos + 1).c_str());
