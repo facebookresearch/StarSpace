@@ -30,7 +30,7 @@ mkdir -p "${DATADIR}"
 echo "Downloading dataset ag_news"
 if [ ! -f "${DATADIR}/${DATASET[i]}.train" ]
 then
-    wget -c "https://s3.amazonaws.com/fair-data/starspace/ag_news_csv.tar.gz" -O "${DATADIR}/${DATASET[0]}_csv.tar.gz"
+    wget -c "https://dl.fbaipublicfiles.com/starspace/ag_news_csv.tar.gz" -O "${DATADIR}/${DATASET[0]}_csv.tar.gz"
     tar -xzvf "${DATADIR}/${DATASET[0]}_csv.tar.gz" -C "${DATADIR}"
     cat "${DATADIR}/${DATASET[0]}_csv/train.csv" | normalize_text > "${DATADIR}/${DATASET[0]}.train"
     cat "${DATADIR}/${DATASET[0]}_csv/test.csv" | normalize_text > "${DATADIR}/${DATASET[0]}.test"
