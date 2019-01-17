@@ -25,7 +25,7 @@ mkdir -p "${DATADIR}"
 echo "Downloading dataset freebase 15k"
 if [ ! -f "${DATADIR}/${DATASET}/fb15k.train" ]
 then
-    wget -c "https://s3.amazonaws.com/fair-data/starspace/fb15k.tgz" -O "${DATADIR}/${DATASET}_csv.tar.gz"
+    wget -c "https://dl.fbaipublicfiles.com/starspace/fb15k.tgz" -O "${DATADIR}/${DATASET}_csv.tar.gz"
     tar -xzvf "${DATADIR}/${DATASET}_csv.tar.gz" -C "${DATADIR}"
     
     echo "Converting data to StarSpace format ..."

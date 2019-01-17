@@ -16,8 +16,8 @@ mkdir -p "${DATADIR}"
 if [ ! -f "${DATADIR}/${DATASET}_resnext.train" ]
 then
     echo "Downloading cifar-10 data with last layer feature from a trained ResNext model"
-    wget -c "https://s3.amazonaws.com/fair-data/starspace/cifar10-resnext.train" -O "${DATADIR}/${DATASET}_resnext.train"
-    wget -c "https://s3.amazonaws.com/fair-data/starspace/cifar10-resnext.test" -O "${DATADIR}/${DATASET}_resnext.test"
+    wget -c "https://dl.fbaipublicfiles.com/starspace/cifar10-resnext.train" -O "${DATADIR}/${DATASET}_resnext.train"
+    wget -c "https://dl.fbaipublicfiles.com/starspace/cifar10-resnext.test" -O "${DATADIR}/${DATASET}_resnext.test"
   fi
     
 echo "Compiling StarSpace"
