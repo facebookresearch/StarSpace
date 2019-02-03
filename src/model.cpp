@@ -438,7 +438,7 @@ float EmbedModel::trainOneBatch(shared_ptr<InternDataHandler> data,
         assert(loss[i] >= 0.0);
         update_flag[i][j] = true;
         if (num_negs[i] == args_->maxNegSamples) {
-          continue;
+          break;
         }
       }
     }
