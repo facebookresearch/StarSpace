@@ -1,10 +1,8 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 #include "dict.h"
@@ -158,14 +156,20 @@ void Dictionary::readFromFile(
       }
     }
   };
-
-  if (args_->compressFile == "gz") {
+  cout << args_->compressFile << endl;
+  if (args_->compressFile == "gzip") {
     for (int i = 0; i < args_->thread; i++) {
       filtering_istream in;
-      ifstream ifs(file + std::to_string(i) + ".gz");
+      auto str_idx = boost::str(boost::format("%02d") % i);
+      auto fname = file + str_idx + ".gz";
+      ifstream ifs(fname);
+      if (!ifs.good()) {
+        continue;
+      }
       in.push(gzip_decompressor());
       in.push(ifs);
       readFromInputStream(in);
+      ifs.close();
     }
   } else {
     ifstream fin(file);

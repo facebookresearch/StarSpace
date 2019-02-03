@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2016-present, Facebook, Inc.
-# All rights reserved.
+# Copyright (c) Facebook, Inc. and its affiliates.
 #
-# This source code is licensed under the BSD-style license found in the
-# LICENSE file in the root directory of this source tree. An additional grant
-# of patent rights can be found in the PATENTS file in the same directory.
-#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
 
 DATASET=(
   wikipedia
@@ -21,11 +18,11 @@ mkdir -p "${DATADIR}"
 if [ ! -f "${DATADIR}/${DATASET[i]}_train250k.txt" ]
 then
     echo "Downloading wikipedia data"
-    wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_train250k.tgz" -O "${DATADIR}/${DATASET[0]}_train.tar.gz"
+    wget -c "https://dl.fbaipublicfiles.com/starspace/wikipedia_train250k.tgz" -O "${DATADIR}/${DATASET[0]}_train.tar.gz"
     tar -xzvf "${DATADIR}/${DATASET[0]}_train.tar.gz" -C "${DATADIR}"
-    wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_devtst.tgz" -O "${DATADIR}/${DATASET[0]}_test.tar.gz"
+    wget -c "https://dl.fbaipublicfiles.com/starspace/wikipedia_devtst.tgz" -O "${DATADIR}/${DATASET[0]}_test.tar.gz"
     tar -xzvf "${DATADIR}/${DATASET[0]}_test.tar.gz" -C "${DATADIR}"
-    wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_shuf_test_basedocs_tm3.txt" -O "${DATADIR}/${DATASET[0]}_test_basedocs_tm3.txt"
+    wget -c "https://dl.fbaipublicfiles.com/starspace/wikipedia_shuf_test_basedocs_tm3.txt" -O "${DATADIR}/${DATASET[0]}_test_basedocs_tm3.txt"
   fi
     
 echo "Compiling StarSpace"

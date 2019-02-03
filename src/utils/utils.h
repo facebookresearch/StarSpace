@@ -1,10 +1,8 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 #pragma once
@@ -16,6 +14,7 @@
 #include <algorithm>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
+#include <boost/format.hpp>
 
 namespace starspace {
 
@@ -164,16 +163,18 @@ void foreach_line_gz(
   using namespace boost::iostreams;
 
   vector<thread> threads;
+  //numThreads = std::min(args_->numGzFile, numThreads);
+
   for (int i = 0; i < numThreads; i++) {
     threads.emplace_back([i, f, &fname] {
       detail::id = i;
-      auto fname_t = fname + std::to_string(i) + ".gz";
+      auto fname_t = fname + boost::str(boost::format("%02d") % i) + ".gz";
       ifstream ifs2(fname_t);
       if (!ifs2.good()) {
-        throw runtime_error(string("error opening ") + fname_t);
+        return;
       }
 
-      cout << "reading file from " << fname_t << endl;
+      cout << "Reading file from " << fname_t << endl;
       filtering_istream in;
       in.push(gzip_decompressor());
       in.push(ifs2);

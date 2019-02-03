@@ -1,10 +1,8 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 #include "model.h"
@@ -440,7 +438,7 @@ float EmbedModel::trainOneBatch(shared_ptr<InternDataHandler> data,
         assert(loss[i] >= 0.0);
         update_flag[i][j] = true;
         if (num_negs[i] == args_->maxNegSamples) {
-          continue;
+          break;
         }
       }
     }
@@ -569,7 +567,7 @@ float EmbedModel::trainNLLBatch(
     Real rate0,
     bool trainWord) {
 
-  auto batch_sz = args_->batchSize;
+  auto batch_sz = batch_exs.size();
   std::vector<Matrix<Real>> lhs(batch_sz), rhsP(batch_sz), rhsN(negSearchLimit);
 
   using namespace boost::numeric::ublas;
