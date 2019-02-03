@@ -1,12 +1,9 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
-
 
 #include "data.h"
 #include <string>
@@ -39,16 +36,8 @@ void InternDataHandler::loadFromFile(
   const string& fileName,
   shared_ptr<DataParser> parser) {
 
-  ifstream fin(fileName);
-  if (!fin.is_open()) {
-    std::cerr << fileName << " cannot be opened for loading!" << std::endl;
-    exit(EXIT_FAILURE);
-  }
-  fin.close();
-
-  cout << "Loading data from file : " << fileName << endl;
   vector<Corpus> corpora(args_->thread);
-  if (args_->compressFile == "gz") {
+  if (args_->compressFile == "gzip") {
     foreach_line_gz(
       fileName,
       [&](std::string& line) {
@@ -61,6 +50,14 @@ void InternDataHandler::loadFromFile(
       args_->thread
     );
   } else {
+    ifstream fin(fileName);
+    if (!fin.is_open()) {
+      std::cerr << fileName << " cannot be opened for loading!" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    fin.close();
+
+    cout << "Loading data from file : " << fileName << endl;
     foreach_line(
       fileName,
       [&](std::string& line) {

@@ -1,10 +1,8 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 
@@ -58,7 +56,7 @@ void DataParser::parseForDict(
   for (unsigned int i = 0; i < toks.size(); i++) {
     string token = toks[i];
     if (args_->useWeight) {
-      std::size_t pos = toks[i].find(":");
+      std::size_t pos = toks[i].find(args_->weightSep);
       if (pos != std::string::npos) {
         token = toks[i].substr(0, pos);
       }
@@ -116,7 +114,7 @@ bool DataParser::parse(
 
   for (auto &token: tokens) {
     if (token.find("__weight__") != std::string::npos) {
-      std::size_t pos = token.find(":");
+      std::size_t pos = token.find(args_->weightSep);
       if (pos != std::string::npos) {
         rslts.weight = atof(token.substr(pos + 1).c_str());
       }
@@ -125,7 +123,7 @@ bool DataParser::parse(
     string t = token;
     float weight = 1.0;
     if (args_->useWeight) {
-      std::size_t pos = token.find(":");
+      std::size_t pos = token.find(args_->weightSep);
       if (pos != std::string::npos) {
         t = token.substr(0, pos);
         weight = atof(token.substr(pos + 1).c_str());
@@ -164,7 +162,7 @@ bool DataParser::parse(
     auto t = token;
     float weight = 1.0;
     if (args_->useWeight) {
-      std::size_t pos = token.find(":");
+      std::size_t pos = token.find(args_->weightSep);
       if (pos != std::string::npos) {
         t = token.substr(0, pos);
         weight = atof(token.substr(pos + 1).c_str());

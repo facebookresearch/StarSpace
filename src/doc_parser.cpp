@@ -1,10 +1,8 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 #include "doc_parser.h"
@@ -36,7 +34,7 @@ bool LayerDataParser::parse(
   int start_idx = 0;
   float ex_weight = 1.0;
   if (tokens[0].find("__weight__") != std::string::npos) {
-    std::size_t pos = tokens[0].find(":");
+    std::size_t pos = tokens[0].find(args_->weightSep);
     if (pos != std::string::npos) {
         ex_weight = atof(tokens[0].substr(pos + 1).c_str());
     }
@@ -47,7 +45,7 @@ bool LayerDataParser::parse(
     string t = tokens[i];
     float weight = 1.0;
     if (args_->useWeight) {
-      std::size_t pos = tokens[i].find(":");
+      std::size_t pos = tokens[i].find(args_->weightSep);
       if (pos != std::string::npos) {
         t = tokens[i].substr(0, pos);
         weight = atof(tokens[i].substr(pos + 1).c_str());
