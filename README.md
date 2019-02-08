@@ -49,6 +49,7 @@ In order to build StarSpace on Mac OS or Linux, use the following:
 In order to build StarSpace on Windows, open the following in Visual Studio:
 
     MVS\StarSpace.sln
+In order to build StarSpace python wrapper, please refer `README` inside the directory `python`.
 
 # File Format
 
@@ -79,11 +80,11 @@ In order to learn the embeddings in the more general case where each label consi
 We also extend the file format to support real-valued weights (in both input and label space) by setting argument "-useWeight" to true (default is false). If "-useWeight" is true, we support weights by the following format
 
     word_1:wt_1 word_2:wt_2 ... word_k:wt_k __label__1:lwt_1 ...    __label__r:lwt_r
-    
+
 e.g.,
 
     dog:0.1 cat:0.5 ...
-    
+
 The default weight is 1 for any word / label that does not contain weights. 
 
 ## Training Mode
@@ -135,7 +136,7 @@ For instance,  the input “restaurant has great food <\tab> #restaurant <\tab> 
 We apply the model to the problem of text classification on <a href="https://github.com/mhjabreel/CharCNN/tree/master/data/ag_news_csv">AG's News Topic Classification Dataset</a>. Here our tags are news article categories, and we use the hits@1 metric to measure classification accuracy. <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/classification_ag_news.sh">This example script</a> downloads the data and run StarSpace model on it under the examples directory:
 
     $bash examples/classification_ag_news.sh
-    
+
 ## PageSpace user / page embeddings 
 
 **Setting:** On Facebook, users can fan (follow) public pages they're interested in. When a user fans a page, the user can receive all things the page posts on Facebook. We want to learn page embeddings based on users' fanning data, and use it to recommend users new pages they might be interested to fan (follow). This setting can be generalized to other recommendation problems: for instance, embedding and recommending movies to users based on movies watched in the past; embed and recommend restaurants to users based on the restaurants checked-in by users in the past, etc.
@@ -159,7 +160,7 @@ At training time, at each step for each example (user), one random page is selec
 ### Example scripts:
 To provide an example script, we choose the Last.FM (http://www.lastfm.com)
  dataset from <a href="https://grouplens.org/datasets/hetrec-2011/">HectRec 2011</a> and model it similarly as in the PageSpace setting: user is represented by the bag-of-artitsts listened by the user. 
- 
+
      $bash examples/recomm_user_artists.sh
 
 ## DocSpace document recommendation
@@ -176,15 +177,15 @@ At training time, at each step one random document is selected as the label and 
 
     roger federer loses <tab> venus williams wins <tab> world series ended
     i love cats <tab> funny lolcat links <tab> how to be a petsitter  
-    
+
 Each line is a user, and each document (documents separated by tabs) are documents that they liked.
 So the first user likes sports, and the second is interested in pets in this case.
-    
+​    
 **Command:**
 
     ./starspace train -trainFile input.txt -model docspace -trainMode 1 -fileFormat labelDoc
-    
-    
+
+​    
 ## GraphSpace: Link Prediction in Knowledge Bases ##
 
 **Setting:** Learning the mapping between entities and relations in <a href="http://www.freebase.com">Freebase</a>. In freebase, data comes in the format 
@@ -203,8 +204,8 @@ Performing link prediction can be formalized as filling in incomplete triples li
 <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/multi_relation_example.sh">This example script</a> downloads the Freebase15k data from <a href="https://everest.hds.utc.fr/doku.php?id=en:transe">here</a> and runs the StarSpace model on it:
 
     $bash examples/multi_relation_example.sh
-   
-    
+
+​    
 ## SentenceSpace: Learning Sentence Embeddings
 
 **Setting:** Learning the mapping between sentences. Given the embedding of one sentence, one can find semantically similar/relevant sentences.
@@ -217,13 +218,13 @@ Performing link prediction can be formalized as filling in incomplete triples li
 <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/wikipedia_sentence_matching.sh">This example script</a> downloads data where each example is a set of sentences from the same Wikipedia page and runs the StarSpace model on it:
 
     $bash examples/wikipedia_sentence_matching.sh
-    
+
 To run the full experiment on Wikipedia Sentence Matching presented in [this paper](https://arxiv.org/abs/1709.03856), 
 use <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/wikipedia_sentence_matching_full.sh">this script</a> (warning: it takes a long time to download data and train the model):
 
     $bash examples/wikipedia_sentence_matching_full.sh
-    
-    
+
+​    
 ## ArticleSpace: Learning Sentence and Article Embeddings
 
 **Setting:** Learning the mapping between sentences and articles. Given the embedding of one sentence, one can find the most relevant articles.
@@ -234,18 +235,18 @@ use <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/
 <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/wikipedia_article_search.sh">This example script</a> downloads data where each example is a Wikipedia article and runs the StarSpace model on it:
 
     $bash examples/wikipedia_article_search.sh
-    
+
 To run the full experiment on Wikipedia Article Search presented in [this paper](https://arxiv.org/abs/1709.03856), 
 use <a href="https://github.com/facebookresearch/Starspace/blob/master/examples/wikipedia_article_search_full.sh">this script</a> (warning: it takes a long time to download data and train the model):
 
     $bash examples/wikipedia_article_search_full.sh
-    
+
 ## ImageSpace: Learning Image and Label Embeddings
 
 With the most recent update, StarSpace can also be used to learn joint embeddings with images and other entities. For instance, one can use ResNet features (the last layer of a pre-trained ResNet model) to represent an image, and embed images with other entities (words, hashtags, etc.). Just like other entities in Starspace, images can be either on the input or the label side, depending on your task.
 
 Here we give an example using <a href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10</a> to illustrate how we train images with other entities (in this example, image class): we train a <a href="https://github.com/facebookresearch/ResNeXt">ResNeXt</a> model on CIFAR-10  which achieves 96.34% accuracy on test dataset, and use the last layer of ResNeXt as the features for each image. We embed 10 image classes together with image features in the same space using StarSpace. For an example image from class 1 with last layer (0.8, 0.5, ..., 1.2), we convert it to the following format:
-    
+​    
     d1:0.8  d2:0.5   ...    d1024:1.2   __label__1
 
 After converting train and test examples of CIFAR-10 to the above format, we ran <a href="https://github.com/facebookresearch/StarSpace/blob/master/examples/image_feature_example_cifar10.sh">this example script</a>:
@@ -255,24 +256,24 @@ After converting train and test examples of CIFAR-10 to the above format, we ran
 and achieved 96.40% accuracy on an average of 5 runs.
 
 # Full Documentation of Parameters
-    
+
     Run "starspace train ..."  or "starspace test ..."
 
     The following arguments are mandatory for train: 
       -trainFile       training file path
       -model           output model file path
-
+    
     The following arguments are mandatory for test: 
       -testFile        test file path
       -model           model file path
-
+    
     The following arguments for the dictionary are optional:
       -minCount        minimal number of word occurences [1]
       -minCountLabel   minimal number of label occurences [1]
       -ngrams          max length of word ngram [1]
       -bucket          number of buckets [2000000]
       -label           labels prefix [__label__]. See file format section.
-
+    
     The following arguments for training are optional:
       -initModel       if not empty, it loads a previously trained model in -initModel and carry on training.
       -trainMode       takes value in [0, 1, 2, 3, 4, 5], see Training Mode Section. [0]
@@ -301,14 +302,14 @@ and achieved 96.40% accuracy on an average of 5 runs.
       -trainWord       whether to train word level together with other tasks (for multi-tasking). [0]
       -wordWeight      if trainWord is true, wordWeight specifies example weight for word level training examples. [0.5]
       -batchSize       size of mini batch in training. [5]
-
+    
     The following arguments for test are optional:
       -basedoc         file path for a set of labels to compare against true label. It is required when -fileFormat='labelDoc'.
                        In the case -fileFormat='fastText' and -basedoc is not provided, we compare true label with all other labels in the dictionary.
       -predictionFile  file path for save predictions. If not empty, top K predictions for each example will be saved.
       -K               if -predictionFile is not empty, top K predictions for each example will be saved.
       -excludeLHS      exclude elements in the LHS from predictions
-
+    
     The following arguments are optional:
       -normalizeText   whether to run basic text preprocess for input files [0]
       -useWeight       whether input file contains weights [0]
@@ -329,7 +330,7 @@ A simple way to check the quality of a trained embedding model is to inspect the
 
     make query_predict
     ./query_predict <model> k [basedocs]
-    
+
 where "\<model\>" specifies a trained StarSpace model and the optional K specifies how many of the top predictions to show (top ranked first). "basedocs" points to the file of documents to rank, see also the argument of the same name in the starspace main above. If "basedocs" is not provided, the labels in the dictionary are used instead.
 
 After loading the model, it reads a line of entities (can be either a single word or a sentence / document), and outputs the predictions.
@@ -340,7 +341,7 @@ Another simple way to check the quality of a trained embedding model is to inspe
 
     make query_nn
     ./query_nn <model> [k]
-    
+
 where "\<model\>" specifies a trained StarSpace model and the optional K (default value is 5) specifies how many nearest neighbors to search for.
 
 After loading the model, it reads a line of entities (can be either a single word or a sentence / document), and output the nearest entities in embedding space.
@@ -351,7 +352,7 @@ As the ngrams used in the model are not saved in tsv format, we also provide a s
 
     make print_ngrams
     ./print_ngrams <model>
-    
+
 where "\<model\>" specifies a trained StarSpace model with argument -ngrams > 1.
 
 ### Print Sentence / Document Embedding
@@ -360,7 +361,7 @@ Sometimes it is useful to print out sentence / document embeddings from a traine
 
     make embed_doc
     ./embed_doc <model> [filename]
-    
+
 where "\<model\>" specifies a trained StarSpace model. If filename is provided, it reads each sentence / document from file, line by line, and outputs vector embeddings accordingly. If the filename is not provided, it reads each sentence / document from stdin.
 
 

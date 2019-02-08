@@ -75,14 +75,19 @@ PYBIND11_MODULE(starwrap, m) {
 	py::class_<starspace::StarSpace>(m, "starSpace")
 		.def(py::init<std::shared_ptr<starspace::Args>>())
 		.def("init", &starspace::StarSpace::init)
-		.def("train", &starspace::StarSpace::train)
-		.def("evaluate", &starspace::StarSpace::evaluate)
-		.def("saveModel", &starspace::StarSpace::saveModel)
-		.def("saveModelTsv", &starspace::StarSpace::saveModelTsv)
 		.def("initFromTsv", &starspace::StarSpace::initFromTsv)
 		.def("initFromSavedModel", &starspace::StarSpace::initFromSavedModel)
-		.def("nearestNeighbor", &starspace::StarSpace::nearestNeighbor)
-		.def("loadBaseDocs", &starspace::StarSpace::loadBaseDocs)
+
+		.def("train", &starspace::StarSpace::train)
+		.def("evaluate", &starspace::StarSpace::evaluate)
+
 		.def("getDocVector", &starspace::StarSpace::getDocVector)
+
+		.def("nearestNeighbor", &starspace::StarSpace::nearestNeighbor)
+
+		.def("saveModel", &starspace::StarSpace::saveModel)
+		.def("saveModelTsv", &starspace::StarSpace::saveModelTsv)
+		
+		.def("loadBaseDocs", &starspace::StarSpace::loadBaseDocs)
 		;
 }
