@@ -6,7 +6,7 @@
 #
 
 CXX = g++
-CXXFLAGS = -pthread -std=gnu++11
+CXXFLAGS = -pthread -std=gnu++11 -D COMPRESS_FILE
 
 BOOST_DIR = /usr/local/bin/boost_1_63_0/
 GTEST_DIR = /usr/local/bin/googletest

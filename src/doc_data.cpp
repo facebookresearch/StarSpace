@@ -31,6 +31,7 @@ void LayerDataHandler::loadFromFile(
   if (args_->compressFile == "gzip") {
     foreach_line_gz(
       fileName,
+      args_->numGzFile,
       [&](std::string& line) {
         auto& corpus = corpora[getThreadID()];
         ParseResults example;

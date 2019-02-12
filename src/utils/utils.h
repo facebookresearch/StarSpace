@@ -12,9 +12,12 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <boost/iostreams/filtering_stream.hpp>
-#include <boost/iostreams/filter/gzip.hpp>
 #include <boost/format.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+
+#ifdef COMPRESS_FILE
+  #include <boost/iostreams/filter/gzip.hpp>
+#endif
 
 namespace starspace {
 
@@ -156,6 +159,7 @@ template<typename String=std::string,
          typename Lambda>
 void foreach_line_gz(
     const String& fname,
+    int numFiles,
     Lambda f,
     int numThreads = 1) {
 
@@ -163,11 +167,13 @@ void foreach_line_gz(
   using namespace boost::iostreams;
 
   vector<thread> threads;
-  //numThreads = std::min(args_->numGzFile, numThreads);
+  numThreads = std::min(numFiles, numThreads);
 
-  for (int i = 0; i < numThreads; i++) {
-    threads.emplace_back([i, f, &fname] {
-      detail::id = i;
+#ifdef COMPRESS_FILE
+  for (int i = 0; i < numFiles; i++) {
+    auto thread_id = i % numThreads;
+    threads.emplace_back([thread_id, i, f, &fname] {
+      detail::id = thread_id;
       auto fname_t = fname + boost::str(boost::format("%02d") % i) + ".gz";
       ifstream ifs2(fname_t);
       if (!ifs2.good()) {
@@ -180,7 +186,6 @@ void foreach_line_gz(
       in.push(ifs2);
       std::string line;
       while (getline(in, line, '\n')) {
-        // We don't know the line number. Super-bummer.
         f(line);
       }
     });
@@ -188,6 +193,7 @@ void foreach_line_gz(
   for (auto &t: threads) {
     t.join();
   }
+#endif
 }
 
 } // namespace

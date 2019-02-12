@@ -134,7 +134,6 @@ void Dictionary::readFromFile(
     const std::string& file,
     shared_ptr<DataParser> parser) {
 
-  cout << "Build dict from input file : " << file << endl;
   int64_t minThreshold = 1;
   size_t lines_read = 0;
 
@@ -156,9 +155,11 @@ void Dictionary::readFromFile(
       }
     }
   };
-  cout << args_->compressFile << endl;
+
+#ifdef COMPRESS_FILE
   if (args_->compressFile == "gzip") {
-    for (int i = 0; i < args_->thread; i++) {
+    cout << "Build dict from compressed input file.\n";
+    for (int i = 0; i < args_->numGzFile; i++) {
       filtering_istream in;
       auto str_idx = boost::str(boost::format("%02d") % i);
       auto fname = file + str_idx + ".gz";
@@ -172,6 +173,7 @@ void Dictionary::readFromFile(
       ifs.close();
     }
   } else {
+    cout << "Build dict from input file : " << file << endl;
     ifstream fin(file);
     if (!fin.is_open()) {
       cerr << "Input file cannot be opened!" << endl;
@@ -180,6 +182,16 @@ void Dictionary::readFromFile(
     readFromInputStream(fin);
     fin.close();
   }
+#else
+  cout << "Build dict from input file : " << file << endl;
+  ifstream fin(file);
+  if (!fin.is_open()) {
+    cerr << "Input file cannot be opened!" << endl;
+    exit(EXIT_FAILURE);
+  }
+  readFromInputStream(fin);
+  fin.close();
+#endif
 
   threshold(args_->minCount, args_->minCountLabel);
 
