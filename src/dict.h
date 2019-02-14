@@ -19,6 +19,13 @@
 #include <iostream>
 #include <random>
 #include <memory>
+#include <boost/format.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+
+#ifdef COMPRESS_FILE
+  #include <boost/iostreams/filter/zlib.hpp>
+  #include <boost/iostreams/filter/gzip.hpp>
+#endif
 
 namespace starspace {
 

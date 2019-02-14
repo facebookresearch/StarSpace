@@ -22,6 +22,7 @@ class Args {
     std::string model;
     std::string initModel;
     std::string fileFormat;
+    std::string compressFile;
     std::string label;
     std::string basedoc;
     std::string loss;
@@ -52,6 +53,7 @@ class Args {
     int trainMode;
     int K;
     int batchSize;
+    int numGzFile;
     bool verbose;
     bool debug;
     bool adagrad;

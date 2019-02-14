@@ -58,6 +58,7 @@ Args::Args() {
   trainWord = false;
   excludeLHS = false;
   weightSep = ':';
+  numGzFile = 1;
 }
 
 bool Args::isTrue(string arg) {
@@ -119,6 +120,10 @@ void Args::parseArgs(int argc, char** argv) {
       initModel = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-fileFormat") == 0) {
       fileFormat = string(argv[i + 1]);
+    } else if (strcmp(argv[i], "-compressFile") == 0) {
+      compressFile = string(argv[i + 1]);
+    } else if (strcmp(argv[i], "-numGzFile") == 0) {
+      numGzFile = atoi(argv[i + 1]);
     } else if (strcmp(argv[i], "-label") == 0) {
       label = string(argv[i + 1]);
     } else if (strcmp(argv[i], "-weightSep") == 0) {
@@ -241,6 +246,10 @@ void Args::parseArgs(int argc, char** argv) {
     cerr << "Unsupported file format type. Should be either fastText or labelDoc.\n";
     exit(EXIT_FAILURE);
   }
+  if (!(compressFile.empty() || compressFile == "gzip")) {
+    cerr << "Currently only support gzip for compressedFile.\n";
+    exit(EXIT_FAILURE);
+  }
 }
 
 void Args::printHelp() {
@@ -298,6 +307,8 @@ void Args::printHelp() {
        << "  -verbose         verbosity level [" << verbose << "]\n"
        << "  -debug           whether it's in debug mode [" << debug << "]\n"
        << "  -thread          number of threads [" << thread << "]\n"
+       << "  -compressFile    whether to load a compressed file [" << compressFile << "]\n"
+       << "  -numGzFile       number of compressed file to load [" << numGzFile << "]\n"
        << std::endl;
 }
 
