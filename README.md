@@ -18,6 +18,7 @@ It learns to rank a set of entities/documents or objects given a query entity/do
 See the [paper](https://arxiv.org/abs/1709.03856) for more details on how it works.
 
 # News
+- <img width="5%" src="examples/new2.gif"> StarSpace is available in Python: check out the <a href="https://github.com/facebookresearch/StarSpace#building-starspace">Building StarSpace</a> section for details. 
 - <img width="5%" src="examples/new2.gif"> Support reading from compressed file: check out the <a href="https://github.com/facebookresearch/StarSpace/#compressed-file">Compressed File</a> section for more details.
 - <img width="5%" src="examples/new2.gif"> New license and patents: now StarSpace is under MIT license. Checkout <a href="https://github.com/facebookresearch/StarSpace/blob/master/LICENSE.md">LICENSE</a> for details.
 - StarSpace training is much faster now with mini batch training (setting batch size by "-batchSize" argument). Details in [#190](https://github.com/facebookresearch/StarSpace/pull/190).
@@ -50,7 +51,7 @@ In order to build StarSpace on Mac OS or Linux, use the following:
 In order to build StarSpace on Windows, open the following in Visual Studio:
 
     MVS\StarSpace.sln
-In order to build StarSpace python wrapper, please refer `README` inside the directory `python`.
+In order to build StarSpace python wrapper, please refer <a href="https://github.com/facebookresearch/StarSpace/tree/master/python">README</a> inside the directory <a href="https://github.com/facebookresearch/StarSpace/tree/master/python">python</a>.
 
 # File Format
 
