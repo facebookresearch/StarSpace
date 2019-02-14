@@ -1,0 +1,5 @@
+[requires]
+pybind11/2.2.3@conan/stable
+
+[generators]
+cmake

@@ -50,6 +50,7 @@ In order to build StarSpace on Mac OS or Linux, use the following:
 In order to build StarSpace on Windows, open the following in Visual Studio:
 
     MVS\StarSpace.sln
+In order to build StarSpace python wrapper, please refer `README` inside the directory `python`.
 
 # File Format
 
