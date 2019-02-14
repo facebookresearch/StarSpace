@@ -18,8 +18,9 @@ It learns to rank a set of entities/documents or objects given a query entity/do
 See the [paper](https://arxiv.org/abs/1709.03856) for more details on how it works.
 
 # News
-- <img width="5%" src="examples/new2.gif" /> StarSpace training is much faster now with mini batch training (setting batch size by "-batchSize" argument). Details in [#190](https://github.com/facebookresearch/StarSpace/pull/190).
-- New license and patents: now StarSpace is under BSD license. Checkout <a href="https://github.com/facebookresearch/StarSpace/blob/master/LICENSE.md">LICENSE</a> and <a href="https://github.com/facebookresearch/StarSpace/blob/master/PATENTS">PATENTS</a> for details.
+- <img width="5%" src="examples/new2.gif"> Support reading from compressed file: check out the <a href="https://github.com/facebookresearch/StarSpace/#compressed-file">Compressed File</a> section for more details.
+- <img width="5%" src="examples/new2.gif"> New license and patents: now StarSpace is under MIT license. Checkout <a href="https://github.com/facebookresearch/StarSpace/blob/master/LICENSE.md">LICENSE</a> for details.
+- StarSpace training is much faster now with mini batch training (setting batch size by "-batchSize" argument). Details in [#190](https://github.com/facebookresearch/StarSpace/pull/190).
 - We added support for real-valued input and label weights: checkout the <a href="https://github.com/facebookresearch/StarSpace/#file-format">File Format</a> and <a href="https://github.com/facebookresearch/StarSpace/#imagespace-learning-image-and-label-embeddings">ImageSpace</a> section for more details on how to use weights in input and label.
 
 # Requirements
@@ -86,6 +87,27 @@ e.g.,
     dog:0.1 cat:0.5 ...
     
 The default weight is 1 for any word / label that does not contain weights. 
+
+# Compressed File
+
+StarSpace can also read from compressed file (currently only support gzip files). You can skip this part if you do not plan to use compressed input files. To run StarSpace with compressed input, first compile StarSpace using makefile_compress instead of makefile:
+
+    make -f makefile_compress
+
+Then in the train config, specify
+    
+    ./starspace -trainFile input -compressFile gzip -numGzFile 10 ...
+    
+It assumes that there are input files with names 
+
+    input00.gz, input01.gz, ..., input09.gz 
+    
+and reads from those files.
+
+To prepare data in this format, one can use the standard 'split' function to first split input file into multiple chunks, then compress them. For instance:
+
+    split -d -l xxx original_input.txt input && gzip input*
+
 
 ## Training Mode
 
@@ -247,7 +269,7 @@ With the most recent update, StarSpace can also be used to learn joint embedding
 
 Here we give an example using <a href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10</a> to illustrate how we train images with other entities (in this example, image class): we train a <a href="https://github.com/facebookresearch/ResNeXt">ResNeXt</a> model on CIFAR-10  which achieves 96.34% accuracy on test dataset, and use the last layer of ResNeXt as the features for each image. We embed 10 image classes together with image features in the same space using StarSpace. For an example image from class 1 with last layer (0.8, 0.5, ..., 1.2), we convert it to the following format:
     
-    d1:0.8  d2:0.5   ...    d1024:1.2   __label__1
+    d0:0.8  d1:0.5   ...    d1023:1.2   __label__1
 
 After converting train and test examples of CIFAR-10 to the above format, we ran <a href="https://github.com/facebookresearch/StarSpace/blob/master/examples/image_feature_example_cifar10.sh">this example script</a>:
 

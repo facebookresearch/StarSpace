@@ -1,10 +1,8 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 #pragma once
@@ -14,6 +12,12 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <boost/format.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+
+#ifdef COMPRESS_FILE
+  #include <boost/iostreams/filter/gzip.hpp>
+#endif
 
 namespace starspace {
 
@@ -149,6 +153,47 @@ void foreach_line(const String& fname,
   for (auto &t: threads) {
     t.join();
   }
+}
+
+template<typename String=std::string,
+         typename Lambda>
+void foreach_line_gz(
+    const String& fname,
+    int numFiles,
+    Lambda f,
+    int numThreads = 1) {
+
+  using namespace std;
+  using namespace boost::iostreams;
+
+  vector<thread> threads;
+  numThreads = std::min(numFiles, numThreads);
+
+#ifdef COMPRESS_FILE
+  for (int i = 0; i < numFiles; i++) {
+    auto thread_id = i % numThreads;
+    threads.emplace_back([thread_id, i, f, &fname] {
+      detail::id = thread_id;
+      auto fname_t = fname + boost::str(boost::format("%02d") % i) + ".gz";
+      ifstream ifs2(fname_t);
+      if (!ifs2.good()) {
+        return;
+      }
+
+      cout << "Reading file from " << fname_t << endl;
+      filtering_istream in;
+      in.push(gzip_decompressor());
+      in.push(ifs2);
+      std::string line;
+      while (getline(in, line, '\n')) {
+        f(line);
+      }
+    });
+  }
+  for (auto &t: threads) {
+    t.join();
+  }
+#endif
 }
 
 } // namespace

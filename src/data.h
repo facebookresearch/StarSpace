@@ -1,16 +1,15 @@
-// Copyright 2004-, Facebook, Inc. All Rights Reserved.
-
-/* This is the basic class of internal data handler.
- * It loads data from file and stores it in internal format for easy access
- * at training/testing time.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * It also provides random RHS sampling for negative sampling in training.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 #pragma once
 
 #include "dict.h"
 #include "parser.h"
+#include "utils/utils.h"
 #include <string>
 #include <vector>
 #include <fstream>

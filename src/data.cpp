@@ -1,15 +1,11 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
-
 #include "data.h"
-#include "utils/utils.h"
 #include <string>
 #include <vector>
 #include <fstream>
@@ -40,26 +36,41 @@ void InternDataHandler::loadFromFile(
   const string& fileName,
   shared_ptr<DataParser> parser) {
 
-  ifstream fin(fileName);
-  if (!fin.is_open()) {
-    std::cerr << fileName << " cannot be opened for loading!" << std::endl;
-    exit(EXIT_FAILURE);
-  }
-  fin.close();
-
-  cout << "Loading data from file : " << fileName << endl;
   vector<Corpus> corpora(args_->thread);
-  foreach_line(
-    fileName,
-    [&](std::string& line) {
-      auto& corpus = corpora[getThreadID()];
-      ParseResults example;
-      if (parser->parse(line, example)) {
-        corpus.push_back(example);
-      }
-    },
-    args_->thread
-  );
+  if (args_->compressFile == "gzip") {
+    foreach_line_gz(
+      fileName,
+      args_->numGzFile,
+      [&](std::string& line) {
+        auto& corpus = corpora[getThreadID()];
+        ParseResults example;
+        if (parser->parse(line, example)) {
+          corpus.push_back(example);
+        }
+      },
+      args_->thread
+    );
+  } else {
+    ifstream fin(fileName);
+    if (!fin.is_open()) {
+      std::cerr << fileName << " cannot be opened for loading!" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    fin.close();
+
+    cout << "Loading data from file : " << fileName << endl;
+    foreach_line(
+      fileName,
+      [&](std::string& line) {
+        auto& corpus = corpora[getThreadID()];
+        ParseResults example;
+        if (parser->parse(line, example)) {
+          corpus.push_back(example);
+        }
+      },
+      args_->thread
+    );
+  }
   // Glue corpora together.
   auto totalSize = std::accumulate(corpora.begin(), corpora.end(), size_t(0),
                      [](size_t l, Corpus& r) { return l + r.size(); });

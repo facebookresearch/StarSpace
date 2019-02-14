@@ -1,10 +1,8 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 #include "dict.h"
@@ -18,6 +16,7 @@
 #include <sstream>
 
 using namespace std;
+using namespace boost::iostreams;
 
 namespace starspace {
 
@@ -135,31 +134,64 @@ void Dictionary::readFromFile(
     const std::string& file,
     shared_ptr<DataParser> parser) {
 
+  int64_t minThreshold = 1;
+  size_t lines_read = 0;
+
+  auto readFromInputStream = [&](std::istream& in) {
+    string line;
+    while (getline(in, line, '\n')) {
+      vector<string> tokens;
+      parser->parseForDict(line, tokens);
+      lines_read++;
+      for (auto token : tokens) {
+        insert(token);
+        if ((ntokens_ % 1000000 == 0) && args_->verbose) {
+          std::cerr << "\rRead " << ntokens_  / 1000000 << "M words" << std::flush;
+        }
+        if (size_ > 0.75 * MAX_VOCAB_SIZE) {
+          minThreshold++;
+          threshold(minThreshold, minThreshold);
+        }
+      }
+    }
+  };
+
+#ifdef COMPRESS_FILE
+  if (args_->compressFile == "gzip") {
+    cout << "Build dict from compressed input file.\n";
+    for (int i = 0; i < args_->numGzFile; i++) {
+      filtering_istream in;
+      auto str_idx = boost::str(boost::format("%02d") % i);
+      auto fname = file + str_idx + ".gz";
+      ifstream ifs(fname);
+      if (!ifs.good()) {
+        continue;
+      }
+      in.push(gzip_decompressor());
+      in.push(ifs);
+      readFromInputStream(in);
+      ifs.close();
+    }
+  } else {
+    cout << "Build dict from input file : " << file << endl;
+    ifstream fin(file);
+    if (!fin.is_open()) {
+      cerr << "Input file cannot be opened!" << endl;
+      exit(EXIT_FAILURE);
+    }
+    readFromInputStream(fin);
+    fin.close();
+  }
+#else
   cout << "Build dict from input file : " << file << endl;
   ifstream fin(file);
   if (!fin.is_open()) {
     cerr << "Input file cannot be opened!" << endl;
     exit(EXIT_FAILURE);
   }
-  int64_t minThreshold = 1;
-  size_t lines_read = 0;
-  std::string line;
-  while (getline(fin, line)) {
-    vector<string> tokens;
-    parser->parseForDict(line, tokens);
-    lines_read++;
-    for (auto token : tokens) {
-      insert(token);
-      if ((ntokens_ % 1000000 == 0) && args_->verbose) {
-        std::cerr << "\rRead " << ntokens_  / 1000000 << "M words" << std::flush;
-      }
-      if (size_ > 0.75 * MAX_VOCAB_SIZE) {
-        minThreshold++;
-        threshold(minThreshold, minThreshold);
-      }
-    }
-  }
+  readFromInputStream(fin);
   fin.close();
+#endif
 
   threshold(args_->minCount, args_->minCountLabel);
 

@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2016-present, Facebook, Inc.
-# All rights reserved.
+# Copyright (c) Facebook, Inc. and its affiliates.
 #
-# This source code is licensed under the BSD-style license found in the
-# LICENSE file in the root directory of this source tree. An additional grant
-# of patent rights can be found in the PATENTS file in the same directory.
-#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
 
 MODELDIR=/tmp/starspace/models
 DATADIR=/tmp/starspace/data
@@ -28,7 +25,7 @@ mkdir -p "${DATADIR}"
 echo "Downloading dataset freebase 15k"
 if [ ! -f "${DATADIR}/${DATASET}/fb15k.train" ]
 then
-    wget -c "https://s3.amazonaws.com/fair-data/starspace/fb15k.tgz" -O "${DATADIR}/${DATASET}_csv.tar.gz"
+    wget -c "https://dl.fbaipublicfiles.com/starspace/fb15k.tgz" -O "${DATADIR}/${DATASET}_csv.tar.gz"
     tar -xzvf "${DATADIR}/${DATASET}_csv.tar.gz" -C "${DATADIR}"
     
     echo "Converting data to StarSpace format ..."

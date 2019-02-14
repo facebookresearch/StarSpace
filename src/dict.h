@@ -1,10 +1,8 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 /**
@@ -21,6 +19,13 @@
 #include <iostream>
 #include <random>
 #include <memory>
+#include <boost/format.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+
+#ifdef COMPRESS_FILE
+  #include <boost/iostreams/filter/zlib.hpp>
+  #include <boost/iostreams/filter/gzip.hpp>
+#endif
 
 namespace starspace {
 
