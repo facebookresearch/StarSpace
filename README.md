@@ -18,6 +18,7 @@ It learns to rank a set of entities/documents or objects given a query entity/do
 See the [paper](https://arxiv.org/abs/1709.03856) for more details on how it works.
 
 # News
+- <img width="5%" src="examples/new2.gif"> Support reading from compressed file: check out the <a href="https://github.com/facebookresearch/StarSpace/#compressed-file">Compressed File</a> section for more details.
 - <img width="5%" src="examples/new2.gif"> New license and patents: now StarSpace is under MIT license. Checkout <a href="https://github.com/facebookresearch/StarSpace/blob/master/LICENSE.md">LICENSE</a> for details.
 - StarSpace training is much faster now with mini batch training (setting batch size by "-batchSize" argument). Details in [#190](https://github.com/facebookresearch/StarSpace/pull/190).
 - We added support for real-valued input and label weights: checkout the <a href="https://github.com/facebookresearch/StarSpace/#file-format">File Format</a> and <a href="https://github.com/facebookresearch/StarSpace/#imagespace-learning-image-and-label-embeddings">ImageSpace</a> section for more details on how to use weights in input and label.
@@ -85,6 +86,27 @@ e.g.,
     dog:0.1 cat:0.5 ...
     
 The default weight is 1 for any word / label that does not contain weights. 
+
+# Compressed File
+
+StarSpace can also read from compressed file (currently only support gzip files). You can skip this part if you do not plan to use compressed input files. To run StarSpace with compressed input, first compile StarSpace using makefile_compress instead of makefile:
+
+    make -f makefile_compress
+
+Then in the train config, specify
+    
+    ./starspace -trainFile input -compressFile gzip -numGzFile 10 ...
+    
+It assumes that there are input files with names 
+
+    input00.gz, input01.gz, ..., input09.gz 
+    
+and reads from those files.
+
+To prepare data in this format, one can use the standard 'split' function to first split input file into multiple chunks, then compress them. For instance:
+
+    split -d -l xxx original_input.txt input && gzip input*
+
 
 ## Training Mode
 
