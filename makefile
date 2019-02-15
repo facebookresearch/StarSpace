@@ -114,4 +114,4 @@ embed_doc: $(OBJS)
 test: $(TESTS)
 
 clean:
-  rm -rf *.o starspace gtest.a gtest_main.a *_test query_nn print_ngrams
+	rm -rf *.o starspace gtest.a gtest_main.a *_test query_nn print_ngrams
