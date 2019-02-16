@@ -38,13 +38,15 @@ class StarSpace {
         const std::string& line,
         std::vector<Base>& ids,
         const std::string& sep);
-
+    std::vector<Base>  parseDoc_(
+        const std::string& line,
+        const std::string& sep);
     void nearestNeighbor(const std::string& line, int k);
 
     void saveModel(const std::string& filename);
     void saveModelTsv(const std::string& filename);
     void printDoc(std::ostream& ofs, const std::vector<Base>& tokens);
-
+    std::string printDoc_( const std::vector<Base>& tokens);
     const std::string kMagic = "STARSPACE-2018-2";
 
     void loadBaseDocs();
@@ -52,6 +54,9 @@ class StarSpace {
     void predictOne(
         const std::vector<Base>& input,
         std::vector<Predictions>& pred);
+
+    std::vector<Predictions> predictOne_(
+        const std::vector<Base>& input);
 
     std::shared_ptr<Args> args_;
     std::vector<std::vector<Base>> baseDocs_;

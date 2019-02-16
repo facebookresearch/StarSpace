@@ -89,5 +89,9 @@ PYBIND11_MODULE(starwrap, m) {
 		.def("saveModelTsv", &starspace::StarSpace::saveModelTsv)
 		
 		.def("loadBaseDocs", &starspace::StarSpace::loadBaseDocs)
+                .def("predictOne_", &starspace::StarSpace::predictOne_)
+                .def("parseDoc_", &starspace::StarSpace::parseDoc_)
+		.def_readwrite("baseDocs_", &starspace::StarSpace::baseDocs_)
+                .def("printDoc_", &starspace::StarSpace::printDoc_)
 		;
 }

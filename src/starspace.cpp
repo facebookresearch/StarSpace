@@ -220,6 +220,16 @@ void StarSpace::parseDoc(
   parser_->parse(tokens, ids);
 }
 
+std::vector<Base> StarSpace::parseDoc_(
+    const string& line,
+    const string& sep) {
+  vector<Base> ids;
+  vector<string> tokens;
+  boost::split(tokens, line, boost::is_any_of(string(sep)));
+  parser_->parse(tokens, ids);
+  return ids;
+}
+
 Matrix<Real> StarSpace::getDocVector(const string& line, const string& sep) {
   vector<Base> ids;
   parseDoc(line, ids, sep);
@@ -314,6 +324,18 @@ void StarSpace::predictOne(
   }
 }
 
+std::vector<Predictions> StarSpace::predictOne_(
+     const std::vector<Base>& input
+    ) {
+  auto lhsM = model_->projectLHS(input);
+std::vector <Predictions> heap;
+  for (unsigned int i = 0; i < baseDocVectors_.size(); i++) {
+    auto cur_score = model_->similarity(lhsM, baseDocVectors_[i]);
+    heap.push_back({ cur_score, i });
+  }
+  return heap;
+  }
+
 Metrics StarSpace::evaluateOne(
     const vector<Base>& lhs,
     const vector<Base>& rhs,
@@ -383,6 +405,16 @@ void StarSpace::printDoc(ostream& ofs, const vector<Base>& tokens) {
     }
   }
   ofs << endl;
+}
+std::string StarSpace::printDoc_( const vector<Base>& tokens) {
+  std::string result;
+  for (auto t : tokens) {
+    // skip ngram tokens
+    if (t.first < dict_->size()) {
+      result +=  dict_->getSymbol(t.first) + ' ';
+    }
+  }
+  return result;
 }
 
 void StarSpace::evaluate() {

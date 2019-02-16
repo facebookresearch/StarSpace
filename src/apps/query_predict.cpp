@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
     vector<Base> query_vec;
     sp.parseDoc(input, query_vec, " ");
     vector<Predictions> predictions;
-    sp.predictOne(query_vec, predictions);
+    predictions=sp.predictOne_(query_vec);
     for (int i = 0; i < predictions.size(); i++) {
       cout << i << "[" << predictions[i].first << "]: ";
       sp.printDoc(cout, sp.baseDocs_[predictions[i].second]);
