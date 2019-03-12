@@ -67,7 +67,7 @@ PYBIND11_MODULE(starwrap, m) {
 				2,									    			/* Number of dimensions */
 				{ m.numRows(), m.numCols() },				        /* Buffer dimensions */
 				{ sizeof(starspace::Real) * m.numCols(),			/* Strides (in bytes) for each index */
-				  sizeof(starspace::Real) * (int64_t)1 }
+				  sizeof(starspace::Real) }
 			);
 		}
 	);

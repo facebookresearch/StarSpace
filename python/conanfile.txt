@@ -1,5 +1,5 @@
 [requires]
-pybind11/2.2.3@conan/stable
+pybind11/2.2.4@conan/stable
 
 [generators]
 cmake
