@@ -261,7 +261,7 @@ void StarSpace::nearestNeighbor(const string& line, int k) {
 
 unordered_map<string, float> StarSpace::predictTags(const string& line, int k){
     args_->K = k;
-    vector<Base> query_vec;    
+    vector<Base> query_vec;
     parseDoc(line, query_vec, " ");
 
     vector<Predictions> predictions;
@@ -273,7 +273,7 @@ unordered_map<string, float> StarSpace::predictTags(const string& line, int k){
       string tmp = printDocStr(baseDocs_[predictions[i].second]);
       umap[ tmp ] = predictions[i].first;
     }
-
+    
     return umap;
 }
 
