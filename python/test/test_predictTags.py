@@ -1,5 +1,6 @@
 import starwrap as sw
 import numpy as np
+from operator import itemgetter
 
 arg = sw.args()
 arg.trainFile = './tagged_post.txt'
@@ -19,4 +20,8 @@ sp.saveModelTsv('tagged_model.tsv')
 sp.initFromSavedModel('tagged_model')
 sp.initFromTsv('tagged_model.tsv')
 
-print( sp.predictTags('barack', 4) )
+dict_obj = sp.predictTags('barack obama', 10)
+dict_obj = sorted( dict_obj.items(), key = itemgetter(1), reverse = False )
+
+for tag, prob in dict_obj:
+    print( tag, prob )
