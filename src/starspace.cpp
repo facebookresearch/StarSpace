@@ -126,6 +126,8 @@ void StarSpace::initFromSavedModel(const string& filename) {
   // init data parser
   initParser();
   initDataHandler();
+
+    loadBaseDocs();
 }
 
 void StarSpace::initFromTsv(const string& filename) {
@@ -259,7 +261,6 @@ void StarSpace::nearestNeighbor(const string& line, int k) {
   }
 }
 
-//get tag prediction for a text in a hashmap
 unordered_map<string, float> StarSpace::predictTags(const string& line, int k){
     args_->K = k;
     vector<Base> query_vec;
@@ -274,7 +275,6 @@ unordered_map<string, float> StarSpace::predictTags(const string& line, int k){
       string tmp = printDocStr(baseDocs_[predictions[i].second]);
       umap[ tmp ] = predictions[i].first;
     }
-
     return umap;
 }
 
