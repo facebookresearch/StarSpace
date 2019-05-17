@@ -48,7 +48,7 @@ sp.initFromSavedModel('tagged_model')
 sp.initFromTsv('tagged_model.tsv')
 
 dict_obj = sp.predictTags('barack obama', 10)
-dict_obj = sorted( dict_obj.items(), key = itemgetter(1), reverse = False )
+dict_obj = sorted( dict_obj.items(), key = itemgetter(1), reverse = True )
 
 for tag, prob in dict_obj:
     print( tag, prob )
@@ -56,15 +56,15 @@ for tag, prob in dict_obj:
 
 And you get this:
 ```
-__label__entitlement 0.36044222116470337
-__label__cspan 0.363872766494751
-__label__notleading 0.42695513367652893
-__label__obamas 0.4439762830734253
-__label__txcot 0.45480018854141235
-__label__txgop 0.4820299744606018
-__label__florida 0.5084939002990723
-__label__doublespeak 0.5218845009803772
-__label__dfw 0.5412008762359619
-__label__obama 0.5869812965393066
+__label__obama 0.5291043519973755
+__label__stopobamasamnesty 0.5073596239089966
+__label__florida 0.5003609657287598
+__label__entitlement 0.47724902629852295
+__label__savesarah 0.4583539664745331
+__label__keystone 0.4561977982521057
+__label__1866 0.43746984004974365
+__label__waroncoal 0.4283019006252289
+__label__notleading 0.4117577075958252
+__label__cuba 0.3887191414833069
 ```
 For the full example, please refer to `test_predictTags.py` in `test` directory.
