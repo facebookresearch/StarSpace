@@ -219,7 +219,7 @@ Performing link prediction can be formalized as filling in incomplete triples li
 
     (head_entity, relation_type, ?) or (?, relation_type, tail_entity)
 
-**Model:** We learn the embeddings of all entities and relation types. For each realtion_type, we learn two embeddings: one for predicting tail_entity given head_entity, one for predicting head_entity given tail_entity.
+**Model:** We learn the embeddings of all entities and relation types. For each relation_type, we learn two embeddings: one for predicting tail_entity given head_entity, one for predicting head_entity given tail_entity.
 
 ![multi-rel](https://github.com/facebookresearch/StarSpace/blob/master/examples/multi-relations.png)
 
