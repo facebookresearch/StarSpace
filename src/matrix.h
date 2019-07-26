@@ -90,7 +90,7 @@ struct Matrix {
 
   Real& cell(size_t i, size_t j) {
     assert(i >= 0);
-    assert(i < numCols());
+    assert(i < numRows());
     assert(j < numCols());
     assert(j >= 0);
     return matrix(i, j);
