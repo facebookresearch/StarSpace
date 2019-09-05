@@ -299,19 +299,44 @@ void StarSpace::loadBaseDocs() {
 void StarSpace::predictOne(
     const vector<Base>& input,
     vector<Predictions>& pred) {
+      predict(input, pred, args_->K);
+}
+
+void StarSpace::predict(
+    const vector<Base>& input,
+    vector<Predictions>& pred,
+    int k) {
   auto lhsM = model_->projectLHS(input);
-  std::priority_queue<Predictions> heap;
-  for (unsigned int i = 0; i < baseDocVectors_.size(); i++) {
+  std::set<Predictions> predictions;
+  int docsize = baseDocVectors_.size();
+
+  // When docs are not loaded the prediction result will be empty vector
+  if (!docsize) {
+    loadBaseDocs();
+    docsize = baseDocVectors_.size();
+  }
+
+  for (unsigned int i = 0; i < docsize; i++) {
     auto cur_score = model_->similarity(lhsM, baseDocVectors_[i]);
-    heap.push({ cur_score, i });
+
+    if (predictions.size() >= k) {
+      auto last_element = prev(predictions.end());
+
+      /**
+       * Most of predictions have too low score, so we should not touch and waste
+       * CPU time for rebalancing set
+       */
+      if (cur_score < last_element->first)
+        continue;
+
+      predictions.erase(last_element);
+    }
+
+    predictions.insert({ cur_score, i });
   }
-  // get the first K predictions
-  int i = 0;
-  while (i < args_->K && heap.size() > 0) {
-    pred.push_back(heap.top());
-    heap.pop();
-    i++;
-  }
+
+  // When we finish, we have K or less predictions in set, move them to vector
+  pred.insert(pred.end(), predictions.begin(), predictions.end());
 }
 
 Metrics StarSpace::evaluateOne(
