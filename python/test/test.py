@@ -4,7 +4,7 @@ import numpy as np
 arg = sw.args()
 arg.trainFile = './input.txt'
 arg.testFile = './input.txt'
-arg.trainMode = 5				
+arg.trainMode = 5
 
 sp = sw.starSpace(arg)
 sp.init()
@@ -22,4 +22,3 @@ sp.initFromTsv('model.tsv')
 
 print(np.array(sp.getDocVector('this\tis\ttest', '\t')))
 print(np.array(sp.getDocVector('this is test', ' ')))
-
