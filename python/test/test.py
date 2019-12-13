@@ -22,4 +22,3 @@ sp.initFromTsv('model.tsv')
 
 print(np.array(sp.getDocVector('this\tis\ttest', '\t')))
 print(np.array(sp.getDocVector('this is test', ' ')))
-

@@ -84,10 +84,10 @@ PYBIND11_MODULE(starwrap, m) {
 		.def("getDocVector", &starspace::StarSpace::getDocVector)
 
 		.def("nearestNeighbor", &starspace::StarSpace::nearestNeighbor)
+		.def("predictTags", &starspace::StarSpace::predictTags)
 
 		.def("saveModel", &starspace::StarSpace::saveModel)
 		.def("saveModelTsv", &starspace::StarSpace::saveModelTsv)
-		
 		.def("loadBaseDocs", &starspace::StarSpace::loadBaseDocs)
 		;
 }

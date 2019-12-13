@@ -41,11 +41,16 @@ class StarSpace {
 
     void nearestNeighbor(const std::string& line, int k);
 
+
+    std::unordered_map<std::string, float> predictTags(const std::string& line, int k);
+    std::string printDocStr(const std::vector<Base>& tokens); 
+    
     void saveModel(const std::string& filename);
     void saveModelTsv(const std::string& filename);
     void printDoc(std::ostream& ofs, const std::vector<Base>& tokens);
 
     const std::string kMagic = "STARSPACE-2018-2";
+
 
     void loadBaseDocs();
 

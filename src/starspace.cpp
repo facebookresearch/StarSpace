@@ -126,6 +126,8 @@ void StarSpace::initFromSavedModel(const string& filename) {
   // init data parser
   initParser();
   initDataHandler();
+
+    loadBaseDocs();
 }
 
 void StarSpace::initFromTsv(const string& filename) {
@@ -259,6 +261,23 @@ void StarSpace::nearestNeighbor(const string& line, int k) {
   }
 }
 
+unordered_map<string, float> StarSpace::predictTags(const string& line, int k){
+    args_->K = k;
+    vector<Base> query_vec;
+    parseDoc(line, query_vec, " ");
+
+    vector<Predictions> predictions;
+    predictOne(query_vec, predictions);
+
+    unordered_map<string, float> umap;
+    
+    for (int i = 0; i < predictions.size(); i++) {
+      string tmp = printDocStr(baseDocs_[predictions[i].second]);
+      umap[ tmp ] = predictions[i].first;
+    }
+    return umap;
+}
+
 void StarSpace::loadBaseDocs() {
   if (args_->basedoc.empty()) {
     if (args_->fileFormat == "labelDoc") {
@@ -383,6 +402,16 @@ void StarSpace::printDoc(ostream& ofs, const vector<Base>& tokens) {
     }
   }
   ofs << endl;
+}
+
+string StarSpace::printDocStr(const vector<Base>& tokens) {
+  for (auto t : tokens) {
+    if (t.first < dict_->size()) {
+      return dict_->getSymbol(t.first);
+    }
+  }
+
+  return "__label_unk";
 }
 
 void StarSpace::evaluate() {
