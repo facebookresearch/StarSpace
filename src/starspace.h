@@ -22,6 +22,8 @@ typedef std::pair<Real, int32_t> Predictions;
 class StarSpace {
   public:
     explicit StarSpace(std::shared_ptr<Args> args);
+    // This class has derived ones for scripting languages connection
+    virtual ~StarSpace() {};
 
     void init();
     void initFromTsv(const std::string& filename);
@@ -54,6 +56,10 @@ class StarSpace {
 
     void loadBaseDocs();
 
+    void predict(
+        const std::vector<Base>& input,
+        std::vector<Predictions>& pred,
+        int k);
     void predictOne(
         const std::vector<Base>& input,
         std::vector<Predictions>& pred);
@@ -70,7 +76,6 @@ class StarSpace {
         std::vector<Predictions>& pred,
         bool excludeLHS);
 
-    std::shared_ptr<Dictionary> dict_;
     std::shared_ptr<DataParser> parser_;
     std::shared_ptr<InternDataHandler> trainData_;
     std::shared_ptr<InternDataHandler> validData_;
@@ -78,6 +83,9 @@ class StarSpace {
     std::shared_ptr<EmbedModel> model_;
 
     std::vector<Matrix<Real>> baseDocVectors_;
+
+  protected:
+    std::shared_ptr<Dictionary> dict_;
 };
 
 }

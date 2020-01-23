@@ -76,6 +76,7 @@ include_directories(${PROJECT_SOURCE_DIR}/pybind11/include)
 # Create the binding library
 add_library(starwrap SHARED
   starspace_pybind.cc
+  starspace_pythonic.cc
   # ... extra files go here ...
 )
 

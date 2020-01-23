@@ -5,6 +5,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include "starspace_pythonic.h"
+
 namespace py = pybind11;
 
 PYBIND11_MODULE(starwrap, m) {
@@ -72,22 +74,26 @@ PYBIND11_MODULE(starwrap, m) {
 		}
 	);
 
-	py::class_<starspace::StarSpace>(m, "starSpace")
+	py::class_<starspace::StarSpacePythonic>(m, "starSpace")
 		.def(py::init<std::shared_ptr<starspace::Args>>())
-		.def("init", &starspace::StarSpace::init)
-		.def("initFromTsv", &starspace::StarSpace::initFromTsv)
-		.def("initFromSavedModel", &starspace::StarSpace::initFromSavedModel)
+		.def("init", &starspace::StarSpacePythonic::init)
+		.def("initFromTsv", &starspace::StarSpacePythonic::initFromTsv)
+		.def("initFromSavedModel", &starspace::StarSpacePythonic::initFromSavedModel)
 
-		.def("train", &starspace::StarSpace::train)
-		.def("evaluate", &starspace::StarSpace::evaluate)
+		.def("train", &starspace::StarSpacePythonic::train)
+		.def("evaluate", &starspace::StarSpacePythonic::evaluate)
 
-		.def("getDocVector", &starspace::StarSpace::getDocVector)
+		.def("getDocVector", &starspace::StarSpacePythonic::getDocVector)
 
-		.def("nearestNeighbor", &starspace::StarSpace::nearestNeighbor)
-		.def("predictTags", &starspace::StarSpace::predictTags)
+		.def("nearestNeighbor", &starspace::StarSpacePythonic::nearestNeighbor)
+		.def("predictTags", &starspace::StarSpacePythonic::predictTags)
 
-		.def("saveModel", &starspace::StarSpace::saveModel)
-		.def("saveModelTsv", &starspace::StarSpace::saveModelTsv)
-		.def("loadBaseDocs", &starspace::StarSpace::loadBaseDocs)
+		.def("saveModel", &starspace::StarSpacePythonic::saveModel)
+		.def("saveModelTsv", &starspace::StarSpacePythonic::saveModelTsv)
+		.def("loadBaseDocs", &starspace::StarSpacePythonic::loadBaseDocs)
+
+		.def("parseDoc", &starspace::StarSpacePythonic::parseDoc)
+		.def("renderTokens", &starspace::StarSpacePythonic::renderTokens)
+		.def("predict", &starspace::StarSpacePythonic::predict)
 		;
 }
