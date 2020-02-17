@@ -29,6 +29,8 @@ int main(int argc, char** argv) {
   StarSpace sp(args);
   if (boost::algorithm::ends_with(args->model, ".tsv")) {
     sp.initFromTsv(args->model);
+    // Load basedocs which are set of possible things to predict.
+    sp.loadBaseDocs();
   } else {
     sp.initFromSavedModel(args->model);
     cout << "------Loaded model args:\n";
@@ -37,8 +39,6 @@ int main(int argc, char** argv) {
   // Set dropout probability to 0 in test case.
   sp.args_->dropoutLHS = 0.0;
   sp.args_->dropoutRHS = 0.0;
-  // Load basedocs which are set of possible things to predict.
-  sp.loadBaseDocs();
 
   for(;;) {
     string input;
