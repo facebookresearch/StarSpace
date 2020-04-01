@@ -39,7 +39,13 @@ int main(int argc, char** argv) {
   args->model = model;
 
   StarSpace sp(args);
-  sp.initFromSavedModel(args->model);
+  if (boost::algorithm::ends_with(args->model, ".tsv")) {
+    sp.initFromTsv(args->model);
+  } else {
+    sp.initFromSavedModel(args->model);
+    cout << "------Loaded model args:\n";
+    args->printArgs();
+  }
   // set useWeight by default.
   // use 1.0 for default weight if weight is not found
   args->useWeight = true;
