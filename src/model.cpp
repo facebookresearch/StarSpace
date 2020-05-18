@@ -232,7 +232,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
       if (args_->trainMode != 5) {
         ParseResults ex;
         data->getExampleById(i, ex);
-        if (ex.LHSTokens.size() == 0 or ex.RHSTokens.size() == 0) {
+        if (ex.LHSTokens.size() == 0 || ex.RHSTokens.size() == 0) {
           continue;
         }
         examples.push_back(ex);
