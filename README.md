@@ -128,7 +128,7 @@ To explain how it works in different train modes, we call the input of a particu
     * **Use case:** learning a mapping from an object to a set of objects of which it is a part, e.g. sentence (from within document) to document.
 * trainMode = 3:
     * Each example contains a collection of labels. At training time, two labels from the collection are randomly picked as the LHS and RHS.
-    * **Use case:** learn pairwise similarity from collections of similar objects, e.g. sentence similiarity.
+    * **Use case:** learn pairwise similarity from collections of similar objects, e.g. sentence similarity.
 * trainMode = 4:
     * Each example contains two labels. At training time, the first label from the collection will be picked as the LHS and the second label will be picked as the RHS.
     * **Use case:** learning from multi-relational graphs.
@@ -291,8 +291,8 @@ and achieved 96.40% accuracy on an average of 5 runs.
       -model           model file path
 
     The following arguments for the dictionary are optional:
-      -minCount        minimal number of word occurences [1]
-      -minCountLabel   minimal number of label occurences [1]
+      -minCount        minimal number of word occurrences [1]
+      -minCountLabel   minimal number of label occurrences [1]
       -ngrams          max length of word ngram [1]
       -bucket          number of buckets [2000000]
       -label           labels prefix [__label__]. See file format section.
